@@ -10,6 +10,8 @@
 //---------------------------------------------------------------------
 #include "pch.h"
 #include "ProgramVLFD.h"
+
+using namespace std;
 //---------------------------------------------------------------------------
 //Name:TSMIMSVLFDProgrammer
 //description: TSMIMSVLFDProgrammer
@@ -51,7 +53,7 @@ bool TSMIMSVLFDProgrammer::StartProgram(int iBoard, const char* g_szBitFile1)
 		g_iProgress = -1;
 
 		sprintf(ErrorMsg, "FPGA program failed! %s", errorstr[g_iErrCode].c_str());
-		//这里改了一下，加了errorstr信息
+		//锟斤拷锟斤拷锟斤拷锟揭伙拷拢锟斤拷锟斤拷锟絜rrorstr锟斤拷息
 
 		return false;
 	}

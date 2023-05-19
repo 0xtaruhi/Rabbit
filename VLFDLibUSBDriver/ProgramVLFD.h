@@ -14,7 +14,6 @@
 
 #include <iostream>
 #include <fstream>
-using namespace std;
 #include "Program_error.h"
 #include "SMIMS_API.h"
 
@@ -35,7 +34,7 @@ class TSMIMSVLFDProgrammer
 private:
 	char ErrorMsg[128];
 
-	fstream fi;
+	std::fstream fi;
 	USB_HANDLE hDevice;
     WORD BlockSize;
 	WORD *Buffer;
