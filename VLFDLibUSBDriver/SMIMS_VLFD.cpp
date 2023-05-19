@@ -13,7 +13,7 @@ using namespace std;
 static USB_HANDLE hUSBDeviceHandle[ FUDAN_FPGA_NUM ] = {0};
 //static USB_HANDLE hUSBDeviceHandle_Read[ FUDAN_FPGA_NUM ] = {0};
 static SMIMS_CFGSpace CFGSpace[ FUDAN_FPGA_NUM ];
-static WORD EncryptTable[ FUDAN_FPGA_NUM ][32];
+static uint16_t EncryptTable[ FUDAN_FPGA_NUM ][32];
 static unsigned encindex[ FUDAN_FPGA_NUM ], decindex[ FUDAN_FPGA_NUM ];
 //---------------------------------------------------------------------------
 // Save Last Error Msg
@@ -22,12 +22,12 @@ static char ErrorMsg[ FUDAN_FPGA_NUM ][ ERROR_MSG_LENGTH ];
 static void PrintErrorMsg(int iBoard, const char * cMsg);
 //---------------------------------------------------------------------------
 
-BOOL VLFD_ProgramFPGA(int iBoard, const char * BitFile)
+bool VLFD_ProgramFPGA(int iBoard, const char * BitFile)
 {
 	if ( iBoard >= FUDAN_FPGA_NUM )
 	{
 		PrintErrorMsg(iBoard, "Exceed max board count.");
-		return FALSE;
+		return false;
 	}
 
 	if ( strlen(BitFile) != 0 )
@@ -42,25 +42,25 @@ BOOL VLFD_ProgramFPGA(int iBoard, const char * BitFile)
 		{
 			PrintErrorMsg(iBoard, m_Program->GetLastErrorMsg());
 			delete m_Program;
-     		return FALSE;
+     		return false;
         }
 		delete m_Program;
-		return TRUE;
+		return true;
 	}
 	else
 	{
 		PrintErrorMsg(iBoard, "Please check .bit filename.");
-		return FALSE;
+		return false;
 	}
-	return TRUE;
+	return true;
 }
 
-BOOL VLFD_IO_ProgramFPGA(int iBoard, const char* BitFile)
+bool VLFD_IO_ProgramFPGA(int iBoard, const char* BitFile)
 {
 	if (iBoard >= FUDAN_FPGA_NUM)
 	{
 		PrintErrorMsg(iBoard, "Exceed max board count.");
-		return FALSE;
+		return false;
 	}
 
 	if (strlen(BitFile) != 0)
@@ -75,27 +75,27 @@ BOOL VLFD_IO_ProgramFPGA(int iBoard, const char* BitFile)
 		{
 			PrintErrorMsg(iBoard, m_Program->GetLastErrorMsg());
 			delete m_Program;
-			return FALSE;
+			return false;
 		}
 		delete m_Program;
-		return TRUE;
+		return true;
 	}
 	else
 	{
 		PrintErrorMsg(iBoard, "Please check .bit filename.");
-		return FALSE;
+		return false;
 	}
-	return TRUE;
+	return true;
 }
 
 
-BOOL VLFD_AppOpen(int iBoard, const char *  SerialNo)
+bool VLFD_AppOpen(int iBoard, const char *  SerialNo)
 {
 	printf("Yu's Driver VLFD_AppOpen");
 	//SB_DeviceDescriptor DevDscr;
 	SMIMS_CFGSpace EncryptCFG;
 	char cCID[5];
-	WORD wCID;
+	uint16_t wCID;
 	char VLFDName[10];
 
 	memset(cCID, 0, 5);
@@ -104,20 +104,20 @@ BOOL VLFD_AppOpen(int iBoard, const char *  SerialNo)
 	if ( iBoard >= FUDAN_FPGA_NUM )
 	{
 		PrintErrorMsg(iBoard, "Exceed max board count.");
-		return FALSE;
+		return false;
 	}
 
 	//Check If correct Serial Number
 	if ( !CheckSerialNO(SerialNo, cCID) )
 	{
 		PrintErrorMsg(iBoard, "Illegal Serial Number!");
-		return FALSE;
+		return false;
 	}
 
 	if ( hUSBDeviceHandle[ iBoard ] != NULL )
 	{
 		PrintErrorMsg(iBoard, "Already Open this Board!");
-		return FALSE;
+		return false;
 	}
 
 	wCID = ConvertToWORD(cCID);
@@ -126,7 +126,7 @@ BOOL VLFD_AppOpen(int iBoard, const char *  SerialNo)
 	if(hUSBDeviceHandle[ iBoard ] == NULL)
 	{
 		sprintf(ErrorMsg[iBoard], "Can not open SMIMS FUDAN[%d] USB Device.", iBoard);
-		return FALSE;
+		return false;
 	}
 
 	//======Read USB Device Descriptor======
@@ -135,7 +135,7 @@ BOOL VLFD_AppOpen(int iBoard, const char *  SerialNo)
 	// 		PrintErrorMsg(iBoard, "Can not Get SMIMS USB Device Descriptor.");
 	// 		CloseHandle( hUSBDeviceHandle[ iBoard ] );
 	// 		hUSBDeviceHandle[ iBoard ] = NULL;
-	// 		return FALSE;
+	// 		return false;
 	// }
 	// //======Check Vendor ID & Product ID=======
 	// if((DevDscr.VendorID != DW_VID) || (DevDscr.ProductID != DW_PID))
@@ -143,7 +143,7 @@ BOOL VLFD_AppOpen(int iBoard, const char *  SerialNo)
 	// 		PrintErrorMsg(iBoard, "This SMIMS USB Device can not use this SDK.");
 	// 		CloseHandle( hUSBDeviceHandle[ iBoard ] );
 	// 		hUSBDeviceHandle[ iBoard ] = NULL;
-	// 		return FALSE;
+	// 		return false;
 	// }
 
 	//= Read SMIMS Encrypt Table ========
@@ -152,7 +152,7 @@ BOOL VLFD_AppOpen(int iBoard, const char *  SerialNo)
 		PrintErrorMsg(iBoard, "Read Encrypt Table error.");
 		SMIMS_DriverClose( hUSBDeviceHandle[ iBoard ] );
 		hUSBDeviceHandle[ iBoard ] = NULL;
-		return FALSE;
+		return false;
 	}
 
 	//= Decode Encrypt Table ================
@@ -164,11 +164,11 @@ BOOL VLFD_AppOpen(int iBoard, const char *  SerialNo)
 		PrintErrorMsg(iBoard, "Read configuration space error.");
 		SMIMS_DriverClose( hUSBDeviceHandle[ iBoard ] );
 		hUSBDeviceHandle[ iBoard ] = NULL;
-		return FALSE;
+		return false;
 	}
 
 	// Decrypt data
-	SMIMS_DecryptCopy(CFGSpace[ iBoard ].CFG, EncryptCFG.CFG, sizeof(CFGSpace[ iBoard ]) / sizeof(WORD), EncryptTable[ iBoard ], &decindex[ iBoard ]);
+	SMIMS_DecryptCopy(CFGSpace[ iBoard ].CFG, EncryptCFG.CFG, sizeof(CFGSpace[ iBoard ]) / sizeof(uint16_t), EncryptTable[ iBoard ], &decindex[ iBoard ]);
 
 	//= Check SMIMS Engine version =============================
 	if(SMIMS_Version(&CFGSpace[ iBoard ]) < SMIMS_VERSION)
@@ -176,7 +176,7 @@ BOOL VLFD_AppOpen(int iBoard, const char *  SerialNo)
 		PrintErrorMsg(iBoard, "Version error.");
 		SMIMS_DriverClose( hUSBDeviceHandle[ iBoard ] );
 		hUSBDeviceHandle[ iBoard ] = NULL;
-		return FALSE;
+		return false;
 	}
 
 	//= Check FPGA Program =======
@@ -185,7 +185,7 @@ BOOL VLFD_AppOpen(int iBoard, const char *  SerialNo)
 		PrintErrorMsg(iBoard, "FPGA does not program!");
 		SMIMS_DriverClose( hUSBDeviceHandle[ iBoard ] );
 		hUSBDeviceHandle[ iBoard ] = NULL;
-		return FALSE;
+		return false;
 	}
 
 	//= Check AppMode Ability =======
@@ -194,21 +194,21 @@ BOOL VLFD_AppOpen(int iBoard, const char *  SerialNo)
 		PrintErrorMsg(iBoard, "Not support VeriSDK mode!");
 		SMIMS_DriverClose( hUSBDeviceHandle[ iBoard ] );
 		hUSBDeviceHandle[ iBoard ] = NULL;
-		return FALSE;
+		return false;
 	}
 
 	//= Set License Key =============================
-	WORD SecurityKey = SMIMS_GetSecurityKey(&CFGSpace[ iBoard ]);
-	WORD LicenseKey = SMIMS_LicenseGen(SecurityKey, wCID);
+	uint16_t SecurityKey = SMIMS_GetSecurityKey(&CFGSpace[ iBoard ]);
+	uint16_t LicenseKey = SMIMS_LicenseGen(SecurityKey, wCID);
 
 	SMIMS_SetLicenseKey(&CFGSpace[ iBoard ], LicenseKey);
 
-	SMIMS_SetVeriComm_ClockCheck(&CFGSpace[ iBoard ], FALSE);  // disable regular clock check
+	SMIMS_SetVeriComm_ClockCheck(&CFGSpace[ iBoard ], false);  // disable regular clock check
 	SMIMS_SetModeSelector(&CFGSpace[ iBoard ], 0x01);          // Set SMIMS Engine I/O to AppSlaveFIFO16 Mode
 	SMIMS_SetVeriSDK_ChannelSelector(&CFGSpace[ iBoard ], 0);    // Set VeriSDK Channel = 0
 
 	// Encrypt data
-	SMIMS_EncryptCopy(EncryptCFG.CFG, CFGSpace[ iBoard ].CFG, sizeof(CFGSpace[ iBoard ]) / sizeof(WORD), EncryptTable[ iBoard ], &encindex[ iBoard ]);
+	SMIMS_EncryptCopy(EncryptCFG.CFG, CFGSpace[ iBoard ].CFG, sizeof(CFGSpace[ iBoard ]) / sizeof(uint16_t), EncryptTable[ iBoard ], &encindex[ iBoard ]);
 
 	//= Write back to SMIMS Engine Register File ====
 	if(!SMIMS_CFGSpaceWrite(hUSBDeviceHandle[ iBoard ], &EncryptCFG))
@@ -216,7 +216,7 @@ BOOL VLFD_AppOpen(int iBoard, const char *  SerialNo)
 		PrintErrorMsg(iBoard, "Write configuration space error.");
 		SMIMS_DriverClose( hUSBDeviceHandle[ iBoard ] );
 		hUSBDeviceHandle[ iBoard ] = NULL;
-		return FALSE;
+		return false;
 	}
 
 	//= Send command, Active Application Mode ====
@@ -225,7 +225,7 @@ BOOL VLFD_AppOpen(int iBoard, const char *  SerialNo)
 		PrintErrorMsg(iBoard, "Send SMIMS_AppSlaveFIFO16Active error.");
 		SMIMS_DriverClose( hUSBDeviceHandle[ iBoard ] );
 		hUSBDeviceHandle[ iBoard ] = NULL;
-		return FALSE;
+		return false;
 	}
 
 	//
@@ -238,17 +238,17 @@ BOOL VLFD_AppOpen(int iBoard, const char *  SerialNo)
 	// 	sprintf(ErrorMsg[iBoard] ,"Can not open SMIMS VLX2-%d USB Device  hUSBDeviceHandle_Read.", iBoard);
 	// 	SMIMS_DriverClose( hUSBDeviceHandle[ iBoard ] );
 	// 	hUSBDeviceHandle[ iBoard ] = NULL;
-	// 	return FALSE;
+	// 	return false;
 	// }
 
-	return TRUE;
+	return true;
 }
 
-BOOL VLFD_IO_Open(int iBoard, const char* SerialNo)
+bool VLFD_IO_Open(int iBoard, const char* SerialNo)
 {
 	SMIMS_CFGSpace EncryptCFG;
 	char cCID[5];
-	WORD wCID;
+	uint16_t wCID;
 	char VLFDName[10];
 
 	memset(cCID, 0, 5);
@@ -257,20 +257,20 @@ BOOL VLFD_IO_Open(int iBoard, const char* SerialNo)
 	if (iBoard >= FUDAN_FPGA_NUM)
 	{
 		PrintErrorMsg(iBoard, "Exceed max board count.");
-		return FALSE;
+		return false;
 	}
 
 	//Check If correct Serial Number
 	if (!CheckSerialNO(SerialNo, cCID))
 	{
 		PrintErrorMsg(iBoard, "Illegal Serial Number!");
-		return FALSE;
+		return false;
 	}
 
 	if (hUSBDeviceHandle[iBoard] != NULL)
 	{
 		PrintErrorMsg(iBoard, "Already Open this Board!");
-		return FALSE;
+		return false;
 	}
 
 	wCID = ConvertToWORD(cCID);
@@ -279,7 +279,7 @@ BOOL VLFD_IO_Open(int iBoard, const char* SerialNo)
 	if (hUSBDeviceHandle[iBoard] == NULL)
 	{
 		sprintf(ErrorMsg[iBoard], "Can not open SMIMS FUDAN[%d] USB Device.", iBoard);
-		return FALSE;
+		return false;
 	}
 
 	//= Read SMIMS Encrypt Table ========
@@ -288,7 +288,7 @@ BOOL VLFD_IO_Open(int iBoard, const char* SerialNo)
 		PrintErrorMsg(iBoard, "Read Encrypt Table error.");
 		SMIMS_DriverClose(hUSBDeviceHandle[iBoard]);
 		hUSBDeviceHandle[iBoard] = NULL;
-		return FALSE;
+		return false;
 	}
 
 	//= Decode Encrypt Table ================
@@ -300,11 +300,11 @@ BOOL VLFD_IO_Open(int iBoard, const char* SerialNo)
 		PrintErrorMsg(iBoard, "Read configuration space error.");
 		SMIMS_DriverClose(hUSBDeviceHandle[iBoard]);
 		hUSBDeviceHandle[iBoard] = NULL;
-		return FALSE;
+		return false;
 	}
 
 	// Decrypt data
-	SMIMS_DecryptCopy(CFGSpace[iBoard].CFG, EncryptCFG.CFG, sizeof(CFGSpace[iBoard]) / sizeof(WORD), EncryptTable[iBoard], &decindex[iBoard]);
+	SMIMS_DecryptCopy(CFGSpace[iBoard].CFG, EncryptCFG.CFG, sizeof(CFGSpace[iBoard]) / sizeof(uint16_t), EncryptTable[iBoard], &decindex[iBoard]);
 
 	//= Check SMIMS Engine version =============================
 	if (SMIMS_Version(&CFGSpace[iBoard]) < SMIMS_VERSION)
@@ -312,7 +312,7 @@ BOOL VLFD_IO_Open(int iBoard, const char* SerialNo)
 		PrintErrorMsg(iBoard, "Version error.");
 		SMIMS_DriverClose(hUSBDeviceHandle[iBoard]);
 		hUSBDeviceHandle[iBoard] = NULL;
-		return FALSE;
+		return false;
 	}
 
 	//= Check FPGA Program =======
@@ -321,7 +321,7 @@ BOOL VLFD_IO_Open(int iBoard, const char* SerialNo)
 		PrintErrorMsg(iBoard, "FPGA does not program!");
 		SMIMS_DriverClose(hUSBDeviceHandle[iBoard]);
 		hUSBDeviceHandle[iBoard] = NULL;
-		return FALSE;
+		return false;
 	}
 
 	//= Check VeriComm Mode Ability =======
@@ -330,12 +330,12 @@ BOOL VLFD_IO_Open(int iBoard, const char* SerialNo)
 		PrintErrorMsg(iBoard, "Not support VeriComm mode!");
 		SMIMS_DriverClose(hUSBDeviceHandle[iBoard]);
 		hUSBDeviceHandle[iBoard] = NULL;
-		return FALSE;
+		return false;
 	}
 
 	//= Set License Key =============================
-	WORD SecurityKey = SMIMS_GetSecurityKey(&CFGSpace[iBoard]);
-	WORD LicenseKey = SMIMS_LicenseGen(SecurityKey, wCID);
+	uint16_t SecurityKey = SMIMS_GetSecurityKey(&CFGSpace[iBoard]);
+	uint16_t LicenseKey = SMIMS_LicenseGen(SecurityKey, wCID);
 
 	SMIMS_SetLicenseKey(&CFGSpace[iBoard], LicenseKey);
 
@@ -346,17 +346,17 @@ BOOL VLFD_IO_Open(int iBoard, const char* SerialNo)
 	SMIMS_SetVeriComm_ClockHighDelay(&CFGSpace[iBoard], clock_high_delay);
 	SMIMS_SetVeriComm_ClockLowDelay(&CFGSpace[iBoard], clock_low_delay);
 	SMIMS_SetVeriComm_ISV(&CFGSpace[iBoard], 0);
-	SMIMS_SetVeriComm_ClockCheck(&CFGSpace[iBoard], FALSE);  // disable regular clock check
+	SMIMS_SetVeriComm_ClockCheck(&CFGSpace[iBoard], false);  // disable regular clock check
 	SMIMS_SetModeSelector(&CFGSpace[iBoard], 0);  // Set SMIMS Engine I/O to VeriComm Mode
 	//=========================
 	// SDK
-	//SMIMS_SetVeriComm_ClockCheck(&CFGSpace[ iBoard ], FALSE);  // disable regular clock check
+	//SMIMS_SetVeriComm_ClockCheck(&CFGSpace[ iBoard ], false);  // disable regular clock check
 	//SMIMS_SetModeSelector(&CFGSpace[ iBoard ], 0x01);          // Set SMIMS Engine I/O to AppSlaveFIFO16 Mode
 	//SMIMS_SetVeriSDK_ChannelSelector(&CFGSpace[ iBoard ], 0);    // Set VeriSDK Channel = 0
 	//=========================
 
 	// Encrypt data
-	SMIMS_EncryptCopy(EncryptCFG.CFG, CFGSpace[iBoard].CFG, sizeof(CFGSpace[iBoard]) / sizeof(WORD), EncryptTable[iBoard], &encindex[iBoard]);
+	SMIMS_EncryptCopy(EncryptCFG.CFG, CFGSpace[iBoard].CFG, sizeof(CFGSpace[iBoard]) / sizeof(uint16_t), EncryptTable[iBoard], &encindex[iBoard]);
 
 	//= Write back to SMIMS Engine Register File ====
 	if (!SMIMS_CFGSpaceWrite(hUSBDeviceHandle[iBoard], &EncryptCFG))
@@ -364,7 +364,7 @@ BOOL VLFD_IO_Open(int iBoard, const char* SerialNo)
 		PrintErrorMsg(iBoard, "Write configuration space error.");
 		SMIMS_DriverClose(hUSBDeviceHandle[iBoard]);
 		hUSBDeviceHandle[iBoard] = NULL;
-		return FALSE;
+		return false;
 	}
 
 	// Send command, Active VeriComm module
@@ -373,36 +373,36 @@ BOOL VLFD_IO_Open(int iBoard, const char* SerialNo)
 		PrintErrorMsg(iBoard, "Can not Active VeriComm module.");
 		SMIMS_DriverClose(hUSBDeviceHandle[iBoard]);
 		hUSBDeviceHandle[iBoard] = NULL;
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
-BOOL VLFD_AppFIFOReadData(int iBoard, WORD *Buffer, unsigned size)
+bool VLFD_AppFIFOReadData(int iBoard, uint16_t *Buffer, unsigned size)
 {
 	printf("Yu's Driver VLFD_AppFIFOReadData");
-	WORD EncryptBuffer[ 4096 ];
-	WORD * pEncryptBuffer;
+	uint16_t EncryptBuffer[ 4096 ];
+	uint16_t * pEncryptBuffer;
 	bool bNeedRelease;
 
 	if ( iBoard >= FUDAN_FPGA_NUM )
 	{
 		PrintErrorMsg(iBoard,"Exceed max board count.");
-		return FALSE;
+		return false;
 	}
 
 	//if ( hUSBDeviceHandle_Read[ iBoard ] == NULL )
 	if ( hUSBDeviceHandle[ iBoard ] == NULL )
 	{
 		PrintErrorMsg(iBoard, "SMIMS VLX2 USB is not initialed hUSBDeviceHandle.");
-		return FALSE;
+		return false;
 	}
 
 	if ( size > 4096)
 	{
 		bNeedRelease = true;
-		pEncryptBuffer = new WORD[size];
+		pEncryptBuffer = new uint16_t[size];
 	}
 	else
 	{
@@ -424,33 +424,33 @@ BOOL VLFD_AppFIFOReadData(int iBoard, WORD *Buffer, unsigned size)
 
 		if ( bNeedRelease )
 			delete[] pEncryptBuffer;
-		return TRUE;
+		return true;
 	}
 }
 
-BOOL VLFD_AppFIFOWriteData(int iBoard, WORD *Buffer, unsigned size)
+bool VLFD_AppFIFOWriteData(int iBoard, uint16_t *Buffer, unsigned size)
 {
 	//printf("Yu's Driver VLFD_AppFIFOWriteData");
-	WORD EncryptBuffer[ 4096 ];
-	WORD * pEncryptBuffer;
+	uint16_t EncryptBuffer[ 4096 ];
+	uint16_t * pEncryptBuffer;
 	bool bNeedRelease;
 
 	if ( iBoard >= FUDAN_FPGA_NUM )
 	{
 		PrintErrorMsg(iBoard, "Exceed max board count.");
-		return FALSE;
+		return false;
 	}
 
 	if ( hUSBDeviceHandle[ iBoard ] == NULL )
 	{
 		PrintErrorMsg(iBoard, "SMIMS VLX2 USB is not initialed.");
-		return FALSE;
+		return false;
 	}
 
 	if ( size > 4096)
 	{
 		bNeedRelease = true;
-		pEncryptBuffer = new WORD[size];
+		pEncryptBuffer = new uint16_t[size];
 	}
 	else
 	{
@@ -475,22 +475,22 @@ BOOL VLFD_AppFIFOWriteData(int iBoard, WORD *Buffer, unsigned size)
 	}
 }
 
-BOOL VLFD_IO_WriteReadData(int iBoard, WORD* WriteBuffer, WORD* ReadBuffer, unsigned size)
+bool VLFD_IO_WriteReadData(int iBoard, uint16_t* WriteBuffer, uint16_t* ReadBuffer, unsigned size)
 {
-	WORD EncryptBuffer[8192];
+	uint16_t EncryptBuffer[8192];
 	int iNowPos = 0;
 
 	if (iBoard >= FUDAN_FPGA_NUM)
 	{
 		PrintErrorMsg(iBoard, "Exceed max board count.");
-		return FALSE;
+		return false;
 	}
 
 	//if ( hUSBDeviceHandle_Read[ iBoard ] == NULL )
 	if (hUSBDeviceHandle[iBoard] == NULL)
 	{
 		PrintErrorMsg(iBoard, "SMIMS Fudan USB is not initialed hUSBDeviceHandle.");
-		return FALSE;
+		return false;
 	}
 
 	if (size > DATA_PER_TIMES_WORD_DATA_SIZE)
@@ -524,7 +524,7 @@ BOOL VLFD_IO_WriteReadData(int iBoard, WORD* WriteBuffer, WORD* ReadBuffer, unsi
 	return true;
 }
 
-BOOL VLFD_AppChannelSelector(int iBoard, BYTE channel)
+bool VLFD_AppChannelSelector(int iBoard, BYTE channel)
 {
 	printf("Yu's Driver VLFD_AppChannelSelector");
 	SMIMS_CFGSpace EncryptCFG;
@@ -532,56 +532,56 @@ BOOL VLFD_AppChannelSelector(int iBoard, BYTE channel)
 	if ( iBoard >= FUDAN_FPGA_NUM )
 	{
 		PrintErrorMsg(iBoard, "Exceed max board count.");
-		return FALSE;
+		return false;
 	}
 
 	if ( hUSBDeviceHandle[ iBoard ] == NULL )
 	{
 		PrintErrorMsg(iBoard, "SMIMS VLX2 USB is not initialed.");
-		return FALSE;
+		return false;
 	}
 
 	// 結束 Application Mode, 將 VLX2 設定為 “命令模式”
 	if(!SMIMS_CommandActive( hUSBDeviceHandle[ iBoard ] ))
 	{
 		PrintErrorMsg(iBoard, "Send SMIMS_CommandActive error.");
-		return FALSE;
+		return false;
 	}
 
 	//= Write to CFG Space ========================
-	SMIMS_SetVeriComm_ClockCheck(&CFGSpace[ iBoard ], FALSE);  // disable regular clock check
+	SMIMS_SetVeriComm_ClockCheck(&CFGSpace[ iBoard ], false);  // disable regular clock check
 	SMIMS_SetModeSelector(&CFGSpace[ iBoard ], 0x01);          // Set SMIMS Engine I/O to AppSlaveFIFO16 Mode
 	SMIMS_SetVeriSDK_ChannelSelector(&CFGSpace[ iBoard ], channel);    // Set AppChannel = channel
 
 	// Encrypt data
-	SMIMS_EncryptCopy(EncryptCFG.CFG, CFGSpace[ iBoard ].CFG, sizeof(CFGSpace[ iBoard ]) / sizeof(WORD), EncryptTable[ iBoard ], &encindex[ iBoard ]);
+	SMIMS_EncryptCopy(EncryptCFG.CFG, CFGSpace[ iBoard ].CFG, sizeof(CFGSpace[ iBoard ]) / sizeof(uint16_t), EncryptTable[ iBoard ], &encindex[ iBoard ]);
 
 	if(!SMIMS_CFGSpaceWrite(hUSBDeviceHandle[ iBoard ], &EncryptCFG))
 	{
 		PrintErrorMsg(iBoard, "Write VLX2 configuration space error.");
-		return FALSE;
+		return false;
 	}
 
 	//= Send command, Active SMIMS_VeriSDKActive module =============
 	if(!SMIMS_VeriSDKActive(hUSBDeviceHandle[ iBoard ]))
 	{
 		PrintErrorMsg(iBoard, "Send VLX2 command error.");
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
-BOOL VLFD_AppClose(int iBoard)
+bool VLFD_AppClose(int iBoard)
 {
 	printf("Yu's Driver VLFD_AppClose");
 	if ( iBoard >= FUDAN_FPGA_NUM )
 	{
 		PrintErrorMsg(iBoard, "Exceed max board count.");
-		return FALSE;
+		return false;
 	}
 
 	if ( hUSBDeviceHandle[ iBoard ] == NULL )
-		return TRUE;
+		return true;
 
 	// 結束 Application Mode, 將 VeriEnterprise 設定為 “命令模式”  (Note 2)
 	if(!SMIMS_CommandActive( hUSBDeviceHandle[ iBoard ] ))
@@ -591,39 +591,39 @@ BOOL VLFD_AppClose(int iBoard)
 		//SMIMS_DriverClose( hUSBDeviceHandle_Read[ iBoard ] );
 		hUSBDeviceHandle[ iBoard ] = NULL;
 		//hUSBDeviceHandle_Read[ iBoard ] = NULL;
-		return FALSE;
+		return false;
 	}
 
 	if ( SMIMS_DriverClose( hUSBDeviceHandle[ iBoard ] ) == 0 )
 	{
 		PrintErrorMsg(iBoard, "Can not close USB Handle");
 		hUSBDeviceHandle[ iBoard ] = NULL;
-		return FALSE;
+		return false;
 	}
 
 	// if ( SMIMS_DriverClose( hUSBDeviceHandle_Read[ iBoard ] ) == 0 )
 	// {
 	// 	PrintErrorMsg(iBoard, "Can not close USB Handle_Read");
 	// 	hUSBDeviceHandle_Read[ iBoard ] = NULL;
-	// 	return FALSE;
+	// 	return false;
 	// }
 
 	hUSBDeviceHandle[ iBoard ] = NULL;
 	//hUSBDeviceHandle_Read[ iBoard ] = NULL;
-	return TRUE;
+	return true;
 }
 
 
-BOOL VLFD_IO_Close(int iBoard)
+bool VLFD_IO_Close(int iBoard)
 {
 	if (iBoard >= FUDAN_FPGA_NUM)
 	{
 		PrintErrorMsg(iBoard, "Exceed max board count.");
-		return FALSE;
+		return false;
 	}
 
 	if (hUSBDeviceHandle[iBoard] == NULL)
-		return TRUE;
+		return true;
 
 	// 結束 Application Mode, 將 VeriEnterprise 設定為 “命令模式”  (Note 2)
 	if (!SMIMS_CommandActive(hUSBDeviceHandle[iBoard]))
@@ -631,18 +631,18 @@ BOOL VLFD_IO_Close(int iBoard)
 		PrintErrorMsg(iBoard, "Send SMIMS_CommandActive error.");
 		SMIMS_DriverClose(hUSBDeviceHandle[iBoard]);
 		hUSBDeviceHandle[iBoard] = NULL;
-		return FALSE;
+		return false;
 	}
 
 	if (SMIMS_DriverClose(hUSBDeviceHandle[iBoard]) == 0)
 	{
 		PrintErrorMsg(iBoard, "Can not close USB Handle");
 		hUSBDeviceHandle[iBoard] = NULL;
-		return FALSE;
+		return false;
 	}
 
 	hUSBDeviceHandle[iBoard] = NULL;
-	return TRUE;
+	return true;
 }
 
 //---------------------------------------------------------------------------

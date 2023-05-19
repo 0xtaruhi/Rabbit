@@ -36,12 +36,12 @@ private:
 
 	std::fstream fi;
 	USB_HANDLE hDevice;
-    WORD BlockSize;
-	WORD *Buffer;
+    uint16_t BlockSize;
+	uint16_t *Buffer;
 	//char g_szUSBDev[128];
 
 	struct SMIMS_CFGSpace CFGSpace, EncryptCFG;
-    WORD EncryptTable[32];
+    uint16_t EncryptTable[32];
 	unsigned encindex, decindex;
 
     unsigned j;

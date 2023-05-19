@@ -22,11 +22,11 @@
 
 
 
-USB_HANDLE usb_device_open(WORD VID, WORD PID, INT devnum);
-BOOL usb_device_close(USB_HANDLE dev_handle);
-INT usb_get_device_descriptor(USB_HANDLE dev_handle, struct libusb_device_descriptor* dev_dscr);
+USB_HANDLE usb_device_open(uint16_t VID, uint16_t PID, int devnum);
+bool usb_device_close(USB_HANDLE dev_handle);
+int usb_get_device_descriptor(USB_HANDLE dev_handle, struct libusb_device_descriptor* dev_dscr);
 
-BOOL SMIMS_WriteUSB(USB_HANDLE dev_handle, INT EndPoint, VOID *Buffer, INT Size);
-BOOL SMIMS_ReadUSB(USB_HANDLE dev_handle, INT EndPoint, VOID *Buffer, INT Size);
+bool SMIMS_WriteUSB(USB_HANDLE dev_handle, int EndPoint, void *Buffer, int Size);
+bool SMIMS_ReadUSB(USB_HANDLE dev_handle, int EndPoint, void *Buffer, int Size);
 
 #endif

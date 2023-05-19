@@ -5,10 +5,10 @@
 
 //=============================================================
 
-USB_HANDLE SMIMS_DriverOpen(const CHAR *devname, INT devnum)
+USB_HANDLE SMIMS_DriverOpen(const char *devname, int devnum)
 {
-	WORD VID = 0x2200;
-	WORD PID;
+	uint16_t VID = 0x2200;
+	uint16_t PID;
 
 	if(strcmp(devname, "VLX2") == 0)
 		PID = 0x2008;
@@ -27,49 +27,49 @@ USB_HANDLE SMIMS_DriverOpen(const CHAR *devname, INT devnum)
 	return usb_device_open(VID, PID, devnum);
 }
 
-BOOL SMIMS_DriverClose(USB_HANDLE dev_handle)
+bool SMIMS_DriverClose(USB_HANDLE dev_handle)
 {
 	return usb_device_close(dev_handle);
 }
 
-BOOL SMIMS_EngineReset(USB_HANDLE dev_handle)
+bool SMIMS_EngineReset(USB_HANDLE dev_handle)
 {
 	BYTE Command;
 
 	Command = 0x02;
 	if(!SMIMS_WriteUSB(dev_handle, EP4, &Command, sizeof(BYTE)))
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
 //============ Encrypt API ==============
 
-BOOL SMIMS_EncryptTableRead(USB_HANDLE dev_handle, WORD *EncryptTBL)
+bool SMIMS_EncryptTableRead(USB_HANDLE dev_handle, uint16_t *EncryptTBL)
 {
 	BYTE Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
-		return FALSE;
+		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x0f;
 	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
-		return FALSE;
+		return false;
 
-	if(!SMIMS_ReadUSB(dev_handle, EP6, EncryptTBL, 32*sizeof(WORD)))
-		return FALSE;
+	if(!SMIMS_ReadUSB(dev_handle, EP6, EncryptTBL, 32*sizeof(uint16_t)))
+		return false;
 
 	if(!SMIMS_CommandActive(dev_handle))
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
-VOID SMIMS_EncryptTableDecode(WORD *EncryptTBL, UINT *encindex, UINT *decindex)
+void SMIMS_EncryptTableDecode(uint16_t *EncryptTBL, unsigned int *encindex, unsigned int *decindex)
 {
-	UINT i;
-	WORD temp;
+	unsigned int i;
+	uint16_t temp;
 
 	EncryptTBL[0] = ~EncryptTBL[0];
 	temp = EncryptTBL[0];
@@ -84,10 +84,10 @@ VOID SMIMS_EncryptTableDecode(WORD *EncryptTBL, UINT *encindex, UINT *decindex)
 	*decindex = 0;
 }
 
-VOID SMIMS_EncryptData(WORD *dataptr, UINT Length, WORD *EncryptTBL, UINT *encindex)
+void SMIMS_EncryptData(uint16_t *dataptr, unsigned int Length, uint16_t *EncryptTBL, unsigned int *encindex)
 {
-	UINT i = 0;
-	UINT j = *encindex;
+	unsigned int i = 0;
+	unsigned int j = *encindex;
 
 	while(i < Length)
 	{
@@ -98,11 +98,11 @@ VOID SMIMS_EncryptData(WORD *dataptr, UINT Length, WORD *EncryptTBL, UINT *encin
 	*encindex = j;
 }
 
-VOID SMIMS_DecryptData(WORD *dataptr, UINT Length, WORD *EncryptTBL, UINT *decindex)
+void SMIMS_DecryptData(uint16_t *dataptr, unsigned int Length, uint16_t *EncryptTBL, unsigned int *decindex)
 {
-	UINT i = 0;
-	UINT j = *decindex;
-	WORD *encptr = EncryptTBL + 16;
+	unsigned int i = 0;
+	unsigned int j = *decindex;
+	uint16_t *encptr = EncryptTBL + 16;
 
 	while(i < Length)
 	{
@@ -113,10 +113,10 @@ VOID SMIMS_DecryptData(WORD *dataptr, UINT Length, WORD *EncryptTBL, UINT *decin
 	*decindex = j;
 }
 
-VOID SMIMS_EncryptCopy(WORD *dst, WORD *src, UINT Length, WORD *EncryptTBL, UINT *encindex)
+void SMIMS_EncryptCopy(uint16_t *dst, uint16_t *src, unsigned int Length, uint16_t *EncryptTBL, unsigned int *encindex)
 {
-	UINT i = 0;
-	UINT j = *encindex;
+	unsigned int i = 0;
+	unsigned int j = *encindex;
 
 	while(i < Length)
 	{
@@ -129,11 +129,11 @@ VOID SMIMS_EncryptCopy(WORD *dst, WORD *src, UINT Length, WORD *EncryptTBL, UINT
 	*encindex = j;
 }
 
-VOID SMIMS_DecryptCopy(WORD *dst, WORD *src, UINT Length, WORD *EncryptTBL, UINT *decindex)
+void SMIMS_DecryptCopy(uint16_t *dst, uint16_t *src, unsigned int Length, uint16_t *EncryptTBL, unsigned int *decindex)
 {
-	UINT i = 0;
-	UINT j = *decindex;
-	WORD *encptr = EncryptTBL + 16;
+	unsigned int i = 0;
+	unsigned int j = *decindex;
+	uint16_t *encptr = EncryptTBL + 16;
 
 	while(i < Length)
 	{
@@ -146,11 +146,11 @@ VOID SMIMS_DecryptCopy(WORD *dst, WORD *src, UINT Length, WORD *EncryptTBL, UINT
 	*decindex = j;
 }
 
-WORD SMIMS_LicenseGen(WORD SecurityKey, WORD CustomerID)
+uint16_t SMIMS_LicenseGen(uint16_t SecurityKey, uint16_t CustomerID)
 {
 	DWORD temp = 0;
-	WORD i = SecurityKey & 0x0003;
-	WORD j = (CustomerID & 0x000f) << 4;
+	uint16_t i = SecurityKey & 0x0003;
+	uint16_t j = (CustomerID & 0x000f) << 4;
 
 	j >>= i;
 	j = (j >> 4) | (j & 0x000f);
@@ -175,262 +175,262 @@ WORD SMIMS_LicenseGen(WORD SecurityKey, WORD CustomerID)
 	temp |= (j << 28);
 
 	temp >>= 11;
-	i = (WORD) ~((temp >> 16) | (temp & 0x0000ffff));
+	i = (uint16_t) ~((temp >> 16) | (temp & 0x0000ffff));
 
 	return i;
 }
 
 //============ Data Transfer API ==============
 
-BOOL SMIMS_FIFO_Write(USB_HANDLE dev_handle, WORD *ptr, INT Length)
+bool SMIMS_FIFO_Write(USB_HANDLE dev_handle, uint16_t *ptr, int Length)
 {
-	if(!SMIMS_WriteUSB(dev_handle, EP2, ptr, Length*sizeof(WORD)))
-		return FALSE;
-	return TRUE;
+	if(!SMIMS_WriteUSB(dev_handle, EP2, ptr, Length*sizeof(uint16_t)))
+		return false;
+	return true;
 }
 
-BOOL SMIMS_FIFO_Read(USB_HANDLE dev_handle, WORD *ptr, INT Length)
+bool SMIMS_FIFO_Read(USB_HANDLE dev_handle, uint16_t *ptr, int Length)
 {
-	if(!SMIMS_ReadUSB(dev_handle, EP6, ptr, Length*sizeof(WORD)))
-		return FALSE;
-	return TRUE;
+	if(!SMIMS_ReadUSB(dev_handle, EP6, ptr, Length*sizeof(uint16_t)))
+		return false;
+	return true;
 }
 
 //============ Command API ==============
 
-BOOL SMIMS_SyncDelay(USB_HANDLE dev_handle)
+bool SMIMS_SyncDelay(USB_HANDLE dev_handle)
 {
 	BYTE Command;
 
 	do{
 		Command = 0x00;
 		if(!SMIMS_WriteUSB(dev_handle, EP4, &Command, sizeof(BYTE)))
-			return FALSE;
+			return false;
 
 		if(!SMIMS_ReadUSB(dev_handle, EP8, &Command, sizeof(BYTE)))
-			return FALSE;
+			return false;
 	} while(!Command);
-
-	return TRUE;
-}
-
-BOOL SMIMS_CommandActive(USB_HANDLE dev_handle)
-{
-	BYTE Command[2];
-
-	if (!SMIMS_SyncDelay(dev_handle))
-		return FALSE;
-
-	Command[0] = 0x01;
-	Command[1] = 0x00;
-	if (!SMIMS_WriteUSB(dev_handle, EP4, Command, 2 * sizeof(BYTE)))
-		return FALSE;
-
-	return TRUE;
-}
-
-BOOL SMIMS_CFGSpaceRead(USB_HANDLE dev_handle, struct SMIMS_CFGSpace *pCFGSpace)
-{
-	BYTE Command[2];
-
-	if(!SMIMS_SyncDelay(dev_handle))
-		return FALSE;
-
-	Command[0] = 0x01;
-	Command[1] = 0x01;
-	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
-		return FALSE;
-
-	if(!SMIMS_ReadUSB(dev_handle, EP6, pCFGSpace, sizeof(SMIMS_CFGSpace)))
-		return FALSE;
-
-	if(!SMIMS_CommandActive(dev_handle))
-		return FALSE;
-
-	return TRUE;
-}
-
-BOOL SMIMS_CFGSpaceWrite(USB_HANDLE dev_handle, struct SMIMS_CFGSpace *pCFGSpace)
-{
-	BYTE Command[2];
-
-	if(!SMIMS_SyncDelay(dev_handle))
-		return FALSE;
-
-	Command[0] = 0x01;
-	Command[1] = 0x11;
-	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
-		return FALSE;
-
-	if(!SMIMS_WriteUSB(dev_handle, EP2, pCFGSpace, sizeof(SMIMS_CFGSpace)))
-		return FALSE;
-
-	if(!SMIMS_CommandActive(dev_handle))
-		return FALSE;
 
 	return true;
 }
 
-BOOL SMIMS_FPGAProgrammerActive(USB_HANDLE dev_handle)
+bool SMIMS_CommandActive(USB_HANDLE dev_handle)
+{
+	BYTE Command[2];
+
+	if (!SMIMS_SyncDelay(dev_handle))
+		return false;
+
+	Command[0] = 0x01;
+	Command[1] = 0x00;
+	if (!SMIMS_WriteUSB(dev_handle, EP4, Command, 2 * sizeof(BYTE)))
+		return false;
+
+	return true;
+}
+
+bool SMIMS_CFGSpaceRead(USB_HANDLE dev_handle, struct SMIMS_CFGSpace *pCFGSpace)
 {
 	BYTE Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
-		return FALSE;
+		return false;
+
+	Command[0] = 0x01;
+	Command[1] = 0x01;
+	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
+		return false;
+
+	if(!SMIMS_ReadUSB(dev_handle, EP6, pCFGSpace, sizeof(SMIMS_CFGSpace)))
+		return false;
+
+	if(!SMIMS_CommandActive(dev_handle))
+		return false;
+
+	return true;
+}
+
+bool SMIMS_CFGSpaceWrite(USB_HANDLE dev_handle, struct SMIMS_CFGSpace *pCFGSpace)
+{
+	BYTE Command[2];
+
+	if(!SMIMS_SyncDelay(dev_handle))
+		return false;
+
+	Command[0] = 0x01;
+	Command[1] = 0x11;
+	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
+		return false;
+
+	if(!SMIMS_WriteUSB(dev_handle, EP2, pCFGSpace, sizeof(SMIMS_CFGSpace)))
+		return false;
+
+	if(!SMIMS_CommandActive(dev_handle))
+		return false;
+
+	return true;
+}
+
+bool SMIMS_FPGAProgrammerActive(USB_HANDLE dev_handle)
+{
+	BYTE Command[2];
+
+	if(!SMIMS_SyncDelay(dev_handle))
+		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x02;
 	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
-BOOL SMIMS_VeriCommActive(USB_HANDLE dev_handle)
+bool SMIMS_VeriCommActive(USB_HANDLE dev_handle)
 {
 	BYTE Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
-		return FALSE;
+		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x03;
 	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
-BOOL SMIMS_VeriInstrumentActive(USB_HANDLE dev_handle)
+bool SMIMS_VeriInstrumentActive(USB_HANDLE dev_handle)
 {
 	BYTE Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
-		return FALSE;
+		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x08;
 	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
-BOOL SMIMS_VeriLinkActive(USB_HANDLE dev_handle)
+bool SMIMS_VeriLinkActive(USB_HANDLE dev_handle)
 {
 	BYTE Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
-		return FALSE;
+		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x09;
 	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
-BOOL SMIMS_VeriSoCActive(USB_HANDLE dev_handle)
+bool SMIMS_VeriSoCActive(USB_HANDLE dev_handle)
 {
 	BYTE Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
-		return FALSE;
+		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x0a;
 	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
-BOOL SMIMS_VeriCommProActive(USB_HANDLE dev_handle)
+bool SMIMS_VeriCommProActive(USB_HANDLE dev_handle)
 {
 	BYTE Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
-		return FALSE;
+		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x0b;
 	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
-BOOL SMIMS_VeriSDKActive(USB_HANDLE dev_handle)
+bool SMIMS_VeriSDKActive(USB_HANDLE dev_handle)
 {
 	BYTE Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
-		return FALSE;
+		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x04;
 	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
-BOOL SMIMS_FlashReadActive(USB_HANDLE dev_handle)
+bool SMIMS_FlashReadActive(USB_HANDLE dev_handle)
 {
 	BYTE Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
-		return FALSE;
+		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x05;
 	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
-BOOL SMIMS_FlashWriteActive(USB_HANDLE dev_handle)
+bool SMIMS_FlashWriteActive(USB_HANDLE dev_handle)
 {
 	BYTE Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
-		return FALSE;
+		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x15;
 	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
 //============= Configuration Space API ===============
 
-WORD SMIMS_GetVeriComm_ClockHighDelay(struct SMIMS_CFGSpace *pCFGSpace)
+uint16_t SMIMS_GetVeriComm_ClockHighDelay(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	return pCFGSpace->CFG[0];
 }
 
-WORD SMIMS_GetVeriComm_ClockLowDelay(struct SMIMS_CFGSpace *pCFGSpace)
+uint16_t SMIMS_GetVeriComm_ClockLowDelay(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	return pCFGSpace->CFG[1];
 }
 
 BYTE SMIMS_GetVeriComm_ISV(struct SMIMS_CFGSpace *pCFGSpace)
 {
-	WORD temp = pCFGSpace->CFG[2] >> 4;
+	uint16_t temp = pCFGSpace->CFG[2] >> 4;
 	temp &= 0x000f;
 	return (BYTE) temp;
 }
 
-BOOL SMIMS_IsVeriComm_ClockCheck_Enable(struct SMIMS_CFGSpace *pCFGSpace)
+bool SMIMS_IsVeriComm_ClockCheck_Enable(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	if(pCFGSpace->CFG[2] & 0x0001)
-		return TRUE;
+		return true;
 	else
-		return FALSE;
+		return false;
 }
 
 BYTE SMIMS_GetVeriSDK_ChannelSelector(struct SMIMS_CFGSpace *pCFGSpace)
@@ -443,51 +443,51 @@ BYTE SMIMS_GetModeSelector(struct SMIMS_CFGSpace *pCFGSpace)
 	return pCFGSpace->CFG[3] >> 8;
 }
 
-WORD SMIMS_GetFlashBeginBlockAddr(struct SMIMS_CFGSpace *pCFGSpace)
+uint16_t SMIMS_GetFlashBeginBlockAddr(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	return pCFGSpace->CFG[4];
 }
 
-WORD SMIMS_GetFlashBeginClusterAddr(struct SMIMS_CFGSpace *pCFGSpace)
+uint16_t SMIMS_GetFlashBeginClusterAddr(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	return pCFGSpace->CFG[5];
 }
 
-WORD SMIMS_GetFlashReadEndBlockAddr(struct SMIMS_CFGSpace *pCFGSpace)
+uint16_t SMIMS_GetFlashReadEndBlockAddr(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	return pCFGSpace->CFG[6];
 }
 
-WORD SMIMS_GetFlashReadEndClusterAddr(struct SMIMS_CFGSpace *pCFGSpace)
+uint16_t SMIMS_GetFlashReadEndClusterAddr(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	return pCFGSpace->CFG[7];
 }
 
-WORD SMIMS_GetSecurityKey(struct SMIMS_CFGSpace *pCFGSpace)
+uint16_t SMIMS_GetSecurityKey(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	return pCFGSpace->CFG[31];
 }
 
 //====================================================================
 
-VOID SMIMS_SetVeriComm_ClockHighDelay(struct SMIMS_CFGSpace *pCFGSpace, WORD ClockHighDelay)
+void SMIMS_SetVeriComm_ClockHighDelay(struct SMIMS_CFGSpace *pCFGSpace, uint16_t ClockHighDelay)
 {
 	pCFGSpace->CFG[0] = ClockHighDelay;
 }
 
-VOID SMIMS_SetVeriComm_ClockLowDelay(struct SMIMS_CFGSpace *pCFGSpace, WORD ClockLowDelay)
+void SMIMS_SetVeriComm_ClockLowDelay(struct SMIMS_CFGSpace *pCFGSpace, uint16_t ClockLowDelay)
 {
 	pCFGSpace->CFG[1] = ClockLowDelay;
 }
 
-VOID SMIMS_SetVeriComm_ISV(struct SMIMS_CFGSpace *pCFGSpace, WORD Value)
+void SMIMS_SetVeriComm_ISV(struct SMIMS_CFGSpace *pCFGSpace, uint16_t Value)
 {
-	WORD temp1 = pCFGSpace->CFG[2] & 0x0001;
-	WORD temp2 = (Value << 4) & 0x00f0;
+	uint16_t temp1 = pCFGSpace->CFG[2] & 0x0001;
+	uint16_t temp2 = (Value << 4) & 0x00f0;
 	pCFGSpace->CFG[2] = temp1 | temp2;
 }
 
-VOID SMIMS_SetVeriComm_ClockCheck(struct SMIMS_CFGSpace *pCFGSpace, BOOL Check)
+void SMIMS_SetVeriComm_ClockCheck(struct SMIMS_CFGSpace *pCFGSpace, bool Check)
 {
 	if(Check)
 		pCFGSpace->CFG[2] |= 0x0001;
@@ -495,157 +495,157 @@ VOID SMIMS_SetVeriComm_ClockCheck(struct SMIMS_CFGSpace *pCFGSpace, BOOL Check)
 		pCFGSpace->CFG[2] &= 0xfffe;
 }
 
-VOID SMIMS_SetVeriSDK_ChannelSelector(struct SMIMS_CFGSpace *pCFGSpace, BYTE Select)
+void SMIMS_SetVeriSDK_ChannelSelector(struct SMIMS_CFGSpace *pCFGSpace, BYTE Select)
 {
 	pCFGSpace->CFG[3] &= 0xff00;
 	pCFGSpace->CFG[3] |= Select;
 }
 
-VOID SMIMS_SetModeSelector(struct SMIMS_CFGSpace *pCFGSpace, BYTE Select)
+void SMIMS_SetModeSelector(struct SMIMS_CFGSpace *pCFGSpace, BYTE Select)
 {
 	pCFGSpace->CFG[3] &= 0x00ff;
 	pCFGSpace->CFG[3] |= (Select << 8);
 }
 
-VOID SMIMS_SetFlashBeginBlockAddr(struct SMIMS_CFGSpace *pCFGSpace, WORD Address)
+void SMIMS_SetFlashBeginBlockAddr(struct SMIMS_CFGSpace *pCFGSpace, uint16_t Address)
 {
 	pCFGSpace->CFG[4] = Address;
 }
 
-VOID SMIMS_SetFlashBeginClusterAddr(struct SMIMS_CFGSpace *pCFGSpace, WORD Address)
+void SMIMS_SetFlashBeginClusterAddr(struct SMIMS_CFGSpace *pCFGSpace, uint16_t Address)
 {
 	pCFGSpace->CFG[5] = Address;
 }
 
-VOID SMIMS_SetFlashReadEndBlockAddr(struct SMIMS_CFGSpace *pCFGSpace, WORD Address)
+void SMIMS_SetFlashReadEndBlockAddr(struct SMIMS_CFGSpace *pCFGSpace, uint16_t Address)
 {
 	pCFGSpace->CFG[6] = Address;
 }
 
-VOID SMIMS_SetFlashReadEndClusterAddr(struct SMIMS_CFGSpace *pCFGSpace, WORD Address)
+void SMIMS_SetFlashReadEndClusterAddr(struct SMIMS_CFGSpace *pCFGSpace, uint16_t Address)
 {
 	pCFGSpace->CFG[7] = Address;
 }
 
-VOID SMIMS_SetLicenseKey(struct SMIMS_CFGSpace *pCFGSpace, WORD LicenseKey)
+void SMIMS_SetLicenseKey(struct SMIMS_CFGSpace *pCFGSpace, uint16_t LicenseKey)
 {
 	pCFGSpace->CFG[31] = LicenseKey;
 }
 
 //====================================================================
 
-INT SMIMS_Version(struct SMIMS_CFGSpace *pCFGSpace)
+int SMIMS_Version(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	return pCFGSpace->CFG[32];
 }
 
-INT SMIMS_MajorVersion(struct SMIMS_CFGSpace *pCFGSpace)
+int SMIMS_MajorVersion(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	return (pCFGSpace->CFG[32] >> 8);
 }
 
-INT SMIMS_SubVersion(struct SMIMS_CFGSpace *pCFGSpace)
+int SMIMS_SubVersion(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	return (pCFGSpace->CFG[32] >> 4) & 0xF;
 }
 
-INT SMIMS_SubSubVersion(struct SMIMS_CFGSpace *pCFGSpace)
+int SMIMS_SubSubVersion(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	return pCFGSpace->CFG[32] & 0xF;
 }
 
-WORD SMIMS_GetFIFOSize(struct SMIMS_CFGSpace *pCFGSpace)
+uint16_t SMIMS_GetFIFOSize(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	return pCFGSpace->CFG[33];
 }
 
-WORD SMIMS_GetFlashTotalBlock(struct SMIMS_CFGSpace *pCFGSpace)
+uint16_t SMIMS_GetFlashTotalBlock(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	return pCFGSpace->CFG[34];
 }
 
-WORD SMIMS_GetFlashBlockSize(struct SMIMS_CFGSpace *pCFGSpace)
+uint16_t SMIMS_GetFlashBlockSize(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	return pCFGSpace->CFG[35];
 }
 
-WORD SMIMS_GetFlashClusterSize(struct SMIMS_CFGSpace *pCFGSpace)
+uint16_t SMIMS_GetFlashClusterSize(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	return pCFGSpace->CFG[36];
 }
 
-BOOL SMIMS_VeriCommAbility(struct SMIMS_CFGSpace *pCFGSpace)
+bool SMIMS_VeriCommAbility(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	if(pCFGSpace->CFG[37] & 0x0001)
-		return TRUE;
+		return true;
 	else
-		return FALSE;
+		return false;
 }
 
-BOOL SMIMS_VeriInstrumentAbility(struct SMIMS_CFGSpace *pCFGSpace)
+bool SMIMS_VeriInstrumentAbility(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	if(pCFGSpace->CFG[37] & 0x0002)
-		return TRUE;
+		return true;
 	else
-		return FALSE;
+		return false;
 }
 
-BOOL SMIMS_VeriLinkAbility(struct SMIMS_CFGSpace *pCFGSpace)
+bool SMIMS_VeriLinkAbility(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	if(pCFGSpace->CFG[37] & 0x0004)
-		return TRUE;
+		return true;
 	else
-		return FALSE;
+		return false;
 }
 
-BOOL SMIMS_VeriSoCAbility(struct SMIMS_CFGSpace *pCFGSpace)
+bool SMIMS_VeriSoCAbility(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	if(pCFGSpace->CFG[37] & 0x0008)
-		return TRUE;
+		return true;
 	else
-		return FALSE;
+		return false;
 }
 
-BOOL SMIMS_VeriCommProAbility(struct SMIMS_CFGSpace *pCFGSpace)
+bool SMIMS_VeriCommProAbility(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	if(pCFGSpace->CFG[37] & 0x0010)
-		return TRUE;
+		return true;
 	else
-		return FALSE;
+		return false;
 }
 
-BOOL SMIMS_VeriSDKAbility(struct SMIMS_CFGSpace *pCFGSpace)
+bool SMIMS_VeriSDKAbility(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	if(pCFGSpace->CFG[37] & 0x0100)
-		return TRUE;
+		return true;
 	else
-		return FALSE;
+		return false;
 }
 
 //====================================================================
 
-BOOL SMIMS_IsFPGAProgram(struct SMIMS_CFGSpace *pCFGSpace)
+bool SMIMS_IsFPGAProgram(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	if(pCFGSpace->CFG[48] & 0x0001)
-		return TRUE;
+		return true;
 	else
-		return FALSE;
+		return false;
 }
 
-BOOL SMIMS_IsPCBConnect(struct SMIMS_CFGSpace *pCFGSpace)
+bool SMIMS_IsPCBConnect(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	if(pCFGSpace->CFG[48] & 0x0100)
-		return FALSE;
+		return false;
 	else
-		return TRUE;
+		return true;
 }
 
-BOOL SMIMS_IsVeriComm_ClockContinue(struct SMIMS_CFGSpace *pCFGSpace)
+bool SMIMS_IsVeriComm_ClockContinue(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	if(pCFGSpace->CFG[49] & 0x0001)
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
 //====================================================================

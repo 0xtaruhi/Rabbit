@@ -12,7 +12,7 @@
 //return:
 //      bool:
 //---------------------------------------------------------------------------
-BOOL CheckSerialNO(const char * SerialNO, char * cCID)
+bool CheckSerialNO(const char * SerialNO, char * cCID)
 {
 	char cSerialNO_1[5];
 	char cSerialNO_2[5];
@@ -34,7 +34,7 @@ BOOL CheckSerialNO(const char * SerialNO, char * cCID)
 	iSerialLen = (int)strlen(SerialNO);
 	if ( iSerialLen != 29 )
 	{
-		return FALSE;
+		return false;
 	}
 
 	strncpy(cSerialNO_1, SerialNO, 4);
@@ -42,7 +42,7 @@ BOOL CheckSerialNO(const char * SerialNO, char * cCID)
 	cTemp = strstr((char *)SerialNO, "-");
 	if ( cTemp == NULL )
 	{
-		return FALSE;
+		return false;
 	}
 
 	strncpy(cSerialNO_2, cTemp+1, 4);
@@ -50,7 +50,7 @@ BOOL CheckSerialNO(const char * SerialNO, char * cCID)
 	cTemp = strstr(cTemp+1, "-");
 	if ( cTemp == NULL )
 	{
-		return FALSE;
+		return false;
 	}
 
 	strncpy(cSerialNO_3, cTemp+1, 4);
@@ -58,7 +58,7 @@ BOOL CheckSerialNO(const char * SerialNO, char * cCID)
 	cTemp = strstr(cTemp+1, "-");
 	if ( cTemp == NULL )
 	{
-		return FALSE;
+		return false;
 	}
 
 	strncpy(cSerialNO_4, cTemp+1, 4);
@@ -66,7 +66,7 @@ BOOL CheckSerialNO(const char * SerialNO, char * cCID)
 	cTemp = strstr(cTemp+1, "-");
 	if ( cTemp == NULL )
 	{
-		return FALSE;
+		return false;
 	}
 
 	strncpy(cCID, cTemp+1, 4);
@@ -74,7 +74,7 @@ BOOL CheckSerialNO(const char * SerialNO, char * cCID)
 	cTemp = strstr(cTemp+1, "-");
 	if ( cTemp == NULL )
 	{
-		return FALSE;
+		return false;
 	}
 
 	strncpy(cPID, cTemp+1, 4);
@@ -89,47 +89,47 @@ BOOL CheckSerialNO(const char * SerialNO, char * cCID)
 //parameter:
 //      char * SerialNO:
 //return:
-//      BOOL:
+//      bool:
 //---------------------------------------------------------------------------
-BOOL ValidateSN(const char * cSerialNO)
+bool ValidateSN(const char * cSerialNO)
 {
         //檢查軟體版本
         if ( !CheckSoftwareVersion(cSerialNO) )
         {
-            return FALSE;
+            return false;
         }
 
         //檢查產品
         if ( !CheckProduct(cSerialNO) )
         {
-            return FALSE;
+            return false;
         }
 
         //檢查年份
         if ( !CheckYear(cSerialNO) )
         {
-            return FALSE;
+            return false;
         }
 
         //檢查月份
         if ( !CheckMonth(cSerialNO) )
         {
-            return FALSE;
+            return false;
         }
 
         //檢查序號
         if ( !CheckSerialNO(cSerialNO) )
         {
-            return FALSE;
+            return false;
         }
 
         //檢查加密
         if ( !CheckEncrypt(cSerialNO) )
         {
-            return FALSE;
+            return false;
         }
 
-		return TRUE;
+		return true;
 }
 //---------------------------------------------------------------------------
 //Name: CheckSoftwareVersion
@@ -137,26 +137,26 @@ BOOL ValidateSN(const char * cSerialNO)
 //parameter:
 //	 char * cSerialNO:
 //return:
-//       BOOL
+//       bool
 //---------------------------------------------------------------------------
-BOOL CheckSoftwareVersion(const char * cSerialNO)
+bool CheckSoftwareVersion(const char * cSerialNO)
 {
         char cNowChar;
 
         cNowChar = cSerialNO[1];
         if ( !( cNowChar >= '0' && cNowChar <= '9') )
-                return FALSE;
+                return false;
         cNowChar = cSerialNO[5];
         if ( !( cNowChar >= '0' && cNowChar <= '9') )
-                return FALSE;
+                return false;
         cNowChar = cSerialNO[9];
         if ( !( cNowChar >= '0' && cNowChar <= '9') )
-                return FALSE;
+                return false;
         cNowChar = cSerialNO[11];
         if ( !( cNowChar >= '0' && cNowChar <= '9') )
-                return FALSE;
+                return false;
 
-        return TRUE;
+        return true;
 }
 //---------------------------------------------------------------------------
 //Name: CheckProduct
@@ -164,9 +164,9 @@ BOOL CheckSoftwareVersion(const char * cSerialNO)
 //parameter:
 //	 char * cSerialNO:
 //return:
-//       BOOL
+//       bool
 //---------------------------------------------------------------------------
-BOOL CheckProduct(const char * cSerialNO)
+bool CheckProduct(const char * cSerialNO)
 {
         char cPostMsg[128];
         int iCheckOK = 0;
@@ -242,10 +242,10 @@ BOOL CheckProduct(const char * cSerialNO)
         }
         if ( iCheckOK == 1 )
         {
-                return TRUE;
+                return true;
         }
         else
-                return FALSE;
+                return false;
 }
 //---------------------------------------------------------------------------
 //Name: CheckYear
@@ -253,17 +253,17 @@ BOOL CheckProduct(const char * cSerialNO)
 //parameter:
 //	 char * cSerialNO:
 //return:
-//       BOOL
+//       bool
 //---------------------------------------------------------------------------
-BOOL CheckYear(const char * cSerialNO)
+bool CheckYear(const char * cSerialNO)
 {
         char cNowChar = cSerialNO[12];
 
         if ( (cNowChar >= '0' && cNowChar <= '9') ||
              (cNowChar >= 'A' && cNowChar <= 'Z') )
-                return TRUE;
+                return true;
         else
-                return FALSE;
+                return false;
 }
 //---------------------------------------------------------------------------
 //Name: CheckMonth
@@ -271,17 +271,17 @@ BOOL CheckYear(const char * cSerialNO)
 //parameter:
 //	 char * cSerialNO:
 //return:
-//       BOOL
+//       bool
 //---------------------------------------------------------------------------
-BOOL CheckMonth(const char * cSerialNO)
+bool CheckMonth(const char * cSerialNO)
 {
         char cNowChar = cSerialNO[15];
 
         if ( (cNowChar >= '0' && cNowChar <= '9') ||
              (cNowChar >= 'A' && cNowChar <= 'C') )
-                return TRUE;
+                return true;
         else
-                return FALSE;
+                return false;
 }
 //---------------------------------------------------------------------------
 //Name: CheckSerialNO
@@ -289,25 +289,25 @@ BOOL CheckMonth(const char * cSerialNO)
 //parameter:
 //	 char * cSerialNO:
 //return:
-//       BOOL
+//       bool
 //---------------------------------------------------------------------------
-BOOL CheckSerialNO(const char * cSerialNO)
+bool CheckSerialNO(const char * cSerialNO)
 {
         char cNowChar;
 
         cNowChar = cSerialNO[14];
         if ( !((cNowChar >= '0' && cNowChar <= '9') ||
                (cNowChar >= 'A' && cNowChar <= 'Z')) )
-                return FALSE;
+                return false;
         cNowChar = cSerialNO[7];
         if ( !((cNowChar >= '0' && cNowChar <= '9') ||
                (cNowChar >= 'A' && cNowChar <= 'Z')) )
-                return FALSE;
+                return false;
         cNowChar = cSerialNO[3];
         if ( !((cNowChar >= '0' && cNowChar <= '9') ||
                (cNowChar >= 'A' && cNowChar <= 'Z')) )
-                return FALSE;
-        return TRUE;
+                return false;
+        return true;
 }
 //---------------------------------------------------------------------------
 //Name: CheckSerialNO
@@ -315,9 +315,9 @@ BOOL CheckSerialNO(const char * cSerialNO)
 //parameter:
 //	 char * cSerialNO:
 //return:
-//       BOOL
+//       bool
 //---------------------------------------------------------------------------
-BOOL CheckEncrypt(const char * cSerialNO)
+bool CheckEncrypt(const char * cSerialNO)
 {
         char cHexValue[7], cIntValue_r[8], cIntValue[8];
         char cTrans[9];
@@ -327,27 +327,27 @@ BOOL CheckEncrypt(const char * cSerialNO)
 
         memset(cHexValue, 0, 7);
         cGetCh = GetTable(cSerialNO[2], Table1);
-        if ( cGetCh == '!' ) return FALSE;
+        if ( cGetCh == '!' ) return false;
         cHexValue[ 0 ] = cGetCh;
 
         cGetCh = GetTable(cSerialNO[4], Table2);
-        if ( cGetCh == '!' ) return FALSE;
+        if ( cGetCh == '!' ) return false;
         cHexValue[ 1 ] = cGetCh;
 
         cGetCh = GetTable(cSerialNO[6], Table3);
-        if ( cGetCh == '!' ) return FALSE;
+        if ( cGetCh == '!' ) return false;
         cHexValue[ 2 ] = cGetCh;
 
         cGetCh = GetTable(cSerialNO[8], Table3);
-        if ( cGetCh == '!' ) return FALSE;
+        if ( cGetCh == '!' ) return false;
         cHexValue[ 3 ] = cGetCh;
 
         cGetCh = GetTable(cSerialNO[10], Table2);
-        if ( cGetCh == '!' ) return FALSE;
+        if ( cGetCh == '!' ) return false;
         cHexValue[ 4 ] = cGetCh;
 
         cGetCh = GetTable(cSerialNO[13], Table1);
-        if ( cGetCh == '!' ) return FALSE;
+        if ( cGetCh == '!' ) return false;
         cHexValue[ 5 ] = cGetCh;
 
         //加上 '$' 可以計算 Hex
@@ -379,9 +379,9 @@ BOOL CheckEncrypt(const char * cSerialNO)
         sprintf(cValue,"%07d", iValue);
 
         if ( strncmp(cIntValue, cValue, 7) == 0 )
-                return TRUE;
+                return true;
         else
-                return FALSE;
+                return false;
 }
 //---------------------------------------------------------------------------
 //Name: GetTable
@@ -460,11 +460,11 @@ char IntToChar(int iValue)
 //parameter:
 //	 	char * Orig_char:
 //return:
-//      WORD
+//      uint16_t
 //---------------------------------------------------------------------------
-WORD ConvertToWORD(const char * Orig_char)
+uint16_t ConvertToWORD(const char * Orig_char)
 {
-	WORD wRet;
+	uint16_t wRet;
 
 	wRet = 0x0000;
 	for(int i=0; i<4; i++)

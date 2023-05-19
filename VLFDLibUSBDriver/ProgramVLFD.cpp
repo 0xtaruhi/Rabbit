@@ -140,7 +140,7 @@ int TSMIMSVLFDProgrammer::ProgramFPGA(int iBoard, const char* g_szBitFile)
 
 	//printf("TSMIMSVLFDProgrammer::ProgramFPGA() SMIMS_CFGSpaceRead ok \n");
 
-	SMIMS_DecryptCopy(CFGSpace.CFG, EncryptCFG.CFG, sizeof(CFGSpace) / sizeof(WORD), EncryptTable, &decindex);
+	SMIMS_DecryptCopy(CFGSpace.CFG, EncryptCFG.CFG, sizeof(CFGSpace) / sizeof(uint16_t), EncryptTable, &decindex);
 
 	//= Check SMIMS Engine version =============================
 	if (SMIMS_Version(&CFGSpace) < SMIMS_VERSION)
@@ -157,7 +157,7 @@ int TSMIMSVLFDProgrammer::ProgramFPGA(int iBoard, const char* g_szBitFile)
 
 	//printf("TSMIMSVLFDProgrammer::ProgramFPGA() BlockSize:%d\n", BlockSize);
 
-	Buffer = new WORD[BlockSize];
+	Buffer = new uint16_t[BlockSize];
 
 	if (Buffer == NULL)
 	{
@@ -266,7 +266,7 @@ int TSMIMSVLFDProgrammer::ProgramFPGA(int iBoard, const char* g_szBitFile)
 
 	}
 
-	SMIMS_DecryptCopy(CFGSpace.CFG, EncryptCFG.CFG, sizeof(CFGSpace) / sizeof(WORD), EncryptTable, &decindex);
+	SMIMS_DecryptCopy(CFGSpace.CFG, EncryptCFG.CFG, sizeof(CFGSpace) / sizeof(uint16_t), EncryptTable, &decindex);
 
 	//= Check Xilinx FPGA download success =======
 	if (SMIMS_IsFPGAProgram(&CFGSpace))

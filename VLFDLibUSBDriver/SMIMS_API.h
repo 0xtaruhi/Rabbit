@@ -10,91 +10,91 @@
 
 struct SMIMS_CFGSpace
 {
-	WORD CFG[64];
+	uint16_t CFG[64];
 };
 
 //========================================
-USB_HANDLE SMIMS_DriverOpen(const CHAR* devname, INT devnum);
-BOOL SMIMS_DriverClose(USB_HANDLE dev_handle);
+USB_HANDLE SMIMS_DriverOpen(const char* devname, int devnum);
+bool SMIMS_DriverClose(USB_HANDLE dev_handle);
 
-BOOL SMIMS_EngineReset(USB_HANDLE dev_handle);
+bool SMIMS_EngineReset(USB_HANDLE dev_handle);
 
 //============ Encrypt API ==============
-BOOL SMIMS_EncryptTableRead(USB_HANDLE dev_handle, WORD* EncryptTBL);
-VOID SMIMS_EncryptTableDecode(WORD* EncryptTBL, UINT* encindex, UINT* decindex);
-VOID SMIMS_EncryptData(WORD* dataptr, UINT Length, WORD* EncryptTBL, UINT* encindex);
-VOID SMIMS_DecryptData(WORD* dataptr, UINT Length, WORD* EncryptTBL, UINT* decindex);
-VOID SMIMS_EncryptCopy(WORD* dst, WORD* src, UINT Length, WORD* EncryptTBL, UINT* encindex);
-VOID SMIMS_DecryptCopy(WORD* dst, WORD* src, UINT Length, WORD* EncryptTBL, UINT* decindex);
+bool SMIMS_EncryptTableRead(USB_HANDLE dev_handle, uint16_t* EncryptTBL);
+void SMIMS_EncryptTableDecode(uint16_t* EncryptTBL, unsigned int* encindex, unsigned int* decindex);
+void SMIMS_EncryptData(uint16_t* dataptr, unsigned int Length, uint16_t* EncryptTBL, unsigned int* encindex);
+void SMIMS_DecryptData(uint16_t* dataptr, unsigned int Length, uint16_t* EncryptTBL, unsigned int* decindex);
+void SMIMS_EncryptCopy(uint16_t* dst, uint16_t* src, unsigned int Length, uint16_t* EncryptTBL, unsigned int* encindex);
+void SMIMS_DecryptCopy(uint16_t* dst, uint16_t* src, unsigned int Length, uint16_t* EncryptTBL, unsigned int* decindex);
 
-WORD SMIMS_LicenseGen(WORD SecurityKey, WORD CustomerID);
+uint16_t SMIMS_LicenseGen(uint16_t SecurityKey, uint16_t CustomerID);
 
 //============ Data Transfer API ==============
-BOOL SMIMS_FIFO_Write(USB_HANDLE dev_handle, WORD* ptr, INT Length);
-BOOL SMIMS_FIFO_Read(USB_HANDLE dev_handle, WORD* ptr, INT Length);
+bool SMIMS_FIFO_Write(USB_HANDLE dev_handle, uint16_t* ptr, int Length);
+bool SMIMS_FIFO_Read(USB_HANDLE dev_handle, uint16_t* ptr, int Length);
 
 //============ Command API ==============
-BOOL SMIMS_SyncDelay(USB_HANDLE dev_handle);
-BOOL SMIMS_CommandActive(USB_HANDLE dev_handle);
+bool SMIMS_SyncDelay(USB_HANDLE dev_handle);
+bool SMIMS_CommandActive(USB_HANDLE dev_handle);
 
-BOOL SMIMS_CFGSpaceRead(USB_HANDLE dev_handle, struct SMIMS_CFGSpace* pSMIMS_CFGSpace);
-BOOL SMIMS_CFGSpaceWrite(USB_HANDLE dev_handle, struct SMIMS_CFGSpace* pSMIMS_CFGSpace);
+bool SMIMS_CFGSpaceRead(USB_HANDLE dev_handle, struct SMIMS_CFGSpace* pSMIMS_CFGSpace);
+bool SMIMS_CFGSpaceWrite(USB_HANDLE dev_handle, struct SMIMS_CFGSpace* pSMIMS_CFGSpace);
 
-BOOL SMIMS_FPGAProgrammerActive(USB_HANDLE dev_handle);
+bool SMIMS_FPGAProgrammerActive(USB_HANDLE dev_handle);
 
-BOOL SMIMS_VeriCommActive(USB_HANDLE dev_handle);
-BOOL SMIMS_VeriInstrumentActive(USB_HANDLE dev_handle);
-BOOL SMIMS_VeriLinkActive(USB_HANDLE dev_handle);
-BOOL SMIMS_VeriSoCActive(USB_HANDLE dev_handle);
-BOOL SMIMS_VeriCommProActive(USB_HANDLE dev_handle);
-BOOL SMIMS_VeriSDKActive(USB_HANDLE dev_handle);
+bool SMIMS_VeriCommActive(USB_HANDLE dev_handle);
+bool SMIMS_VeriInstrumentActive(USB_HANDLE dev_handle);
+bool SMIMS_VeriLinkActive(USB_HANDLE dev_handle);
+bool SMIMS_VeriSoCActive(USB_HANDLE dev_handle);
+bool SMIMS_VeriCommProActive(USB_HANDLE dev_handle);
+bool SMIMS_VeriSDKActive(USB_HANDLE dev_handle);
 
-BOOL SMIMS_FlashReadActive(USB_HANDLE dev_handle);  // Flash API
-BOOL SMIMS_FlashWriteActive(USB_HANDLE dev_handle);  // Flash API
+bool SMIMS_FlashReadActive(USB_HANDLE dev_handle);  // Flash API
+bool SMIMS_FlashWriteActive(USB_HANDLE dev_handle);  // Flash API
 
 //============ Configuration Space API ==============
-WORD SMIMS_GetVeriComm_ClockHighDelay(struct SMIMS_CFGSpace* pCFGSpace);
-WORD SMIMS_GetVeriComm_ClockLowDelay(struct SMIMS_CFGSpace* pCFGSpace);
+uint16_t SMIMS_GetVeriComm_ClockHighDelay(struct SMIMS_CFGSpace* pCFGSpace);
+uint16_t SMIMS_GetVeriComm_ClockLowDelay(struct SMIMS_CFGSpace* pCFGSpace);
 BYTE SMIMS_GetVeriComm_ISV(struct SMIMS_CFGSpace* pCFGSpace);
-BOOL SMIMS_IsVeriComm_ClockCheck_Enable(struct SMIMS_CFGSpace* pCFGSpace);
+bool SMIMS_IsVeriComm_ClockCheck_Enable(struct SMIMS_CFGSpace* pCFGSpace);
 BYTE SMIMS_GetVeriSDK_ChannelSelector(struct SMIMS_CFGSpace* pCFGSpace);
 BYTE SMIMS_GetModeSelector(struct SMIMS_CFGSpace* pCFGSpace);
-WORD SMIMS_GetFlashBeginBlockAddr(struct SMIMS_CFGSpace* pCFGSpace);  // Flash API
-WORD SMIMS_GetFlashBeginClusterAddr(struct SMIMS_CFGSpace* pCFGSpace);  // Flash API
-WORD SMIMS_GetFlashReadEndBlockAddr(struct SMIMS_CFGSpace* pCFGSpace);  // Flash API
-WORD SMIMS_GetFlashReadEndClusterAddr(struct SMIMS_CFGSpace* pCFGSpace);  // Flash API
-WORD SMIMS_GetSecurityKey(struct SMIMS_CFGSpace* pCFGSpace);
+uint16_t SMIMS_GetFlashBeginBlockAddr(struct SMIMS_CFGSpace* pCFGSpace);  // Flash API
+uint16_t SMIMS_GetFlashBeginClusterAddr(struct SMIMS_CFGSpace* pCFGSpace);  // Flash API
+uint16_t SMIMS_GetFlashReadEndBlockAddr(struct SMIMS_CFGSpace* pCFGSpace);  // Flash API
+uint16_t SMIMS_GetFlashReadEndClusterAddr(struct SMIMS_CFGSpace* pCFGSpace);  // Flash API
+uint16_t SMIMS_GetSecurityKey(struct SMIMS_CFGSpace* pCFGSpace);
 
-VOID SMIMS_SetVeriComm_ClockHighDelay(struct SMIMS_CFGSpace* pCFGSpace, WORD ClockHighDelay);
-VOID SMIMS_SetVeriComm_ClockLowDelay(struct SMIMS_CFGSpace* pCFGSpace, WORD ClockLowDelay);
-VOID SMIMS_SetVeriComm_ISV(struct SMIMS_CFGSpace* pCFGSpace, WORD Value);
-VOID SMIMS_SetVeriComm_ClockCheck(struct SMIMS_CFGSpace* pCFGSpace, BOOL Check);
-VOID SMIMS_SetVeriSDK_ChannelSelector(struct SMIMS_CFGSpace* pCFGSpace, BYTE Select);
-VOID SMIMS_SetModeSelector(struct SMIMS_CFGSpace* pCFGSpace, BYTE Select);
-VOID SMIMS_SetFlashBeginBlockAddr(struct SMIMS_CFGSpace* pCFGSpace, WORD Address);  // Flash API
-VOID SMIMS_SetFlashBeginClusterAddr(struct SMIMS_CFGSpace* pCFGSpace, WORD Address);  // Flash API
-VOID SMIMS_SetFlashReadEndBlockAddr(struct SMIMS_CFGSpace* pCFGSpace, WORD Address);  // Flash API
-VOID SMIMS_SetFlashReadEndClusterAddr(struct SMIMS_CFGSpace* pCFGSpace, WORD Address);  // Flash API
-VOID SMIMS_SetLicenseKey(struct SMIMS_CFGSpace* pCFGSpace, WORD LicenseKey);
+void SMIMS_SetVeriComm_ClockHighDelay(struct SMIMS_CFGSpace* pCFGSpace, uint16_t ClockHighDelay);
+void SMIMS_SetVeriComm_ClockLowDelay(struct SMIMS_CFGSpace* pCFGSpace, uint16_t ClockLowDelay);
+void SMIMS_SetVeriComm_ISV(struct SMIMS_CFGSpace* pCFGSpace, uint16_t Value);
+void SMIMS_SetVeriComm_ClockCheck(struct SMIMS_CFGSpace* pCFGSpace, bool Check);
+void SMIMS_SetVeriSDK_ChannelSelector(struct SMIMS_CFGSpace* pCFGSpace, BYTE Select);
+void SMIMS_SetModeSelector(struct SMIMS_CFGSpace* pCFGSpace, BYTE Select);
+void SMIMS_SetFlashBeginBlockAddr(struct SMIMS_CFGSpace* pCFGSpace, uint16_t Address);  // Flash API
+void SMIMS_SetFlashBeginClusterAddr(struct SMIMS_CFGSpace* pCFGSpace, uint16_t Address);  // Flash API
+void SMIMS_SetFlashReadEndBlockAddr(struct SMIMS_CFGSpace* pCFGSpace, uint16_t Address);  // Flash API
+void SMIMS_SetFlashReadEndClusterAddr(struct SMIMS_CFGSpace* pCFGSpace, uint16_t Address);  // Flash API
+void SMIMS_SetLicenseKey(struct SMIMS_CFGSpace* pCFGSpace, uint16_t LicenseKey);
 
-INT SMIMS_Version(struct SMIMS_CFGSpace* pCFGSpace);
-INT SMIMS_MajorVersion(struct SMIMS_CFGSpace* pCFGSpace);
-INT SMIMS_SubVersion(struct SMIMS_CFGSpace* pCFGSpace);
-INT SMIMS_SubSubVersion(struct SMIMS_CFGSpace* pCFGSpace);
-WORD SMIMS_GetFIFOSize(struct SMIMS_CFGSpace* pCFGSpace);
-WORD SMIMS_GetFlashTotalBlock(struct SMIMS_CFGSpace* pCFGSpace);  // Flash API
-WORD SMIMS_GetFlashBlockSize(struct SMIMS_CFGSpace* pCFGSpace);  // Flash API
-WORD SMIMS_GetFlashClusterSize(struct SMIMS_CFGSpace* pCFGSpace);  // Flash API
-BOOL SMIMS_VeriCommAbility(struct SMIMS_CFGSpace* pCFGSpace);
-BOOL SMIMS_VeriInstrumentAbility(struct SMIMS_CFGSpace* pCFGSpace);
-BOOL SMIMS_VeriLinkAbility(struct SMIMS_CFGSpace* pCFGSpace);
-BOOL SMIMS_VeriSoCAbility(struct SMIMS_CFGSpace* pCFGSpace);
-BOOL SMIMS_VeriCommProAbility(struct SMIMS_CFGSpace* pCFGSpace);
-BOOL SMIMS_VeriSDKAbility(struct SMIMS_CFGSpace* pCFGSpace);
+int SMIMS_Version(struct SMIMS_CFGSpace* pCFGSpace);
+int SMIMS_MajorVersion(struct SMIMS_CFGSpace* pCFGSpace);
+int SMIMS_SubVersion(struct SMIMS_CFGSpace* pCFGSpace);
+int SMIMS_SubSubVersion(struct SMIMS_CFGSpace* pCFGSpace);
+uint16_t SMIMS_GetFIFOSize(struct SMIMS_CFGSpace* pCFGSpace);
+uint16_t SMIMS_GetFlashTotalBlock(struct SMIMS_CFGSpace* pCFGSpace);  // Flash API
+uint16_t SMIMS_GetFlashBlockSize(struct SMIMS_CFGSpace* pCFGSpace);  // Flash API
+uint16_t SMIMS_GetFlashClusterSize(struct SMIMS_CFGSpace* pCFGSpace);  // Flash API
+bool SMIMS_VeriCommAbility(struct SMIMS_CFGSpace* pCFGSpace);
+bool SMIMS_VeriInstrumentAbility(struct SMIMS_CFGSpace* pCFGSpace);
+bool SMIMS_VeriLinkAbility(struct SMIMS_CFGSpace* pCFGSpace);
+bool SMIMS_VeriSoCAbility(struct SMIMS_CFGSpace* pCFGSpace);
+bool SMIMS_VeriCommProAbility(struct SMIMS_CFGSpace* pCFGSpace);
+bool SMIMS_VeriSDKAbility(struct SMIMS_CFGSpace* pCFGSpace);
 
-BOOL SMIMS_IsFPGAProgram(struct SMIMS_CFGSpace* pCFGSpace);
-BOOL SMIMS_IsPCBConnect(struct SMIMS_CFGSpace* pCFGSpace);  // Multiple PCB API
-BOOL SMIMS_IsVeriComm_ClockContinue(struct SMIMS_CFGSpace* pCFGSpace);
+bool SMIMS_IsFPGAProgram(struct SMIMS_CFGSpace* pCFGSpace);
+bool SMIMS_IsPCBConnect(struct SMIMS_CFGSpace* pCFGSpace);  // Multiple PCB API
+bool SMIMS_IsVeriComm_ClockContinue(struct SMIMS_CFGSpace* pCFGSpace);
 
 //==================================================
 

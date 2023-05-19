@@ -2,14 +2,14 @@
 #include "SMIMS_iobase.h"
 
 
-USB_HANDLE usb_device_open(WORD VID, WORD PID, INT devnum)
+USB_HANDLE usb_device_open(uint16_t VID, uint16_t PID, int devnum)
 {
 	//truct usb_bus *busses, *bus;
 	//struct usb_device *dev;
 	//usb_dev_handle *dev_handle;
 	libusb_device_handle * dev_handle;
-	//BOOL find_next;
-	//UINT devcnt = 0;
+	//bool find_next;
+	//unsigned int devcnt = 0;
 
 	libusb_init(NULL);
 
@@ -37,7 +37,7 @@ USB_HANDLE usb_device_open(WORD VID, WORD PID, INT devnum)
 
 	busses = usb_get_busses();
 
-	find_next = TRUE;
+	find_next = true;
 	bus = busses;
 	while(find_next && bus)
 	{
@@ -47,7 +47,7 @@ USB_HANDLE usb_device_open(WORD VID, WORD PID, INT devnum)
 			if((dev->descriptor.idVendor == VID) && (dev->descriptor.idProduct == PID))
 			{
 				if(devcnt == devnum)
-					find_next = FALSE;
+					find_next = false;
 				else
 				{
 					devcnt = devcnt + 1;
@@ -116,20 +116,20 @@ USB_HANDLE usb_device_open(WORD VID, WORD PID, INT devnum)
 	return dev_handle;
 }
 
-BOOL usb_device_close(USB_HANDLE dev_handle)
+bool usb_device_close(USB_HANDLE dev_handle)
 {
 	if(dev_handle == NULL)
-		return FALSE;
+		return false;
 
 	if(libusb_release_interface(dev_handle, 0) < 0)
-		return FALSE;
+		return false;
 
 	libusb_close(dev_handle);
 
-	return TRUE;
+	return true;
 }
 
-INT usb_get_device_descriptor(USB_HANDLE dev_handle, struct libusb_device_descriptor *dev_dscr)
+int usb_get_device_descriptor(USB_HANDLE dev_handle, struct libusb_device_descriptor *dev_dscr)
 {
 	libusb_device * dev;
 	dev = libusb_get_device(dev_handle);
@@ -137,12 +137,12 @@ INT usb_get_device_descriptor(USB_HANDLE dev_handle, struct libusb_device_descri
 	return libusb_get_device_descriptor(dev, dev_dscr);
 }
 
-BOOL SMIMS_WriteUSB(USB_HANDLE dev_handle, INT EndPoint, VOID *Buffer, INT Size)
+bool SMIMS_WriteUSB(USB_HANDLE dev_handle, int EndPoint, void *Buffer, int Size)
 {
-	CHAR *ptr = (CHAR *)Buffer;
-	INT WriteSize;
-	BOOL bResult = TRUE;
-	INT iRet;
+	char *ptr = (char *)Buffer;
+	int WriteSize;
+	bool bResult = true;
+	int iRet;
 
 	while((Size > 0) && bResult)
 	{
@@ -151,28 +151,28 @@ BOOL SMIMS_WriteUSB(USB_HANDLE dev_handle, INT EndPoint, VOID *Buffer, INT Size)
 		switch(iRet)
 		{
 		default:
-			bResult = FALSE;
+			bResult = false;
 		break;
 		case 0:	//success(and populates transferred)
-			bResult = TRUE;
+			bResult = true;
 		break;
 		case LIBUSB_ERROR_TIMEOUT:	//if the transfer timed out (and populates transferred)
-			bResult = FALSE;
+			bResult = false;
 		break;
 		case LIBUSB_ERROR_PIPE:	//if the endpoint halted
-			bResult = FALSE;
+			bResult = false;
 		break;
 		case LIBUSB_ERROR_OVERFLOW:	//if the device offered more data
-			bResult = FALSE;
+			bResult = false;
 		break;
 		case LIBUSB_ERROR_NO_DEVICE:	//if the device has been disconnected
-            bResult = FALSE;
+            bResult = false;
 		break;
 		}
 		if (bResult)
 		{
 			if(WriteSize < 0)
-				bResult = FALSE;
+				bResult = false;
 			else
 			{
 				Size -= WriteSize;
@@ -186,7 +186,7 @@ BOOL SMIMS_WriteUSB(USB_HANDLE dev_handle, INT EndPoint, VOID *Buffer, INT Size)
 		/*
 		WriteSize = usb_bulk_write(dev_handle, EndPoint, ptr, Size, 0);
 		if(WriteSize < 0)
-			bResult = FALSE;
+			bResult = false;
 		else
 		{
 			Size -= WriteSize;
@@ -197,12 +197,12 @@ BOOL SMIMS_WriteUSB(USB_HANDLE dev_handle, INT EndPoint, VOID *Buffer, INT Size)
 	return bResult;
 }
 
-BOOL SMIMS_ReadUSB(USB_HANDLE dev_handle, INT EndPoint, VOID *Buffer, INT Size)
+bool SMIMS_ReadUSB(USB_HANDLE dev_handle, int EndPoint, void *Buffer, int Size)
 {
-	CHAR *ptr = (CHAR *)Buffer;
-	INT ReadSize;
-	BOOL bResult = TRUE;
-	INT iRet;
+	char *ptr = (char *)Buffer;
+	int ReadSize;
+	bool bResult = true;
+	int iRet;
 
     ReadSize = 0;
 	while((Size > 0) && bResult)
@@ -212,32 +212,32 @@ BOOL SMIMS_ReadUSB(USB_HANDLE dev_handle, INT EndPoint, VOID *Buffer, INT Size)
 		switch(iRet)
 		{
 		default:
-			bResult = FALSE;
+			bResult = false;
 		break;
 		case 0:	//success(and populates transferred)
-			bResult = TRUE;
+			bResult = true;
 		break;
 		case LIBUSB_ERROR_TIMEOUT:	//if the transfer timed out (and populates transferred)
-			bResult = FALSE;
+			bResult = false;
 			//printf("timeout\n");
 		break;
 		case LIBUSB_ERROR_PIPE:	//if the endpoint halted
-            bResult = FALSE;
+            bResult = false;
 			//printf("pipe\n");
 		break;
 		case LIBUSB_ERROR_OVERFLOW:	//if the device offered more data
-            bResult = FALSE;
+            bResult = false;
 			//printf("overflow\n");
 		break;
 		case LIBUSB_ERROR_NO_DEVICE:	//if the device has been disconnected
-            bResult = FALSE;
+            bResult = false;
 			//printf("nodevice\n");
 		break;
 		}
 		if (bResult)
 		{
 			if(ReadSize < 0)
-				bResult = FALSE;
+				bResult = false;
 			else
 			{
 				Size -= ReadSize;
@@ -252,7 +252,7 @@ BOOL SMIMS_ReadUSB(USB_HANDLE dev_handle, INT EndPoint, VOID *Buffer, INT Size)
 		/*
 		ReadSize = usb_bulk_read(dev_handle, EndPoint, ptr, Size, 0);
 		if(ReadSize < 0)
-			bResult = FALSE;
+			bResult = false;
 		else
 		{
 			Size -= ReadSize;
