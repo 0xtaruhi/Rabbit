@@ -1,0 +1,26 @@
+add_rules("mode.debug", "mode.release")
+
+target("VLFDLibUSB")
+    set_kind("static")
+    add_files("VLFDLibUSBDriver/*.cpp")
+    add_includedirs("VLFDLibUSBDriver", "libusb/libusb")
+    add_links("usb-1.0")
+    add_linkdirs("build", "libusb/libusb/.libs")
+
+target("rabbit_VLFD")
+    set_kind("static")
+    add_files("rabbit_VLFD/src/*.cpp")
+    add_includedirs("rabbit_VLFD/include", "VLFDLibUSBDriver", "libusb/libusb")
+    add_links("usb-1.0")
+    add_linkdirs("libusb/libusb/.libs")
+    add_deps("VLFDLibUSB")
+
+target("rabbit_App")
+    add_rules("qt.application")
+    set_kind("binary")
+    add_files("rabbit_App/src/*.cpp")
+    add_files("rabbit_App/include/MainWindow.h")
+    add_frameworks("QtWidgets", "QtGui", "QtCore")
+    add_includedirs("rabbit_App/include", "rabbit_VLFD/include")
+    add_deps("rabbit_VLFD")
+
