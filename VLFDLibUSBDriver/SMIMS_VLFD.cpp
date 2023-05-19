@@ -524,7 +524,7 @@ bool VLFD_IO_WriteReadData(int iBoard, uint16_t* WriteBuffer, uint16_t* ReadBuff
 	return true;
 }
 
-bool VLFD_AppChannelSelector(int iBoard, BYTE channel)
+bool VLFD_AppChannelSelector(int iBoard, uint8_t channel)
 {
 	printf("Yu's Driver VLFD_AppChannelSelector");
 	SMIMS_CFGSpace EncryptCFG;

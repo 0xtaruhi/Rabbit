@@ -34,10 +34,10 @@ bool SMIMS_DriverClose(USB_HANDLE dev_handle)
 
 bool SMIMS_EngineReset(USB_HANDLE dev_handle)
 {
-	BYTE Command;
+	uint8_t Command;
 
 	Command = 0x02;
-	if(!SMIMS_WriteUSB(dev_handle, EP4, &Command, sizeof(BYTE)))
+	if(!SMIMS_WriteUSB(dev_handle, EP4, &Command, sizeof(uint8_t)))
 		return false;
 
 	return true;
@@ -47,14 +47,14 @@ bool SMIMS_EngineReset(USB_HANDLE dev_handle)
 
 bool SMIMS_EncryptTableRead(USB_HANDLE dev_handle, uint16_t *EncryptTBL)
 {
-	BYTE Command[2];
+	uint8_t Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
 		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x0f;
-	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
+	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(uint8_t)))
 		return false;
 
 	if(!SMIMS_ReadUSB(dev_handle, EP6, EncryptTBL, 32*sizeof(uint16_t)))
@@ -200,14 +200,14 @@ bool SMIMS_FIFO_Read(USB_HANDLE dev_handle, uint16_t *ptr, int Length)
 
 bool SMIMS_SyncDelay(USB_HANDLE dev_handle)
 {
-	BYTE Command;
+	uint8_t Command;
 
 	do{
 		Command = 0x00;
-		if(!SMIMS_WriteUSB(dev_handle, EP4, &Command, sizeof(BYTE)))
+		if(!SMIMS_WriteUSB(dev_handle, EP4, &Command, sizeof(uint8_t)))
 			return false;
 
-		if(!SMIMS_ReadUSB(dev_handle, EP8, &Command, sizeof(BYTE)))
+		if(!SMIMS_ReadUSB(dev_handle, EP8, &Command, sizeof(uint8_t)))
 			return false;
 	} while(!Command);
 
@@ -216,14 +216,14 @@ bool SMIMS_SyncDelay(USB_HANDLE dev_handle)
 
 bool SMIMS_CommandActive(USB_HANDLE dev_handle)
 {
-	BYTE Command[2];
+	uint8_t Command[2];
 
 	if (!SMIMS_SyncDelay(dev_handle))
 		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x00;
-	if (!SMIMS_WriteUSB(dev_handle, EP4, Command, 2 * sizeof(BYTE)))
+	if (!SMIMS_WriteUSB(dev_handle, EP4, Command, 2 * sizeof(uint8_t)))
 		return false;
 
 	return true;
@@ -231,14 +231,14 @@ bool SMIMS_CommandActive(USB_HANDLE dev_handle)
 
 bool SMIMS_CFGSpaceRead(USB_HANDLE dev_handle, struct SMIMS_CFGSpace *pCFGSpace)
 {
-	BYTE Command[2];
+	uint8_t Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
 		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x01;
-	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
+	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(uint8_t)))
 		return false;
 
 	if(!SMIMS_ReadUSB(dev_handle, EP6, pCFGSpace, sizeof(SMIMS_CFGSpace)))
@@ -252,14 +252,14 @@ bool SMIMS_CFGSpaceRead(USB_HANDLE dev_handle, struct SMIMS_CFGSpace *pCFGSpace)
 
 bool SMIMS_CFGSpaceWrite(USB_HANDLE dev_handle, struct SMIMS_CFGSpace *pCFGSpace)
 {
-	BYTE Command[2];
+	uint8_t Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
 		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x11;
-	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
+	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(uint8_t)))
 		return false;
 
 	if(!SMIMS_WriteUSB(dev_handle, EP2, pCFGSpace, sizeof(SMIMS_CFGSpace)))
@@ -273,14 +273,14 @@ bool SMIMS_CFGSpaceWrite(USB_HANDLE dev_handle, struct SMIMS_CFGSpace *pCFGSpace
 
 bool SMIMS_FPGAProgrammerActive(USB_HANDLE dev_handle)
 {
-	BYTE Command[2];
+	uint8_t Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
 		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x02;
-	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
+	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(uint8_t)))
 		return false;
 
 	return true;
@@ -288,14 +288,14 @@ bool SMIMS_FPGAProgrammerActive(USB_HANDLE dev_handle)
 
 bool SMIMS_VeriCommActive(USB_HANDLE dev_handle)
 {
-	BYTE Command[2];
+	uint8_t Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
 		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x03;
-	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
+	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(uint8_t)))
 		return false;
 
 	return true;
@@ -303,14 +303,14 @@ bool SMIMS_VeriCommActive(USB_HANDLE dev_handle)
 
 bool SMIMS_VeriInstrumentActive(USB_HANDLE dev_handle)
 {
-	BYTE Command[2];
+	uint8_t Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
 		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x08;
-	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
+	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(uint8_t)))
 		return false;
 
 	return true;
@@ -318,14 +318,14 @@ bool SMIMS_VeriInstrumentActive(USB_HANDLE dev_handle)
 
 bool SMIMS_VeriLinkActive(USB_HANDLE dev_handle)
 {
-	BYTE Command[2];
+	uint8_t Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
 		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x09;
-	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
+	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(uint8_t)))
 		return false;
 
 	return true;
@@ -333,14 +333,14 @@ bool SMIMS_VeriLinkActive(USB_HANDLE dev_handle)
 
 bool SMIMS_VeriSoCActive(USB_HANDLE dev_handle)
 {
-	BYTE Command[2];
+	uint8_t Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
 		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x0a;
-	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
+	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(uint8_t)))
 		return false;
 
 	return true;
@@ -348,14 +348,14 @@ bool SMIMS_VeriSoCActive(USB_HANDLE dev_handle)
 
 bool SMIMS_VeriCommProActive(USB_HANDLE dev_handle)
 {
-	BYTE Command[2];
+	uint8_t Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
 		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x0b;
-	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
+	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(uint8_t)))
 		return false;
 
 	return true;
@@ -363,14 +363,14 @@ bool SMIMS_VeriCommProActive(USB_HANDLE dev_handle)
 
 bool SMIMS_VeriSDKActive(USB_HANDLE dev_handle)
 {
-	BYTE Command[2];
+	uint8_t Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
 		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x04;
-	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
+	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(uint8_t)))
 		return false;
 
 	return true;
@@ -378,14 +378,14 @@ bool SMIMS_VeriSDKActive(USB_HANDLE dev_handle)
 
 bool SMIMS_FlashReadActive(USB_HANDLE dev_handle)
 {
-	BYTE Command[2];
+	uint8_t Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
 		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x05;
-	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
+	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(uint8_t)))
 		return false;
 
 	return true;
@@ -393,14 +393,14 @@ bool SMIMS_FlashReadActive(USB_HANDLE dev_handle)
 
 bool SMIMS_FlashWriteActive(USB_HANDLE dev_handle)
 {
-	BYTE Command[2];
+	uint8_t Command[2];
 
 	if(!SMIMS_SyncDelay(dev_handle))
 		return false;
 
 	Command[0] = 0x01;
 	Command[1] = 0x15;
-	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(BYTE)))
+	if(!SMIMS_WriteUSB(dev_handle, EP4, Command, 2*sizeof(uint8_t)))
 		return false;
 
 	return true;
@@ -418,11 +418,11 @@ uint16_t SMIMS_GetVeriComm_ClockLowDelay(struct SMIMS_CFGSpace *pCFGSpace)
 	return pCFGSpace->CFG[1];
 }
 
-BYTE SMIMS_GetVeriComm_ISV(struct SMIMS_CFGSpace *pCFGSpace)
+uint8_t SMIMS_GetVeriComm_ISV(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	uint16_t temp = pCFGSpace->CFG[2] >> 4;
 	temp &= 0x000f;
-	return (BYTE) temp;
+	return (uint8_t) temp;
 }
 
 bool SMIMS_IsVeriComm_ClockCheck_Enable(struct SMIMS_CFGSpace *pCFGSpace)
@@ -433,12 +433,12 @@ bool SMIMS_IsVeriComm_ClockCheck_Enable(struct SMIMS_CFGSpace *pCFGSpace)
 		return false;
 }
 
-BYTE SMIMS_GetVeriSDK_ChannelSelector(struct SMIMS_CFGSpace *pCFGSpace)
+uint8_t SMIMS_GetVeriSDK_ChannelSelector(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	return pCFGSpace->CFG[3] & 0xFF;
 }
 
-BYTE SMIMS_GetModeSelector(struct SMIMS_CFGSpace *pCFGSpace)
+uint8_t SMIMS_GetModeSelector(struct SMIMS_CFGSpace *pCFGSpace)
 {
 	return pCFGSpace->CFG[3] >> 8;
 }
@@ -495,13 +495,13 @@ void SMIMS_SetVeriComm_ClockCheck(struct SMIMS_CFGSpace *pCFGSpace, bool Check)
 		pCFGSpace->CFG[2] &= 0xfffe;
 }
 
-void SMIMS_SetVeriSDK_ChannelSelector(struct SMIMS_CFGSpace *pCFGSpace, BYTE Select)
+void SMIMS_SetVeriSDK_ChannelSelector(struct SMIMS_CFGSpace *pCFGSpace, uint8_t Select)
 {
 	pCFGSpace->CFG[3] &= 0xff00;
 	pCFGSpace->CFG[3] |= Select;
 }
 
-void SMIMS_SetModeSelector(struct SMIMS_CFGSpace *pCFGSpace, BYTE Select)
+void SMIMS_SetModeSelector(struct SMIMS_CFGSpace *pCFGSpace, uint8_t Select)
 {
 	pCFGSpace->CFG[3] &= 0x00ff;
 	pCFGSpace->CFG[3] |= (Select << 8);

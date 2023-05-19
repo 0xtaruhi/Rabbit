@@ -55,10 +55,10 @@ bool SMIMS_FlashWriteActive(USB_HANDLE dev_handle);  // Flash API
 //============ Configuration Space API ==============
 uint16_t SMIMS_GetVeriComm_ClockHighDelay(struct SMIMS_CFGSpace* pCFGSpace);
 uint16_t SMIMS_GetVeriComm_ClockLowDelay(struct SMIMS_CFGSpace* pCFGSpace);
-BYTE SMIMS_GetVeriComm_ISV(struct SMIMS_CFGSpace* pCFGSpace);
+uint8_t SMIMS_GetVeriComm_ISV(struct SMIMS_CFGSpace* pCFGSpace);
 bool SMIMS_IsVeriComm_ClockCheck_Enable(struct SMIMS_CFGSpace* pCFGSpace);
-BYTE SMIMS_GetVeriSDK_ChannelSelector(struct SMIMS_CFGSpace* pCFGSpace);
-BYTE SMIMS_GetModeSelector(struct SMIMS_CFGSpace* pCFGSpace);
+uint8_t SMIMS_GetVeriSDK_ChannelSelector(struct SMIMS_CFGSpace* pCFGSpace);
+uint8_t SMIMS_GetModeSelector(struct SMIMS_CFGSpace* pCFGSpace);
 uint16_t SMIMS_GetFlashBeginBlockAddr(struct SMIMS_CFGSpace* pCFGSpace);  // Flash API
 uint16_t SMIMS_GetFlashBeginClusterAddr(struct SMIMS_CFGSpace* pCFGSpace);  // Flash API
 uint16_t SMIMS_GetFlashReadEndBlockAddr(struct SMIMS_CFGSpace* pCFGSpace);  // Flash API
@@ -69,8 +69,8 @@ void SMIMS_SetVeriComm_ClockHighDelay(struct SMIMS_CFGSpace* pCFGSpace, uint16_t
 void SMIMS_SetVeriComm_ClockLowDelay(struct SMIMS_CFGSpace* pCFGSpace, uint16_t ClockLowDelay);
 void SMIMS_SetVeriComm_ISV(struct SMIMS_CFGSpace* pCFGSpace, uint16_t Value);
 void SMIMS_SetVeriComm_ClockCheck(struct SMIMS_CFGSpace* pCFGSpace, bool Check);
-void SMIMS_SetVeriSDK_ChannelSelector(struct SMIMS_CFGSpace* pCFGSpace, BYTE Select);
-void SMIMS_SetModeSelector(struct SMIMS_CFGSpace* pCFGSpace, BYTE Select);
+void SMIMS_SetVeriSDK_ChannelSelector(struct SMIMS_CFGSpace* pCFGSpace, uint8_t Select);
+void SMIMS_SetModeSelector(struct SMIMS_CFGSpace* pCFGSpace, uint8_t Select);
 void SMIMS_SetFlashBeginBlockAddr(struct SMIMS_CFGSpace* pCFGSpace, uint16_t Address);  // Flash API
 void SMIMS_SetFlashBeginClusterAddr(struct SMIMS_CFGSpace* pCFGSpace, uint16_t Address);  // Flash API
 void SMIMS_SetFlashReadEndBlockAddr(struct SMIMS_CFGSpace* pCFGSpace, uint16_t Address);  // Flash API

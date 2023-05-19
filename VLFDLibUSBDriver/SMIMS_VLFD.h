@@ -8,7 +8,7 @@ extern "C" bool WINAPI VLFD_ProgramFPGA(int iBoard, const char * BitFile);
 extern "C" bool WINAPI VLFD_AppOpen(int iBoard, const char * SerialNO);
 extern "C" bool WINAPI VLFD_AppFIFOReadData(int iBoard, uint16_t *Buffer, unsigned size);
 extern "C" bool WINAPI VLFD_AppFIFOWriteData(int iBoard, uint16_t *Buffer, unsigned size);
-extern "C" bool WINAPI VLFD_AppChannelSelector(int iBoard, BYTE channel);
+extern "C" bool WINAPI VLFD_AppChannelSelector(int iBoard, uint8_t channel);
 extern "C" bool WINAPI VLFD_AppClose(int iBoard);
 extern "C" const char * WINAPI VLFD_GetLastErrorMsg(int iBoard);
 
