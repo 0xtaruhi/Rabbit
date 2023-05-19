@@ -1,6 +1,7 @@
 #include "VLFDManager.h"
 
 #include <iostream>
+#include <string>
 
 using namespace rabbit_vlfd;
 
