@@ -148,7 +148,7 @@ void SMIMS_DecryptCopy(uint16_t *dst, uint16_t *src, unsigned int Length, uint16
 
 uint16_t SMIMS_LicenseGen(uint16_t SecurityKey, uint16_t CustomerID)
 {
-	DWORD temp = 0;
+	uint32_t temp = 0;
 	uint16_t i = SecurityKey & 0x0003;
 	uint16_t j = (CustomerID & 0x000f) << 4;
 
