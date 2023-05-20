@@ -2,10 +2,9 @@
 #ifndef SERIAL_CHECK_H
 #define SERIAL_CHECK_H
 
+#include <stdint.h>
+
 //for check Serial Number
-static char Table1[16] = {'Z','Q','W','R','T','Y','U','I','P','L','A','B','C','D','E','F'};
-static char Table2[16] = {'K','J','H','G','F','D','S','A','Z','X','C','V','B','N','M','L'};
-static char Table3[16] = {'G','H','Y','T','R','F','V','B','N','J','U','I','K','S','X','O'};
 bool CheckSerialNO(const char * SerialNO, char * cCID);
 bool ValidateSN(const char * SerialNO);
 bool CheckSoftwareVersion(const char * cSerialNO);

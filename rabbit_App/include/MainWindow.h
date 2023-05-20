@@ -1,14 +1,12 @@
 #pragma once
-#include "qstatusbar.h"
-#include "qtmetamacros.h"
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
 #include "NewProjectDialog.h"
 #include "TabToolbar/Builder.h"
-#include <QStatusBar>
 #include <QLabel>
+#include <QMainWindow>
+#include <QStatusBar>
 
 namespace rabbit_App {
 class MainWindow : public QMainWindow {
@@ -20,8 +18,8 @@ public:
 
 private:
   tt::Builder *builder_;
-  tt::TabToolbar* tab_tool_bar_;
-  QStatusBar* status_bar_;
+  tt::TabToolbar *tab_tool_bar_;
+  QStatusBar *status_bar_;
 
   // dialog handlers
   NewProjectDialog *new_project_dialog_;

@@ -3,6 +3,9 @@
 #include "serialcheck.h"
 
 
+static char Table1[16] = {'Z','Q','W','R','T','Y','U','I','P','L','A','B','C','D','E','F'};
+static char Table2[16] = {'K','J','H','G','F','D','S','A','Z','X','C','V','B','N','M','L'};
+static char Table3[16] = {'G','H','Y','T','R','F','V','B','N','J','U','I','K','S','X','O'};
 //---------------------------------------------------------------------------
 //Name: CheckSerialNO
 //description: CheckSerialNO
@@ -323,7 +326,7 @@ bool CheckEncrypt(const char * cSerialNO)
         char cTrans[9];
         char cGetCh;
         int iValue;
-        char cValue[8];
+        char cValue[9];
 
         memset(cHexValue, 0, 7);
         cGetCh = GetTable(cSerialNO[2], Table1);

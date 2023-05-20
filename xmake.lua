@@ -3,7 +3,7 @@ set_languages("c++17")
 
 add_subdirs("rabbit_App/3rdparty/TabToolbar")
 if is_plat("windows") then
-    add_cxxflags("/W4", "/WX", "/utf-8")
+    add_cxxflags("/W3", "/WX", "/utf-8")
 else
     add_cxxflags("-Wall", "-Werror")
 end
@@ -26,11 +26,11 @@ target("rabbit_VLFD")
 target("rabbit_App")
     add_rules("qt.application")
     set_kind("binary")
-    add_files("rabbit_App/src/*.cpp")
-    add_files("rabbit_App/include/*.h")
+    add_files("rabbit_App/src/**.cpp")
+    add_files("rabbit_App/include/**.h")
     add_files("rabbit_App/res/*.qrc")
     add_files("rabbit_App/3rdparty/TabToolbar/src/TabToolbar/*.qrc")
     add_frameworks("QtWidgets", "QtGui", "QtCore")
-    add_includedirs("rabbit_App/include", "rabbit_VLFD/include")
+    add_includedirs("rabbit_App/include", "rabbit_VLFD/include", "rabbit_App/include/Components")
     add_includedirs("rabbit_App/3rdparty/TabToolbar/include")
     add_deps("rabbit_VLFD", "TabToolbar")
