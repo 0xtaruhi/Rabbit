@@ -15,7 +15,8 @@ public:
   ~MainWindow();
 
 private:
-  tt::Builder *ttb_;
+  tt::Builder *builder_;
+  tt::TabToolbar* tab_tool_bar_;
 
   void initMembers();
   void initLayout();
