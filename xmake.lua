@@ -1,6 +1,8 @@
 add_rules("mode.debug", "mode.release")
 set_languages("c++17")
 
+add_subdirs("rabbit_App/3rdparty/TabToolbar")
+
 target("VLFDLibUSB")
     set_kind("static")
     add_files("VLFDLibUSBDriver/*.cpp")
@@ -20,8 +22,10 @@ target("rabbit_App")
     add_rules("qt.application")
     set_kind("binary")
     add_files("rabbit_App/src/*.cpp")
-    add_files("rabbit_App/include/MainWindow.h")
+    add_files("rabbit_App/include/*.h")
+    add_files("rabbit_App/res/*.qrc")
+    add_files("rabbit_App/3rdparty/TabToolbar/src/TabToolbar/*.qrc")
     add_frameworks("QtWidgets", "QtGui", "QtCore")
     add_includedirs("rabbit_App/include", "rabbit_VLFD/include")
-    add_deps("rabbit_VLFD")
-
+    add_includedirs("rabbit_App/3rdparty/TabToolbar/include")
+    add_deps("rabbit_VLFD", "TabToolbar")

@@ -353,5 +353,5 @@ cmake_install.cmake
 Native/
 .vscode
 .xmake
-libusb-1.0.26
 build
+compile_commands.json

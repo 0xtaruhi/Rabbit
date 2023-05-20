@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/tt">
+        <file>tabtoolbar/tabtoolbar.json</file>
+    </qresource>
+</RCC>

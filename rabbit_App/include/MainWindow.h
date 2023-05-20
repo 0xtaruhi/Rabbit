@@ -3,6 +3,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "NewProjectDialog.h"
+#include "TabToolbar/Builder.h"
 
 namespace rabbit_App {
 class MainWindow : public QMainWindow {
@@ -13,6 +15,12 @@ public:
   ~MainWindow();
 
 private:
+  tt::Builder *ttb_;
+
+  void initMembers();
+  void initLayout();
+  void initConnections();
+  
 };
 } // namespace rabbit_App
 
