@@ -2,6 +2,11 @@ add_rules("mode.debug", "mode.release")
 set_languages("c++17")
 
 add_subdirs("rabbit_App/3rdparty/TabToolbar")
+if is_plat("windows") then
+    add_cxxflags("/W4", "/WX", "/utf-8")
+else
+    add_cxxflags("-Wall", "-Werror")
+end
 
 target("VLFDLibUSB")
     set_kind("static")

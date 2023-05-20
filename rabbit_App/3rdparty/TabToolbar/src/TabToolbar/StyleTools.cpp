@@ -85,7 +85,8 @@ static void FillStyle(QString& style, const StyleParams& params)
         const QMetaProperty prop = params.metaObject()->property(i);
         if(QString(prop.name()) == "objectName")
             continue;
-        if(prop.type() == QVariant::Bool)
+        // if(prop.type() == QVariant::Bool)
+        if (prop.userType() == QMetaType::Bool)
             continue;
         const QString propStr = QString("%") + prop.name() + "%";
         if(!style.contains(propStr))
@@ -93,24 +94,19 @@ static void FillStyle(QString& style, const StyleParams& params)
         style.replace(propStr, "%1");
 
         const QVariant property = params.property(prop.name());
-        switch(prop.type())
-        {
-            case QVariant::String:
-                style = style.arg(property.toString() + "px");
-                break;
-            case QVariant::Int:
-                style = style.arg(property.toInt());
-                break;
-            case QVariant::UserType:
-            {
-                const Colors& colors = property.value<Colors>();
-                if(colors.size() == 0)
-                    throw std::runtime_error("Some property has no colors!");
-                style = style.arg(FormatColor(colors));
-                break;
-            }
-            default:
-                throw std::runtime_error("Unknown property type in style!");
+
+        auto meta_type = prop.metaType().id();
+        if (meta_type == QMetaType::QString) {
+            style = style.arg(property.toString() + "px");
+        } else if (meta_type == QMetaType::Int) {
+            style = style.arg(property.toInt());
+        } else if (meta_type >= QMetaType::User) {
+            const Colors& colors = property.value<Colors>();
+            if(colors.size() == 0)
+                throw std::runtime_error("Some property has no colors!");
+            style = style.arg(FormatColor(colors));
+        } else {
+            throw std::runtime_error("Unknown property type in style!");
         }
     }
 }

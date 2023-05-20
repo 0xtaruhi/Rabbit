@@ -85,7 +85,7 @@ TabToolbar* Builder::CreateTabToolbar(const QString& configPath)
         return w;
     };
 
-    auto CreateActionParams = [this, &actionsMap, &menusMap](const QJsonObject& obj)
+    auto CreateActionParams = [&actionsMap, &menusMap](const QJsonObject& obj)
     {
         SubGroup::ActionParams params;
         const QString type = obj["type"].toString();
