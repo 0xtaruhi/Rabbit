@@ -1,10 +1,14 @@
 #pragma once
+#include "qstatusbar.h"
+#include "qtmetamacros.h"
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
 #include "NewProjectDialog.h"
 #include "TabToolbar/Builder.h"
+#include <QStatusBar>
+#include <QLabel>
 
 namespace rabbit_App {
 class MainWindow : public QMainWindow {
@@ -17,11 +21,23 @@ public:
 private:
   tt::Builder *builder_;
   tt::TabToolbar* tab_tool_bar_;
+  QStatusBar* status_bar_;
+
+  // dialog handlers
+  NewProjectDialog *new_project_dialog_;
 
   void initMembers();
+
+  /// @brief Initializes the actions for the toolbar.
+  /// It is called by initMembers(). Do not call it directly.
+  void initActions();
+
   void initLayout();
   void initConnections();
-  
+
+private slots:
+  void onNewProjectClicked();
+  void onOpenProjectClicked();
 };
 } // namespace rabbit_App
 

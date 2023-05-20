@@ -1,7 +1,4 @@
 <RCC>
-    <qresource prefix="/tt">
-        <file>tabtoolbar/tabtoolbar.json</file>
-    </qresource>
     <qresource prefix="/icons">
         <file>icons/icons8-add-94.png</file>
         <file>icons/icons8-add-file-94.png</file>

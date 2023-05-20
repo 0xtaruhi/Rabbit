@@ -3,11 +3,11 @@
 #define NEW_PROJECT_DIALOG_H
 
 #include <QPushButton>
-#include <QWidget>
+#include <QDialog>
 
 namespace rabbit_App {
 
-class NewProjectDialog : public QWidget {
+class NewProjectDialog : public QDialog {
   Q_OBJECT
 
 public:

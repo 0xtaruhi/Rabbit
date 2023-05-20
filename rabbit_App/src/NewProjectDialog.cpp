@@ -3,7 +3,7 @@
 
 using namespace rabbit_App;
 
-NewProjectDialog::NewProjectDialog(QWidget *parent) : QWidget(parent) {
+NewProjectDialog::NewProjectDialog(QWidget *parent) : QDialog(parent) {
   initMembers();
   initLayout();
 }
