@@ -7,6 +7,7 @@ using namespace rabbit_App;
 
 constexpr auto kMinWindowWidth = 800;
 constexpr auto kMinWindowHeight = 600;
+constexpr auto kDefaultStyle = "Kool";
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   initMembers();
@@ -26,18 +27,7 @@ void MainWindow::initLayout() {
   setMinimumSize(kMinWindowWidth, kMinWindowHeight);
   setWindowTitle("Rabbit");
 
-  // Init TabToolbar
-  tt::Group *styles_group = (tt::Group *)((*builder_)["Styles"]);
-  styles_group->AddSeparator();
-  QStringList styles = tt::GetRegisteredStyles();
-  for (int i = 0; i < styles.size(); i++) {
-    const QString &style_name = styles.at(i);
-    QPushButton *btn = new QPushButton(styles[i]);
-    QObject::connect(btn, &QPushButton::clicked, [=]() {
-      tab_tool_bar_->SetStyle(style_name);
-    });
-    styles_group->AddWidget(btn);
-  }
+  tab_tool_bar_->SetStyle("Kool");
   addToolBar(Qt::TopToolBarArea, tab_tool_bar_);
 }
 

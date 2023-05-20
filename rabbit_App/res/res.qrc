@@ -2,4 +2,17 @@
     <qresource prefix="/tt">
         <file>tabtoolbar/tabtoolbar.json</file>
     </qresource>
+    <qresource prefix="/icons">
+        <file>icons/icons8-add-94.png</file>
+        <file>icons/icons8-add-file-94.png</file>
+        <file>icons/icons8-electronics-94.png</file>
+        <file>icons/icons8-folder-94.png</file>
+        <file>icons/icons8-help-94.png</file>
+        <file>icons/icons8-save-94.png</file>
+        <file>icons/icons8-save-as-94.png</file>
+        <file>icons/icons8-switch-off-94.png</file>
+        <file>icons/icons8-switch-on-94.png</file>
+        <file>icons/icons8-usb-connected-94.png</file>
+        <file>icons/icons8-usb-disconnected-94.png</file>
+    </qresource>
 </RCC>
