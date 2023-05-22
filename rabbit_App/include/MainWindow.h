@@ -2,6 +2,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "Components/ComponentsPanel.h"
 #include "NewProjectDialog.h"
 #include "TabToolbar/Builder.h"
 #include <QLabel>
@@ -20,6 +21,7 @@ private:
   tt::Builder *builder_;
   tt::TabToolbar *tab_tool_bar_;
   QStatusBar *status_bar_;
+  component::ComponentsPanel *components_panel_;
 
   // dialog handlers
   NewProjectDialog *new_project_dialog_;

@@ -11,5 +11,6 @@
         <file>icons/icons8-switch-on-94.png</file>
         <file>icons/icons8-usb-connected-94.png</file>
         <file>icons/icons8-usb-disconnected-94.png</file>
+        <file>icons/components/icons8-light-94.png</file>
     </qresource>
 </RCC>
