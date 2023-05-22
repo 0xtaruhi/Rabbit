@@ -62,8 +62,7 @@ void AbstractComponent::paintEvent(QPaintEvent *event) {
   linearGradient.setColorAt(0, Qt::white);
   linearGradient.setColorAt(1, Qt::lightGray);
   painter.setBrush(linearGradient);
-  painter.setPen(
-      QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+  painter.setPen(Qt::NoPen);
   painter.drawRoundedRect(0, 0, this->width(), this->height(), 5, 5);
 }
 
