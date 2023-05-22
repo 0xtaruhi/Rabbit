@@ -1,8 +1,10 @@
 #include "ProjectManager.h"
+#include "qobject.h"
 
 using namespace rabbit_App;
 
-ProjectManager::ProjectManager() {}
+ProjectManager::ProjectManager(QObject *parent)
+    : QObject(parent), bitstream_path_() {}
 
 ProjectManager::~ProjectManager() {}
 

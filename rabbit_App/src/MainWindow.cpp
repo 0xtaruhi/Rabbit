@@ -1,13 +1,22 @@
 #include "MainWindow.h"
 #include "Components/ComponentAction.h"
 #include "Components/Components.h"
+#include "FPGAManager.h"
+#include "ProjectManager.h"
 #include "TabToolbar/Group.h"
 #include "TabToolbar/Page.h"
+#include "TabToolbar/SubGroup.h"
 #include "TabToolbar/TabToolbar.h"
 #include "qaction.h"
+#include "qfontdatabase.h"
+#include "qicon.h"
+#include "qlabel.h"
+#include "qmessagebox.h"
 #include "qpushbutton.h"
 #include "qtoolbutton.h"
 #include <QAction>
+#include <QSpinBox>
+#include <exception>
 
 using namespace rabbit_App;
 using namespace rabbit_App::component;
@@ -35,11 +44,14 @@ void MainWindow::initMembers() {
 
   components_panel_ = new ComponentsPanel(this);
   new_project_dialog_ = new NewProjectDialog(this);
+
+  fpga_manager_ = new FPGAManager(this);
+  project_manager_ = new ProjectManager(this);
 }
 
 void MainWindow::initActions() {
-  tt::Page *file_page = tab_tool_bar_->AddPage("File");
-  tt::Group *file_group = file_page->AddGroup("Project");
+  tt::Page *project_page = tab_tool_bar_->AddPage("Project");
+  tt::Group *file_group = project_page->AddGroup(tr("File"));
 
   auto new_project_action = new QAction(tr("New"), this);
   new_project_action->setIcon(QIcon(":/icons/icons/icons8-add-file-94.png"));
@@ -64,6 +76,43 @@ void MainWindow::initActions() {
   file_group->AddAction(QToolButton::DelayedPopup, save_as_project_action);
   connect(save_as_project_action, &QAction::triggered, this,
           &MainWindow::onOpenProjectClicked);
+
+  file_group->AddSeparator();
+
+  auto settings_action = new QAction(tr("Settings"));
+  settings_action->setIcon(QIcon(":/icons/icons/icons8-setting-94.png"));
+  file_group->AddAction(QToolButton::DelayedPopup, settings_action);
+
+  tt::Group *bitstream_group = project_page->AddGroup(tr("Bitstream"));
+  auto download_bitstrem_action = new QAction(tr("Download"), this);
+  download_bitstrem_action->setIcon(
+      QIcon(":/icons/icons/icons8-download-94.png"));
+  bitstream_group->AddAction(QToolButton::DelayedPopup,
+                             download_bitstrem_action);
+  connect(download_bitstrem_action, &QAction::triggered, this,
+          &MainWindow::onDownloadBitstreamClicked);
+
+  tt::Group *running_group = project_page->AddGroup(tr("Running"));
+  tt::SubGroup *frequency_group =
+      running_group->AddSubGroup(tt::SubGroup::Align::No);
+  frequency_group->AddWidget(new QLabel(tr("Frequency")));
+  frequency_spin_box_ = new QSpinBox();
+  frequency_spin_box_->setRange(1, 10000);
+  frequency_spin_box_->setSuffix("Hz");
+  frequency_group->AddWidget(frequency_spin_box_);
+  running_group->AddSeparator();
+  run_action_ = new QAction(tr("Run"), this);
+  run_action_->setIcon(QIcon(":/icons/icons/icons8-start-94.png"));
+  running_group->AddAction(QToolButton::DelayedPopup, run_action_);
+  connect(run_action_, &QAction::triggered, this,
+          &MainWindow::onRunningStartClicked);
+
+  stop_action_ = new QAction(tr("Stop"), this);
+  stop_action_->setIcon(QIcon(":/icons/icons/icons8-cancel-94.png"));
+  running_group->AddAction(QToolButton::DelayedPopup, stop_action_);
+  connect(stop_action_, &QAction::triggered, this,
+          &MainWindow::onRunningStopClicked);
+  stop_action_->setDisabled(true);
 
   tt::Page *components_page = tab_tool_bar_->AddPage("Components");
   tt::Group *inputs_group = components_page->AddGroup("Inputs");
@@ -107,3 +156,25 @@ void MainWindow::initConnections() {}
 void MainWindow::onNewProjectClicked() { new_project_dialog_->exec(); }
 
 void MainWindow::onOpenProjectClicked() {}
+
+void MainWindow::onDownloadBitstreamClicked() {
+  try {
+    fpga_manager_->program(project_manager_->getBitstreamPath());
+  } catch (std::exception e) {
+    QMessageBox msg;
+    msg.setText(e.what());
+    msg.setIcon(QMessageBox::Critical);
+    msg.setWindowTitle(tr("Program Failed"));
+    msg.exec();
+  }
+}
+
+void MainWindow::onRunningStartClicked() {
+  run_action_->setDisabled(true);
+  stop_action_->setEnabled(true);
+}
+
+void MainWindow::onRunningStopClicked() {
+  run_action_->setEnabled(true);
+  stop_action_->setDisabled(true);
+}

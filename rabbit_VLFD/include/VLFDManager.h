@@ -5,7 +5,13 @@
 #include <thread>
 
 namespace rabbit_vlfd {
+
+#ifdef RABBIT_APP
+class [[deprecated(
+    "This class is deprecated. Use FPGAManager instead.")]] VLFDManager {
+#else
 class VLFDManager {
+#endif
 public:
   VLFDManager();
 

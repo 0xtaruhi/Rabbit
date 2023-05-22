@@ -8,7 +8,7 @@ target("TabToolbar")
     add_files("include/TabToolbar/*.h")
     add_files("src/TabToolbar/*.h")
     add_files("src/TabToolbar/*.qrc")
-    add_includedirs("include")
+    add_includedirs("include", {public = true})
     add_frameworks("QtWidgets", "QtGui", "QtCore")
 
 -- target("Example")
