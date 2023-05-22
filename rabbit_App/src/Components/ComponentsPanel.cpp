@@ -1,12 +1,13 @@
-#include "Components/ComponentsPanel.h"
-#include "Components/AbstractComponent.h"
-#include "qdebug.h"
-#include "qevent.h"
-#include "quuid.h"
+#include <cassert>
+
 #include <QDrag>
+#include <QDropEvent>
 #include <QEvent>
 #include <QMimeData>
-#include <cassert>
+#include <QUuid>
+
+#include "Components/AbstractComponent.h"
+#include "Components/ComponentsPanel.h"
 
 using namespace rabbit_App::component;
 
@@ -71,7 +72,7 @@ void ComponentsPanel::appendComponent(AbstractComponent *component,
           &ComponentsPanel::removeComponent);
 }
 
-void ComponentsPanel::appendComponent(AbstractComponent* component) {
+void ComponentsPanel::appendComponent(AbstractComponent *component) {
   return appendComponent(component, 0, 0);
 }
 

@@ -1,5 +1,6 @@
+#include <QObject>
+
 #include "ProjectManager.h"
-#include "qobject.h"
 
 using namespace rabbit_App;
 

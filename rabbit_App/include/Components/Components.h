@@ -2,11 +2,12 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
 
-#include "Components/AbstractComponent.h"
-#include "Components/ComponentMacro.h"
 #include <QColor>
 #include <QLabel>
 #include <QWidget>
+
+#include "Components/AbstractComponent.h"
+#include "Components/ComponentMacro.h"
 
 #define LED_RAW_EXTRA_MEMBERS                                                  \
   QColor color_ = Qt::red;                                                     \

@@ -1,22 +1,22 @@
-#include "MainWindow.h"
-#include "Components/ComponentAction.h"
-#include "Components/Components.h"
-#include "FPGAManager.h"
-#include "ProjectManager.h"
+#include <QAction>
+#include <QIcon>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QToolButton>
+#include <exception>
+
 #include "TabToolbar/Group.h"
 #include "TabToolbar/Page.h"
 #include "TabToolbar/SubGroup.h"
 #include "TabToolbar/TabToolbar.h"
-#include "qaction.h"
-#include "qfontdatabase.h"
-#include "qicon.h"
-#include "qlabel.h"
-#include "qmessagebox.h"
-#include "qpushbutton.h"
-#include "qtoolbutton.h"
-#include <QAction>
-#include <QSpinBox>
-#include <exception>
+
+#include "FPGAManager.h"
+#include "ProjectManager.h"
+
+#include "Components/ComponentAction.h"
+#include "Components/Components.h"
+#include "MainWindow.h"
 
 using namespace rabbit_App;
 using namespace rabbit_App::component;

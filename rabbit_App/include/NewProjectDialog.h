@@ -1,14 +1,13 @@
 #pragma once
-#include "qlineedit.h"
 #ifndef NEW_PROJECT_DIALOG_H
 #define NEW_PROJECT_DIALOG_H
 
 #include <QCheckBox>
 #include <QDialog>
+#include <QGroupBox>
+#include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QLabel>
-#include <QGroupBox>
 
 namespace rabbit_App {
 

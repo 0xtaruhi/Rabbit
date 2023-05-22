@@ -1,15 +1,16 @@
-#include "Components/Components.h"
-#include "qsize.h"
-
-#include <QPainter>
 #include <QLayout>
+#include <QPainter>
+#include <QSize>
+
+#include "Components/Components.h"
 
 using namespace rabbit_App::component;
 
 LEDRawComponent::LEDRawComponent(QWidget *parent) : QWidget(parent) {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   led_picture_ = new QLabel(this);
-  led_picture_->setPixmap(QPixmap(":/icons/icons/components/icons8-light-94.png"));
+  led_picture_->setPixmap(
+      QPixmap(":/icons/icons/components/icons8-light-94.png"));
 
   led_picture_->setScaledContents(true);
   led_picture_->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);

@@ -1,5 +1,6 @@
-#include "MainWindow.h"
 #include <QApplication>
+
+#include "MainWindow.h"
 
 using namespace rabbit_App;
 

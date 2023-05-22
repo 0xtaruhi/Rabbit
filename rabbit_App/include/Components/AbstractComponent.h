@@ -2,11 +2,12 @@
 #ifndef ABSTRACT_COMPONENT_H
 #define ABSTRACT_COMPONENT_H
 
+#include <QPoint>
+#include <QSize>
 #include <QUuid>
 #include <QWidget>
+
 #include "Components/ComponentTitleBar.h"
-#include <QSize>
-#include <QPoint>
 
 namespace rabbit_App::component {
 
@@ -36,12 +37,12 @@ protected:
   void mouseMoveEvent(QMouseEvent *event) override;
 
 signals:
-  void componentRemoved(AbstractComponent* component);
+  void componentRemoved(AbstractComponent *component);
 
 private:
   QUuid uuid_;
   QPoint drag_start_position_;
-  ComponentTitleBar* title_bar_;
+  ComponentTitleBar *title_bar_;
 
   void initMembers();
   void initLayout();

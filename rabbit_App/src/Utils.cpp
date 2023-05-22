@@ -1,7 +1,7 @@
-#include "Utils.h"
-#include "qpainter.h"
-#include "qpixmap.h"
 #include <QPainter>
+#include <QPixmap>
+
+#include "Utils.h"
 
 using namespace rabbit_App;
 

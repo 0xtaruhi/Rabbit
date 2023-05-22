@@ -1,7 +1,8 @@
-#include "NewProjectDialog.h"
-#include "qboxlayout.h"
-#include "qlineedit.h"
+#include <QBoxLayout>
 #include <QLayout>
+#include <QLineEdit>
+
+#include "NewProjectDialog.h"
 
 using namespace rabbit_App;
 
@@ -39,7 +40,7 @@ void NewProjectDialog::initLayout() {
   auto *project_path_layout = new QHBoxLayout();
   project_path_layout->addWidget(project_path_label_);
   project_path_layout->addWidget(project_path_edit_);
-  auto* create_project_folder_layout = new QHBoxLayout();
+  auto *create_project_folder_layout = new QHBoxLayout();
   create_project_folder_layout->addWidget(create_project_folder_label_);
   create_project_folder_layout->addWidget(create_project_folder_checkbox_);
   project_layout->addLayout(project_name_layout);

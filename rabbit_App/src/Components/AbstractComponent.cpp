@@ -1,18 +1,17 @@
-#include "Components/AbstractComponent.h"
-#include "Components/ComponentTitleBar.h"
-#include "Utils.h"
-#include "qdebug.h"
-#include "qevent.h"
-#include "qnamespace.h"
 #include <QApplication>
 #include <QDrag>
 #include <QEvent>
+#include <QGraphicsEffect>
 #include <QLayout>
 #include <QMessageBox>
 #include <QMimeData>
 #include <QMouseEvent>
 #include <QPainter>
-#include <QGraphicsEffect>
+
+#include "Components/AbstractComponent.h"
+#include "Components/ComponentTitleBar.h"
+
+#include "Utils.h"
 
 using namespace rabbit_App::component;
 

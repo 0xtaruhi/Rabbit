@@ -2,10 +2,11 @@
 #ifndef COMPONENTS_PANEL_H
 #define COMPONENTS_PANEL_H
 
-#include <QWidget>
-#include "Components/AbstractComponent.h"
 #include <QEvent>
 #include <QMap>
+#include <QWidget>
+
+#include "Components/AbstractComponent.h"
 
 namespace rabbit_App::component {
 class AbstractComponent;
@@ -23,13 +24,14 @@ public:
   /// @param grid_col The column of the grid where the component will be placed.
   /// @note The parent of the component will be set to the panel automatically.
   /// So you don't need to set the parent of the component.
-  void appendComponent(AbstractComponent* component, int grid_row, int grid_col);
+  void appendComponent(AbstractComponent *component, int grid_row,
+                       int grid_col);
 
   /// @brief Append a component to the panel. Automatically set the position.
   /// @param component The component to append.
   /// @note The parent of the component will be set to the panel automatically.
   /// So you don't need to set the parent of the component.
-  void appendComponent(AbstractComponent* component);
+  void appendComponent(AbstractComponent *component);
 
 protected:
   void dragEnterEvent(QDragEnterEvent *event) override;
@@ -37,13 +39,13 @@ protected:
   void dropEvent(QDropEvent *event) override;
 
 protected slots:
-  void removeComponent(AbstractComponent* component);
+  void removeComponent(AbstractComponent *component);
 
 protected:
   int grid_width_ = 100;
   int grid_height_ = 100;
 
-  QHash<QUuid, AbstractComponent*> components_;
+  QHash<QUuid, AbstractComponent *> components_;
 };
 
 } // namespace rabbit_App::component

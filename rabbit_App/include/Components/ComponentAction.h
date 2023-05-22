@@ -1,8 +1,9 @@
 #ifndef COMPONENT_ACTION_H
 #define COMPONENT_ACTION_H
 
-#include "Components/AbstractComponent.h"
 #include <QAction>
+
+#include "Components/AbstractComponent.h"
 
 namespace rabbit_App::component {
 

@@ -1,9 +1,10 @@
-#include "Components/ComponentTitleBar.h"
-#include "qlabel.h"
-#include "qpushbutton.h"
-#include "qsizepolicy.h"
-#include "qwidget.h"
+#include <QLabel>
 #include <QLayout>
+#include <QPushButton>
+#include <QSizePolicy>
+#include <QWidget>
+
+#include "Components/ComponentTitleBar.h"
 
 using namespace rabbit_App::component;
 
@@ -41,7 +42,7 @@ void ComponentTitleBar::initMembers() {
   delete_btn_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   font.setPointSize(7);
   delete_btn_->setFont(font);
-  delete_btn_->setFixedSize(15,15);
+  delete_btn_->setFixedSize(15, 15);
 
   connect(delete_btn_, &QPushButton::clicked, this,
           &ComponentTitleBar::onDeleteBtnClicked);
@@ -56,6 +57,4 @@ void ComponentTitleBar::initLayout() {
   setLayout(layout);
 }
 
-void ComponentTitleBar::onDeleteBtnClicked() {
-  emit deleteBtnClicked();
-}
+void ComponentTitleBar::onDeleteBtnClicked() { emit deleteBtnClicked(); }
