@@ -3,7 +3,8 @@ set_languages("c++17")
 
 add_subdirs("rabbit_App/3rdparty/TabToolbar")
 if is_plat("windows") then
-    add_cxxflags("/W3", "/utf-8")
+    add_cxxflags("/W3", "/utf-8", "/Zc:__cplusplus", "/EHsc")
+    add_cxxflags("/D_CRT_SECURE_NO_WARNINGS")
 else
     add_cxxflags("-Wall", "-Werror")
 end
