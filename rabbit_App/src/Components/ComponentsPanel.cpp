@@ -38,7 +38,13 @@ void ComponentsPanel::dropEvent(QDropEvent *event) {
 
     auto component = components_.value(QUuid(uuid));
     assert(component != nullptr);
-    component->move(event->position().toPoint() - drag_start_pos);
+
+    // Get the nearest grid position and set the component's position to it.
+    auto mouse_pos = event->position().toPoint();
+    auto grid_row = mouse_pos.y() / grid_height_;
+    auto grid_col = mouse_pos.x() / grid_width_;
+    component->setGeometry(grid_width_ * grid_col, grid_height_ * grid_row,
+                           component->width(), component->height());
 
     event->setDropAction(Qt::MoveAction);
     event->accept();
