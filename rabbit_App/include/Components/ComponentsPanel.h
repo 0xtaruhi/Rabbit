@@ -5,6 +5,7 @@
 #include <QWidget>
 #include "Components/AbstractComponent.h"
 #include <QEvent>
+#include <QMap>
 
 namespace rabbit_App::component {
 class AbstractComponent;
@@ -38,9 +39,11 @@ protected:
 protected slots:
   void removeComponent(AbstractComponent* component);
 
-private:
+protected:
   int grid_width_ = 100;
   int grid_height_ = 100;
+
+  QHash<QUuid, AbstractComponent*> components_;
 };
 
 } // namespace rabbit_App::component

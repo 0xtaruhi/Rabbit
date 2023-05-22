@@ -1,9 +1,12 @@
 #include "Components/ComponentsPanel.h"
 #include "Components/AbstractComponent.h"
+#include "qdebug.h"
 #include "qevent.h"
+#include "quuid.h"
 #include <QDrag>
 #include <QEvent>
 #include <QMimeData>
+#include <cassert>
 
 using namespace rabbit_App::component;
 
@@ -29,11 +32,13 @@ void ComponentsPanel::dropEvent(QDropEvent *event) {
         event->mimeData()->data("application/x-abstractcomponent");
     QDataStream dataStream(&itemData, QIODevice::ReadOnly);
 
-    QString componentName;
-    QPoint offset;
-    dataStream >> componentName >> offset;
+    QString uuid;
+    QPoint drag_start_pos;
+    dataStream >> uuid >> drag_start_pos;
 
-    //! TODO
+    auto component = components_.value(QUuid(uuid));
+    assert(component != nullptr);
+    component->move(event->position().toPoint() - drag_start_pos);
 
     event->setDropAction(Qt::MoveAction);
     event->accept();
@@ -45,6 +50,8 @@ void ComponentsPanel::dropEvent(QDropEvent *event) {
 void ComponentsPanel::appendComponent(AbstractComponent *component,
                                       int gird_row, int grid_col) {
   component->setParent(this);
+  components_.insert(component->uuid(), component);
+
   auto component_grid_size = component->gridOccupation();
   auto component_width = component_grid_size.width() * grid_width_;
   auto component_height = component_grid_size.height() * grid_height_;

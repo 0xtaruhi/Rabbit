@@ -70,7 +70,6 @@ void AbstractComponent::mouseMoveEvent(QMouseEvent *event) {
   if (!(event->buttons() & Qt::LeftButton)) {
     return;
   }
-  qDebug() << "mouseMoveEvent left button";
   if ((event->pos() - drag_start_position_).manhattanLength() >=
       QApplication::startDragDistance()) {
     QDrag *drag = new QDrag(this);
@@ -82,15 +81,13 @@ void AbstractComponent::mouseMoveEvent(QMouseEvent *event) {
     drag->setPixmap(grab);
     drag->setHotSpot(event->pos());
 
-    qDebug() << "event pos" << event->pos();
-    qDebug() << "this pos" << this->pos();
-
     auto data = QByteArray();
     QDataStream data_stream(&data, QIODevice::WriteOnly);
-    data_stream << uuid_ << (event->pos() - drag_start_position_);
+    data_stream << uuid_.toString() << drag_start_position_;
     mimeData->setData("application/x-abstractcomponent", data);
 
     drag->setMimeData(mimeData);
+    drag->exec();
   }
 }
 
