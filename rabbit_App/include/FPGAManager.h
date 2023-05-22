@@ -12,7 +12,7 @@ class FPGAManager : public QObject {
 
 public:
   FPGAManager(QObject *parent = nullptr);
-  ~FPGAManager();
+  virtual ~FPGAManager();
 
   void program(const QString& bitstream_path);
 

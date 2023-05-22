@@ -7,7 +7,7 @@
     Q_OBJECT                                                                   \
   public:                                                                      \
     component_name##RawComponent(QWidget *parent = nullptr);                   \
-    ~component_name##RawComponent();                                           \
+    virtual ~component_name##RawComponent();                                   \
                                                                                \
   protected:                                                                   \
     void paintEvent(QPaintEvent *event) override;                              \
@@ -20,7 +20,7 @@
     Q_OBJECT                                                                   \
   public:                                                                      \
     component_name##Component(QWidget *parent = nullptr);                      \
-    ~component_name##Component();                                              \
+    virtual ~component_name##Component();                                      \
     virtual QSize gridOccupation() const noexcept override;                    \
   };
 

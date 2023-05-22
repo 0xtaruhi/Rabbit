@@ -16,7 +16,7 @@ class AbstractComponent : public QWidget {
 
 public:
   AbstractComponent(QWidget *parent = nullptr);
-  ~AbstractComponent();
+  virtual ~AbstractComponent();
 
   constexpr const QUuid &uuid() const noexcept { return uuid_; }
 

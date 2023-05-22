@@ -17,7 +17,7 @@ class NewProjectDialog : public QDialog {
 
 public:
   NewProjectDialog(QWidget *parent = nullptr);
-  ~NewProjectDialog();
+  virtual ~NewProjectDialog();
 
 private:
   QLineEdit *project_name_edit_;

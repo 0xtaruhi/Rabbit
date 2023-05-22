@@ -15,7 +15,7 @@ class ComponentTitleBar : public QWidget {
 public:
   ComponentTitleBar(QWidget *parent = nullptr,
                     const QString &title = "Untitled");
-  ~ComponentTitleBar();
+  virtual ~ComponentTitleBar();
 
   QSize sizeHint() const override;
 

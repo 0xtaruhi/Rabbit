@@ -19,7 +19,7 @@ namespace rabbit_vlfd {
 class VLFDHandler {
 public:
   VLFDHandler();
-  ~VLFDHandler();
+  virtual ~VLFDHandler();
 
   /// @brief Program VLFD. When the programming is failed, the function will
   /// throw an exception.

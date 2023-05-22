@@ -15,7 +15,7 @@ class ComponentsPanel : public QWidget {
 
 public:
   ComponentsPanel(QWidget *parent = nullptr);
-  ~ComponentsPanel();
+  virtual ~ComponentsPanel();
 
   /// @brief Append a component to the panel. Manually set the position.
   /// @param component The component to append.

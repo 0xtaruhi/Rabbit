@@ -15,7 +15,7 @@ class VLFDManager {
 public:
   VLFDManager();
 
-  ~VLFDManager();
+  virtual ~VLFDManager();
 
   void initDriver();
   void start();

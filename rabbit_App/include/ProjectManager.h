@@ -11,7 +11,7 @@ class ProjectManager : public QObject {
 
 public:
   ProjectManager(QObject *parent = nullptr);
-  ~ProjectManager();
+  virtual ~ProjectManager();
 
   void readProjectFromFile(const QString &project_path);
   void createProject(const QString &project_name);
