@@ -8,12 +8,18 @@ namespace rabbit_App::component {
 
 class ComponentActionFactory;
 
+/// @brief A QAction that stores a factory function to create a component.
+/// This class is used in the TabToolbar.
 class ComponentAction : public QAction {
   Q_OBJECT
 
 public:
   ComponentAction(QObject *parent = nullptr) : QAction(parent) {}
 
+  /// @brief This function will return a new component.
+  /// @note You should never instantiate a component directly, but
+  /// always use the ComponentActionFactory::create() function to create a
+  /// ComponentAction object.
   AbstractComponent *createComponent() const noexcept {
     return component_factory_();
   }
@@ -26,6 +32,7 @@ private:
 
 class ComponentActionFactory {
 public:
+  /// @brief Creates a new ComponentAction object with the given name.
   static ComponentAction *create(const QString &text,
                                  QObject *parent = nullptr);
 };

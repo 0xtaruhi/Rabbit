@@ -58,6 +58,10 @@ void ComponentsPanel::appendComponent(AbstractComponent *component,
           &ComponentsPanel::removeComponent);
 }
 
+void ComponentsPanel::appendComponent(AbstractComponent* component) {
+  return appendComponent(component, 0, 0);
+}
+
 void ComponentsPanel::removeComponent(AbstractComponent *component) {
   component->deleteLater();
 }

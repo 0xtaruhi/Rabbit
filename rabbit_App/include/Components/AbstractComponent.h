@@ -10,6 +10,7 @@
 
 namespace rabbit_App::component {
 
+/// @brief Abstract class for all components. Do not instantiate.
 class AbstractComponent : public QWidget {
   Q_OBJECT
 
@@ -19,8 +20,14 @@ public:
 
   constexpr const QUuid &uuid() const noexcept { return uuid_; }
 
+  /// @brief Returns the size of the grid occupied by the component.
+  /// @return The size of the grid occupied by the component.
   virtual QSize gridOccupation() const noexcept = 0;
 
+  /// @brief Returns the raw component. The raw component is the true component
+  /// that accepts inputs and displays outputs. The classes that inherit from
+  /// AbstractComponent are only wrappers for the raw component.
+  /// @return The raw component.
   auto rawComponent() const noexcept { return raw_component_; }
 
 protected:
