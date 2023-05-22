@@ -507,7 +507,7 @@ uint16_t ConvertToWORD(const char * Orig_char)
 //---------------------------------------------------------------------------
 int HexToInt(const char * cHexStr)
 {
-	int Strlen = strlen(cHexStr);
+	size_t Strlen = strlen(cHexStr);
         char cNowHexStr[128];
         int iValue = 0;
 
@@ -535,7 +535,7 @@ int HexToInt(const char * cHexStr)
         }
 
         iValue = 0;
-        for(int i=0; i<Strlen; i++)
+        for(size_t i=0; i<Strlen; i++)
         {
                 if ( i > 0 )
         		iValue *= 16;
