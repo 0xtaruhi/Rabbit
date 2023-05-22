@@ -160,7 +160,7 @@ void MainWindow::onOpenProjectClicked() {}
 void MainWindow::onDownloadBitstreamClicked() {
   try {
     fpga_manager_->program(project_manager_->getBitstreamPath());
-  } catch (std::exception e) {
+  } catch (const std::exception &e) {
     QMessageBox msg;
     msg.setText(e.what());
     msg.setIcon(QMessageBox::Critical);
