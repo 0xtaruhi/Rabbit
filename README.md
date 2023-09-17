@@ -89,7 +89,7 @@ Here are some known issues:
 
 1. `libusb` does not support MacOS **M1** chip. 
 
-2. **WaveForm** is not supported on Linux & MacOS currently.
+2. **WaveForm** is not supported on Linux currently.
 
 3. **In the first cycle of fpga read/write, the data may be wrong.**
 
