@@ -1,0 +1,48 @@
+<RCC>
+    <qresource prefix="/RabbitIcon">
+        <file>RabbitIcon/Rabbit-2048-2048.png</file>
+        <file>RabbitIcon/Rabbit.icns</file>
+        <file>RabbitIcon/Rabbit-2048-2048.ico</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file>icons/icons8-settings-94.png</file>
+        <file>icons/icons8-delete-94.png</file>
+        <file>icons/icons8-about-94.png</file>
+        <file>icons/icons8-help-94.png</file>
+        <file>icons/icons8-add-94.png</file>
+        <file>icons/icons8-add-file-94.png</file>
+        <file>icons/icons8-electronics-94.png</file>
+        <file>icons/icons8-folder-94.png</file>
+        <file>icons/icons8-help-94.png</file>
+        <file>icons/icons8-save-94.png</file>
+        <file>icons/icons8-save-as-94.png</file>
+        <file>icons/icons8-switch-off-94.png</file>
+        <file>icons/icons8-switch-on-94.png</file>
+        <file>icons/icons8-usb-connected-94.png</file>
+        <file>icons/icons8-usb-disconnected-94.png</file>
+        <file>icons/icons8-cancel-94.png</file>
+        <file>icons/icons8-start-94.png</file>
+        <file>icons/icons8-download-94.png</file>
+        <file>icons/icons8-waveform-94.png</file>
+        <file>icons/icons8-setting-94.png</file>
+        <file>icons/icons8-more-94.png</file>
+        <file>icons/icons8-button-push-94.png</file>
+        <file>icons/icons8-button-release-94.png</file>
+        <file>icons/icons8-LED-94.png</file>
+        <file>icons/components/LED-icon.png</file>
+        <file>icons/components/TextLCD-icon.png</file>
+        <file>icons/components/Switch-icon.png</file>
+        <file>icons/components/Button-icon.png</file>
+        <file>icons/components/SegmentDisplay-icon.png</file>
+        <file>icons/components/FourDigitSegmentDisplay-icon.png</file>
+        <file>icons/components/LED4x4Matrix-icon.png</file>
+        <file>icons/components/LED8x8Matrix-icon.png</file>
+        <file>icons/components/LED16x16Matrix-icon.png</file>
+        <file>icons/components/KeyPad-icon.png</file>
+        <file>icons/components/SmallKeyPad-icon.png</file>
+        <file>icons/components/GraphicLCD-icon.png</file>
+        <file>icons/components/RotaryButton-icon.png</file>
+        <!-- Add new icon here -->
+        <!-- <file>icons/components/New-icon-here.png</file> -->
+    </qresource>
+</RCC>
