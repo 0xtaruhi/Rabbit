@@ -69,6 +69,13 @@ target("rabbit_App")
                 os.exec("tar -xf gtkwave.zip")
                 os.rm("gtkwave.zip")
             end
+        elseif is_plat("linux") then 
+            if not os.isdir("$(buildir)/$(plat)/$(arch)/$(mode)/gtkwave") then
+                os.cp("gtkwave/linux-x64/gtkwave.tar.gz", "$(buildir)/$(plat)/$(arch)/$(mode)/")
+                os.cd("$(buildir)/$(plat)/$(arch)/$(mode)/")
+                os.exec("tar -xf gtkwave.tar.gz")
+                os.rm("gtkwave.tar.gz")
+            end
         end
     end)
 
