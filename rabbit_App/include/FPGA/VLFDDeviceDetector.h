@@ -6,6 +6,7 @@
 #include <QTimer>
 
 #include "libusb.h"
+#include "ThreadTimer.h"
 
 namespace rabbit_App::fpga {
 
@@ -15,6 +16,8 @@ const QString kDeviceName = "VLX2";
 
 class VLFDDeviceDetector : public QObject {
   Q_OBJECT
+
+  friend class DetectWorker;
 
 public:
   constexpr static int kTimerInterval = 1000;
@@ -42,7 +45,8 @@ signals:
 
 protected:
   // QThread *thread_;
-  QTimer *timer_;
+  // QTimer *timer_;
+  TimeThreadWorker *time_thread_;
   bool is_detecting_ = false;
   bool device_connected_ = false;
 
@@ -109,6 +113,21 @@ private:
 }; // class WinVLFDDeviceDetector
 
 #endif // ifdef _WIN32
+
+class DetectWorker : public Worker {
+  Q_OBJECT
+
+public:
+  DetectWorker(VLFDDeviceDetector *detector);
+  ~DetectWorker();
+
+protected:
+  void doWork() override;
+
+private:
+  VLFDDeviceDetector *detector_;
+  
+};  // class DetectWorker
 
 } // namespace rabbit_App::fpga
 

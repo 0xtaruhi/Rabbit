@@ -12,24 +12,27 @@ VLFDDeviceDetector::VLFDDeviceDetector(QObject *parent) : QObject(parent) {
   instance_ = this;
   // thread_ = new QThread(this);
   // thread_->setObjectName("VLFDDeviceDetectorThread");
-  timer_ = new QTimer(this);
-  timer_->setInterval(kTimerInterval);
+  // timer_ = new QTimer(this);
+  // timer_->setInterval(kTimerInterval);
   // timer_->moveToThread(thread_);
   // connect(timer_, &QTimer::timeout, this,
   // &VLFDDeviceDetector::onTimerTimeOut,
   //         Qt::DirectConnection);
-  connect(timer_, &QTimer::timeout, this, &VLFDDeviceDetector::onTimerTimeOut);
+  // connect(timer_, &QTimer::timeout, this, &VLFDDeviceDetector::onTimerTimeOut);
   // connect(thread_, &QThread::started, timer_,
   // QOverload<>::of(&QTimer::start)); connect(thread_, &QThread::finished,
   // timer_, &QTimer::stop); connect(thread_, &QThread::finished, this,
   // &QObject::deleteLater());
+  time_thread_ = new TimeThreadWorker(new DetectWorker(this), this,
+                                      Qt::QueuedConnection);
+  time_thread_->setInterval(kTimerInterval);
 }
 
 VLFDDeviceDetector::~VLFDDeviceDetector() {
   // stopDetect();
-  if (timer_ != nullptr && timer_->isActive()) {
-    timer_->stop();
-  }
+  // if (timer_ != nullptr && timer_->isActive()) {
+  //   timer_->stop();
+  // }
   // timer_->deleteLater();
   // if (thread_->isRunning()) {
   //   thread_->quit();
@@ -49,7 +52,8 @@ void VLFDDeviceDetector::startDetect() {
   is_detecting_ = true;
   // this->moveToThread(thread_);
   // thread_->start();
-  timer_->start();
+  // timer_->start();
+  time_thread_->start();
 }
 
 void VLFDDeviceDetector::stopDetect() {
@@ -58,7 +62,8 @@ void VLFDDeviceDetector::stopDetect() {
   }
   is_detecting_ = false;
   // this->moveToThread(QApplication::instance()->thread());
-  timer_->stop();
+  // timer_->stop();
+  time_thread_->stop();
   // thread_->quit();
 }
 
@@ -238,3 +243,13 @@ LRESULT CALLBACK WinVLFDDeviceDetector::message_handler(HWND__ *hwnd, UINT uint,
 }
 
 #endif // ifdef _WIN32
+
+DetectWorker::DetectWorker(VLFDDeviceDetector *detector) : detector_(detector) {}
+
+DetectWorker::~DetectWorker() {}
+
+void DetectWorker::doWork() {
+  // qDebug() << "DetectWorker::doWork() thread: " <<
+  // QThread::currentThreadId();
+  detector_->onTimerTimeOut();
+}
