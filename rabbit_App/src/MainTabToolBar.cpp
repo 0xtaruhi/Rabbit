@@ -40,6 +40,18 @@ MainTabToolBar::~MainTabToolBar() {
   all_output_groups_.clear();
 }
 
+void MainTabToolBar::setRunningState(bool is_running) {
+  if (is_running) {
+    run_action_->setDisabled(true);
+    stop_action_->setEnabled(true);
+    waveform_action_->setDisabled(true);
+  } else {
+    run_action_->setEnabled(true);
+    stop_action_->setDisabled(true);
+    waveform_action_->setEnabled(true);
+  }
+}
+
 void MainTabToolBar::initActions() {
   tt::Page *project_page = AddPage("Project");
   tt::Group *file_group = project_page->AddGroup(tr("File"));
@@ -102,8 +114,8 @@ void MainTabToolBar::initActions() {
   running_group->AddAction(QToolButton::DelayedPopup, run_action_);
   connect(run_action_, &QAction::triggered, this, [this]() {
     emit runClicked();
-    run_action_->setDisabled(true);
-    stop_action_->setEnabled(true);
+    // run_action_->setDisabled(true);
+    // stop_action_->setEnabled(true);
   });
 
   stop_action_ = new QAction(tr("Stop"), this);
@@ -111,16 +123,16 @@ void MainTabToolBar::initActions() {
   running_group->AddAction(QToolButton::DelayedPopup, stop_action_);
   connect(stop_action_, &QAction::triggered, this, [this]() {
     emit stopClicked();
-    run_action_->setEnabled(true);
-    stop_action_->setDisabled(true);
+    // run_action_->setEnabled(true);
+    // stop_action_->setDisabled(true);
   });
   stop_action_->setDisabled(true);
 
   running_group->AddSeparator();
-  auto waveform_action = new QAction(tr("Waveform"), this);
-  waveform_action->setIcon(QIcon(":/icons/icons/icons8-waveform-94.png"));
-  running_group->AddAction(QToolButton::DelayedPopup, waveform_action);
-  connect(waveform_action, &QAction::triggered, this,
+  waveform_action_ = new QAction(tr("Waveform"), this);
+  waveform_action_->setIcon(QIcon(":/icons/icons/icons8-waveform-94.png"));
+  running_group->AddAction(QToolButton::DelayedPopup, waveform_action_);
+  connect(waveform_action_, &QAction::triggered, this,
           [this]() { emit waveFormClicked(); });
 
   tt::Group *about_group = project_page->AddGroup(tr("About"));

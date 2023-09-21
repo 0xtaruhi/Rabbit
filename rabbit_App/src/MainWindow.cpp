@@ -7,25 +7,17 @@
 #include <QSpinBox>
 #include <QToolButton>
 #include <QUrl>
-#include <array>
-#include <cstddef>
-#include <cstdint>
 #include <exception>
-#include <stdint.h>
 
 #include "Components/PanelGuiUpdateController.h"
 #include "FPGA/AsyncVLFDReadWrite.h"
-
 #include "FPGA/VLFDDeviceHandler.h"
-
 #include "ProjectManager.h"
-
 #include "Components/ComponentAction.h"
 #include "Components/Components.h"
 #include "MainWindow.h"
 #include "SettingsDialog.h"
 #include "WaveForm/WaveFormController.h"
-#include "qevent.h"
 #include "qmessagebox.h"
 
 using namespace rabbit_App;
@@ -145,14 +137,6 @@ void MainWindow::initConnections() {
   connect(main_tab_tool_bar_, &MainTabToolBar::helpClicked, this,
           &MainWindow::onHelpClicked);
 
-  // connect(vlfd_device_handler_, &fpga::VLFDDeviceHandler::writeData, this,
-  //         &MainWindow::onWriteData);
-  // connect(vlfd_device_handler_, &fpga::VLFDDeviceHandler::readWriteDone,
-  // this,
-  //         &MainWindow::onReadWriteDone);
-  // connect(vlfd_device_handler_, &fpga::VLFDDeviceHandler::readWriteError,
-  // this,
-  //         &MainWindow::onReadWriteError);
   connect(vlfd_device_handler_->ayncVLFDReadWriteHandler(),
           &fpga::AsyncVLFDReadWrite::readWriteDone, this,
           &MainWindow::onReadWriteDone);
@@ -242,21 +226,33 @@ void MainWindow::onDownloadBitstreamClicked() {
 }
 
 void MainWindow::onRunningStartClicked() {
+  try {
+    waveform_controller_->startWriting(project_manager_->getProjectPath());
+    components_panel_->resetAllComponents();
+    panel_gui_update_controller_->onStartUpdate();
+    value_update_controller_->onStartUpdate();
+    vlfd_device_handler_->onStartRunning();
+  } catch (const std::exception &e) {
+    QMessageBox::critical(this, tr("Start running"), e.what());
+    return;
+  }
   is_running_ = true;
-  waveform_controller_->startWriting(project_manager_->getProjectPath());
-  components_panel_->resetAllComponents();
-  panel_gui_update_controller_->onStartUpdate();
-  value_update_controller_->onStartUpdate();
-  vlfd_device_handler_->onStartRunning();
+  main_tab_tool_bar_->setRunningState(true);
 }
 
 void MainWindow::onRunningStopClicked() {
+  try {
+    vlfd_device_handler_->onStopRunning();
+    value_update_controller_->onStopUpdate();
+    components_panel_->resetAllComponents();
+    panel_gui_update_controller_->onStopUpdate();
+    waveform_controller_->stopWriting();
+  } catch (const std::exception &e) {
+    QMessageBox::critical(this, tr("Stop running"), e.what());
+    return;
+  }
   is_running_ = false;
-  vlfd_device_handler_->onStopRunning();
-  value_update_controller_->onStopUpdate();
-  components_panel_->resetAllComponents();
-  panel_gui_update_controller_->onStopUpdate();
-  waveform_controller_->stopWriting();
+  main_tab_tool_bar_->setRunningState(false);
   // qDebug() << "stop";
 }
 
