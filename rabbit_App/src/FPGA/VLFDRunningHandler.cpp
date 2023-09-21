@@ -41,17 +41,17 @@ VLFDRunningHandler::VLFDRunningHandler(QObject *parent) : QObject(parent) {
 VLFDRunningHandler::~VLFDRunningHandler() { delete async_vlfd_read_write_; }
 
 void VLFDRunningHandler::onStopRunning() {
+  VLFD_IO_Close(kNowUseBoard);
   emit readWriteThreadStop();
   running_timer_->stop();
-  VLFD_IO_Close(kNowUseBoard);
   // qDebug() << "stop ,current time :"
   //          << QDateTime::currentDateTime().toString("hh:mm:ss.zzz");
 }
 
 void VLFDRunningHandler::onStartRunning() {
+  VLFD_IO_Open(kNowUseBoard, kSerialNo);
   emit readWriteThreadStart();
   running_timer_->start();
-  VLFD_IO_Open(kNowUseBoard, kSerialNo);
   // qDebug() << "start ,current time :"
   //          << QDateTime::currentDateTime().toString("hh:mm:ss.zzz");
 }

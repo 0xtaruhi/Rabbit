@@ -30,6 +30,10 @@ public slots:
   void onStopThread();
 
 private:
+
+  void checkConnection();
+
+private:
   QThread *thread_;
   bool is_running_;
 

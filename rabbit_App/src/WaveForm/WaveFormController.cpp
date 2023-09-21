@@ -30,6 +30,8 @@ void WaveFormController::gtkWaveExec(const QString &project_path) {
   auto vcd_file_path = project_path_ + "/" + kVCDFileName;
   QProcess *process = new QProcess(this);
 
+  connect(process, &QProcess::finished, process, &QProcess::deleteLater);
+
 #ifdef Q_OS_MAC
   // auto gtkwave_path = QCoreApplication::applicationDirPath() +
   // "/gtkwave/gtkwave.app/Contents/MacOS/gtkwave";
@@ -37,7 +39,6 @@ void WaveFormController::gtkWaveExec(const QString &project_path) {
 #else
   process->start("./gtkwave/bin/gtkwave", QStringList() << vcd_file_path);
 #endif
-
 
 
   // process->start("./gtkwave/bin/gtkwave", QStringList() << vcd_file_path);
