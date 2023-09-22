@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <QDebug>
+#include <QMutex>
 
 #include "FPGA/VLFDDeviceDetector.h"
 #include "libusb.h"
@@ -251,5 +252,6 @@ DetectWorker::~DetectWorker() {}
 void DetectWorker::doWork() {
   // qDebug() << "DetectWorker::doWork() thread: " <<
   // QThread::currentThreadId();
+  QMutexLocker locker(&mutex_);
   detector_->onTimerTimeOut();
 }
