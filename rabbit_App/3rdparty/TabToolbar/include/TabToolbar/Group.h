@@ -1,7 +1,7 @@
 /*
     TabToolbar - a small utility library for Qt, providing tabbed toolbars
-	Copyright (C) 2018 Oleksii Sierov
-	
+        Copyright (C) 2018 Oleksii Sierov
+
     TabToolbar is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -18,9 +18,9 @@
 #ifndef TT_GROUP_H
 #define TT_GROUP_H
 #include <QFrame>
+#include <QHBoxLayout>
 #include <QString>
 #include <QToolButton>
-#include <QHBoxLayout>
 #include <QVariant>
 #include <TabToolbar/API.h>
 #include <TabToolbar/SubGroup.h>
@@ -28,25 +28,24 @@
 class QAction;
 class QMenu;
 
-namespace tt
-{
+namespace tt {
 
-class TT_API Group : public QFrame
-{
-    Q_OBJECT
+class TT_API Group : public QFrame {
+  Q_OBJECT
 public:
-    explicit Group(const QString& name, QWidget* parent = nullptr);
+  explicit Group(const QString &name, QWidget *parent = nullptr);
 
-    void        AddAction(QToolButton::ToolButtonPopupMode type, QAction* action, QMenu* menu = nullptr);
-    void        AddSeparator();
-    SubGroup*   AddSubGroup(SubGroup::Align align);
-    void        AddWidget(QWidget* widget);
+  void AddAction(QToolButton::ToolButtonPopupMode type, QAction *action,
+                 QMenu *menu = nullptr);
+  void AddSeparator();
+  SubGroup *AddSubGroup(SubGroup::Align align);
+  void AddWidget(QWidget *widget);
 
 private:
-    QFrame*     CreateSeparator();
+  QFrame *CreateSeparator();
 
-    QHBoxLayout* innerLayout;
+  QHBoxLayout *innerLayout;
 };
 
-}
+} // namespace tt
 #endif

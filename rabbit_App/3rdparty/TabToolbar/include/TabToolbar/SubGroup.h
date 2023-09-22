@@ -1,7 +1,7 @@
 /*
     TabToolbar - a small utility library for Qt, providing tabbed toolbars
-	Copyright (C) 2018 Oleksii Sierov
-	
+        Copyright (C) 2018 Oleksii Sierov
+
     TabToolbar is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -17,51 +17,45 @@
 */
 #ifndef TT_SUB_GROUP_H
 #define TT_SUB_GROUP_H
+#include <QApplication>
 #include <QFrame>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QPixmap>
+#include <QStyle>
 #include <QToolButton>
 #include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QApplication>
-#include <QStyle>
-#include <vector>
 #include <TabToolbar/API.h>
+#include <vector>
 
 class QAction;
 class QMenu;
 
-namespace tt
-{
+namespace tt {
 
-class TT_API SubGroup : public QFrame
-{
-    Q_OBJECT
+class TT_API SubGroup : public QFrame {
+  Q_OBJECT
 public:
-    enum class Align
-    {
-        Yes,
-        No
-    };
+  enum class Align { Yes, No };
 
-    struct ActionParams
-    {
-        QToolButton::ToolButtonPopupMode type;
-        QAction* action;
-        QMenu* menu;
-    };
+  struct ActionParams {
+    QToolButton::ToolButtonPopupMode type;
+    QAction *action;
+    QMenu *menu;
+  };
 
-    SubGroup(Align align, QWidget* parent = nullptr);
+  SubGroup(Align align, QWidget *parent = nullptr);
 
-    void       AddAction(QToolButton::ToolButtonPopupMode type, QAction* action, QMenu* menu = nullptr);
-    void       AddHorizontalButtons(const std::vector<ActionParams>& params);
-    void       AddWidget(QWidget* widget);
+  void AddAction(QToolButton::ToolButtonPopupMode type, QAction *action,
+                 QMenu *menu = nullptr);
+  void AddHorizontalButtons(const std::vector<ActionParams> &params);
+  void AddWidget(QWidget *widget);
 
 private:
-    QFrame*    ConstructInnerFrame(int spacing);
+  QFrame *ConstructInnerFrame(int spacing);
 
-    QVBoxLayout* innerLayout;
+  QVBoxLayout *innerLayout;
 };
 
-}
+} // namespace tt
 #endif

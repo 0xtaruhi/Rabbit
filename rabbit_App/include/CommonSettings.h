@@ -8,7 +8,7 @@ namespace rabbit_App {
 class CommonSettings {
 public:
   CommonSettings() : settings_("rabbit_App", "rabbit_App") {}
-  
+
   static auto getInstance() -> CommonSettings & {
     static CommonSettings instance;
     return instance;

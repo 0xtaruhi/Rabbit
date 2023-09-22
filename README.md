@@ -12,7 +12,7 @@
 
 ## About <a name = "about"></a>
 
-Rabbit is a virtual components platform for FDP3P7 FPGA boad. 
+Rabbit is a virtual components platform for FDP3P7 FPGA board. 
 It can receive and send data from/to the FPGA board via USB and show the data through the GUI. 
 
 [Wonton](https://github.com/ChayCai/Wonton_master) is the previous version of Rabbit which is implemented in C#(core) and Electron(GUI). Rabbit is completely rewritten in C++ and Qt6 to improve the performance and stability.
@@ -88,10 +88,6 @@ If you have any questions or suggestions, please feel free to open an issue.
 Here are some known issues:
 
 1. `libusb` does not support MacOS **M1** chip. 
-
-2. **WaveForm** is not supported on Linux currently.
-
-3. **In the first cycle of fpga read/write, the data may be wrong.**
 
 ## Contributors <a name = "contributors"></a>
 

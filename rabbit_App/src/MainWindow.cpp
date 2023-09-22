@@ -9,13 +9,13 @@
 #include <QUrl>
 #include <exception>
 
+#include "Components/ComponentAction.h"
+#include "Components/Components.h"
 #include "Components/PanelGuiUpdateController.h"
 #include "FPGA/AsyncVLFDReadWrite.h"
 #include "FPGA/VLFDDeviceHandler.h"
-#include "ProjectManager.h"
-#include "Components/ComponentAction.h"
-#include "Components/Components.h"
 #include "MainWindow.h"
+#include "ProjectManager.h"
 #include "SettingsDialog.h"
 #include "WaveForm/WaveFormController.h"
 #include "qmessagebox.h"
@@ -270,11 +270,13 @@ void MainWindow::onWaveFormClicked() {
 }
 
 void MainWindow::onAboutClicked() {
-  QDesktopServices::openUrl(QUrl("https://github.com/0xtaruhi/Rabbit/blob/main/README.md"));
+  QDesktopServices::openUrl(
+      QUrl("https://github.com/0xtaruhi/Rabbit/blob/main/README.md"));
 }
 
 void MainWindow::onHelpClicked() {
-  QDesktopServices::openUrl(QUrl("https://github.com/0xtaruhi/Rabbit/blob/main/doc/RabbitHelpDoc.md"));
+  QDesktopServices::openUrl(QUrl(
+      "https://github.com/0xtaruhi/Rabbit/blob/main/doc/RabbitHelpDoc.md"));
 }
 
 void MainWindow::onDownloadBitstreamSuccess() {

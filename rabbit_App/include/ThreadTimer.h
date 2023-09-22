@@ -98,10 +98,12 @@ class ThreadWorker : public QObject {
 
 public:
   ThreadWorker(QObject *parent = nullptr);
-  ThreadWorker(Worker *worker, QObject *parent = nullptr, Qt::ConnectionType type = Qt::QueuedConnection);
+  ThreadWorker(Worker *worker, QObject *parent = nullptr,
+               Qt::ConnectionType type = Qt::QueuedConnection);
   ~ThreadWorker();
 
-  virtual void setWorker(Worker *worker, Qt::ConnectionType type = Qt::QueuedConnection);
+  virtual void setWorker(Worker *worker,
+                         Qt::ConnectionType type = Qt::QueuedConnection);
   void work();
 
   virtual void start();
@@ -126,7 +128,8 @@ class TimeThreadWorker : public ThreadWorker {
 
 public:
   TimeThreadWorker(QObject *parent = nullptr);
-  TimeThreadWorker(Worker *worker, QObject *parent = nullptr, Qt::ConnectionType type = Qt::QueuedConnection);
+  TimeThreadWorker(Worker *worker, QObject *parent = nullptr,
+                   Qt::ConnectionType type = Qt::QueuedConnection);
   ~TimeThreadWorker();
 
   void setInterval(int interval) { timer_->setInterval(interval); }
@@ -136,7 +139,7 @@ public:
   virtual void stop() override;
 
 private:
-  QTimer* timer_;
+  QTimer *timer_;
 
 }; // class TimeThreadWorker
 

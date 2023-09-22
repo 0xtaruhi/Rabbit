@@ -9,12 +9,10 @@
 #include <QTimer>
 #include <QVector>
 
-
 #include "Components/AbstractComponent.h"
 #include "Components/ComponentMacro.h"
 #include "Components/ComponentSettingsDialog.h"
 #include "ThreadTimer.h"
-
 
 namespace rabbit_App::component {
 
@@ -22,10 +20,13 @@ COMPONENT_CLASS_DECLARATION(LED4x4Matrix)
 COMPONENT_CLASS_DECLARATION(LED8x8Matrix)
 COMPONENT_CLASS_DECLARATION(LED16x16Matrix)
 
+/// @brief SingleLED class
+/// This class implements the single LED in  Matrix.
 class SingleLED final : public QWidget {
   Q_OBJECT
 
 public:
+  // constance
   static constexpr float kDefaultRadius = 12.0;
   static constexpr float kDefaultSize = 26.0;
   static constexpr QColor kOffColor = QColor(61, 97, 152);
@@ -39,7 +40,6 @@ public:
   void setLEDState(bool state);
   void setLEDLevel(float level);
   void setVisionPersistence(uint vision_persistence);
-  void setFrequency(int frequency) noexcept { frequency_ = frequency; }
   void reset();
   // void onTimerTimeout();
 
@@ -48,16 +48,24 @@ protected:
 
 private:
   uint vision_persistence_ = 100;
-  int frequency_ = 1;
+
+  /// @brief The counter of vision persistence time.
   uint counter_ = 0;
+
+  /// @brief Whether the LED is on vision persistence.
   bool on_persistence_ = false;
+
   bool state_ = false;
+
+  /// @brief The level of the LED, unused in version 1.0.1
   float level_;
 
   float radius_;
   float size_;
 }; // class SingleLED
 
+/// @brief LED4x4MatrixRawComponent class
+/// This class implements the 4x4 LED Matrix component.
 class LED4x4MatrixRawComponent : public AbstractRawComponent {
   Q_OBJECT
 
@@ -76,7 +84,6 @@ public:
 
   uint visionPersistence() const noexcept { return vision_persistence_; }
   void setVisionPersistence(int vision_persistence) override;
-  void setFrequency(int frequency) noexcept override;
   // void setPortsIndex() override;
 
 protected:
@@ -84,19 +91,27 @@ protected:
   void initPorts() override;
   void initLayout(float single_led_radius = SingleLED::kDefaultRadius);
 
+  /// @brief Set the number of columns and rows of the matrix.
+  /// If you want to add a LEDMatrix with different size,
+  /// use this function in the derived class constuctor.
   void setColumnNum(int column_num) { column_num_ = column_num; }
+
+  /// @brief Set the number of columns and rows of the matrix.
   void setRowNum(int row_num) { row_num_ = row_num; }
 
   // uint vision_persistence_ = 100;
 
 private:
-  // QMap<QPair<int, int>, SingleLED *> leds_map_;
+  /// @brief Vector of the LEDs.
   QVector<SingleLED *> leds_vec_;
   int column_num_;
   int row_num_;
 
 }; // class LED4x4MatrixRawComponent
 
+/// @brief LED8x8MatrixRawComponent class
+/// This class implements the 8x8 LED Matrix component.
+/// Inherited from LED4x4MatrixRawComponent class.
 class LED8x8MatrixRawComponent : public LED4x4MatrixRawComponent {
   Q_OBJECT
 
@@ -106,6 +121,9 @@ public:
 
 }; // class LED8x8MatrixRawComponent
 
+/// @brief LED16x16MatrixRawComponent class
+/// This class implements the 16x16 LED Matrix component.
+/// Inherited from LED4x4MatrixRawComponent class.
 class LED16x16MatrixRawComponent : public LED4x4MatrixRawComponent {
   Q_OBJECT
 
@@ -115,30 +133,16 @@ public:
 
 }; // class LED16x16MatrixRawComponent
 
-// class LEDMatrixSettingsDialog : public ComponentSettingsDialog {
-//   Q_OBJECT
-
-// public:
-//   LEDMatrixSettingsDialog(AbstractComponent *component,
-//                           QWidget *parent = nullptr);
-//   virtual ~LEDMatrixSettingsDialog();
-
-// protected:
-//   void acceptDerivedClassSettings() override;
-
-// private:
-//   QLineEdit *vision_persistence_edit_;
-//   ACTIVE_SETTING_DECLARATION_PRIVATE_MEMBER
-
-// }; // class LEDMatrixSettingsDialog
-
+/// @brief LEDMatrixSettingsDialog class
+/// This class is used to display the LED Matrix settings dialog.
+/// Inherited from ActiveModeSettingsDialog and VisionPersistenceSettingsDialog.
 class LEDMatrixSettingsDialog : public ActiveModeSettingsDialog,
-                                   public VisionPersistenceSettingsDialog {
+                                public VisionPersistenceSettingsDialog {
   Q_OBJECT
 
 public:
   LEDMatrixSettingsDialog(AbstractComponent *component,
-                             QWidget *parent = nullptr);
+                          QWidget *parent = nullptr);
   virtual ~LEDMatrixSettingsDialog();
 
 protected:

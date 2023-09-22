@@ -13,7 +13,6 @@
 #include "TabToolbar/TabToolbar.h"
 #include "qtmetamacros.h"
 
-
 namespace rabbit_App {
 
 class MainTabToolBar : public tt::TabToolbar {

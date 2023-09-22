@@ -14,12 +14,15 @@ namespace rabbit_App::component {
 
 COMPONENT_CLASS_DECLARATION(RotaryButton)
 
+/// @brief RotaryButtonRawComponent class
+/// This class implements the Rotary Button component.
 class RotaryButtonRawComponent : public AbstractRawComponent {
   Q_OBJECT
 
   typedef QPointF Fvector;
 
 public:
+  // constance
   constexpr static float kBorderRadius = 35.0f;
   constexpr static float kInnerRadius = 32.0f;
   constexpr static float kDistance = 24.0f;
@@ -43,6 +46,7 @@ public:
   void processReadData(QQueue<uint64_t> &read_queue) override;
   uint64_t getWriteData() const override;
 
+  /// @brief Whether the click position is in the inner circle.
   bool isInInnerCircle(const QPointF &pos) const;
 
 protected:

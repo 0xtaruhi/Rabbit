@@ -11,6 +11,8 @@ namespace rabbit_App::component {
 
 COMPONENT_CLASS_DECLARATION(Switch)
 
+/// @brief SwitchRawComponent class
+/// This class implements the Switch component.
 class SwitchRawComponent : public AbstractRawComponent {
   Q_OBJECT
 

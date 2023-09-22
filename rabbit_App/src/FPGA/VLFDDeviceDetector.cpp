@@ -19,13 +19,13 @@ VLFDDeviceDetector::VLFDDeviceDetector(QObject *parent) : QObject(parent) {
   // connect(timer_, &QTimer::timeout, this,
   // &VLFDDeviceDetector::onTimerTimeOut,
   //         Qt::DirectConnection);
-  // connect(timer_, &QTimer::timeout, this, &VLFDDeviceDetector::onTimerTimeOut);
-  // connect(thread_, &QThread::started, timer_,
-  // QOverload<>::of(&QTimer::start)); connect(thread_, &QThread::finished,
-  // timer_, &QTimer::stop); connect(thread_, &QThread::finished, this,
-  // &QObject::deleteLater());
-  time_thread_ = new TimeThreadWorker(new DetectWorker(this), this,
-                                      Qt::QueuedConnection);
+  // connect(timer_, &QTimer::timeout, this,
+  // &VLFDDeviceDetector::onTimerTimeOut); connect(thread_, &QThread::started,
+  // timer_, QOverload<>::of(&QTimer::start)); connect(thread_,
+  // &QThread::finished, timer_, &QTimer::stop); connect(thread_,
+  // &QThread::finished, this, &QObject::deleteLater());
+  time_thread_ =
+      new TimeThreadWorker(new DetectWorker(this), this, Qt::QueuedConnection);
   time_thread_->setInterval(kTimerInterval);
 }
 
@@ -245,7 +245,8 @@ LRESULT CALLBACK WinVLFDDeviceDetector::message_handler(HWND__ *hwnd, UINT uint,
 
 #endif // ifdef _WIN32
 
-DetectWorker::DetectWorker(VLFDDeviceDetector *detector) : detector_(detector) {}
+DetectWorker::DetectWorker(VLFDDeviceDetector *detector)
+    : detector_(detector) {}
 
 DetectWorker::~DetectWorker() {}
 

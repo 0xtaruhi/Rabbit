@@ -40,7 +40,6 @@ void WaveFormController::gtkWaveExec(const QString &project_path) {
   process->start("./gtkwave/bin/gtkwave", QStringList() << vcd_file_path);
 #endif
 
-
   // process->start("./gtkwave/bin/gtkwave", QStringList() << vcd_file_path);
   // qDebug() << "vcf_file_path" << vcd_file_path;
   // qDebug() << "gtkwave_path" << gtkwave_path;

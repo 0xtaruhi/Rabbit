@@ -12,6 +12,9 @@
 
 namespace rabbit_App::fpga {
 
+/// @brief VLFDDeviceHandler class
+/// This class is used to handle the VLFD device,
+/// including the program and the running.
 class VLFDDeviceHandler : public QObject {
   Q_OBJECT
 
@@ -19,6 +22,7 @@ public:
   VLFDDeviceHandler(QObject *parent = nullptr);
   virtual ~VLFDDeviceHandler();
 
+  /// @brief Program the bitstream to the FPGA.
   void program(const QString &bitstream_path);
 
   /// @brief This function is used to get the async vlfd read write handler.
@@ -27,6 +31,7 @@ public:
     return running_handler_->ayncVLFDReadWriteHandler();
   }
 
+  /// @brief Set the write data in the running handler.
   void setWriteData(uint64_t write_data) {
     running_handler_->setWriteData(write_data);
   }
@@ -56,7 +61,9 @@ public slots:
   // &error_message);
 
 private:
+  /// @brief The program handler.
   VLFDProgramHandler *program_handler_;
+  /// @brief The running handler.
   VLFDRunningHandler *running_handler_;
 };
 

@@ -5,13 +5,15 @@
 #include <QHash>
 #include <QVector>
 
-
 #include <QObject>
 
 #include "Ports/Port.h"
 
 namespace rabbit_App::ports {
 
+/// @brief PortsFileReader class
+/// This class is used to read the constraint file and generate the ports
+/// vector.
 class PortsFileReader : public QObject {
   Q_OBJECT
 

@@ -5,37 +5,25 @@
 - [Rabbit Development Documentation](#rabbit-development-documentation)
   - [Content](#content)
   - [Introduction](#introduction)
-  - [Main Window](#main-window)
-    - [Toolbar](#toolbar)
-    - [Components Panel](#components-panel)
-    - [Prompt Bar](#prompt-bar)
-  - [FPGA Communication](#fpga-communication)
-  - [Component](#component)
+  - [Architecture](#architecture)
+  - [Development](#development)
 
 ## Introduction
 
+**Rabbit** is a virtual components platform for FDP3P7 FPGA boad. It can receive and send data from/to the FPGA board via USB and show the data through the GUI. 
 
-## Main Window
-
-The main window is the main interface of Rabbit. It is composed of a toolbar, a components panel, and a prompt bar.
-The source code of the main window is in `rabbit_App\src`
-
-### Toolbar
-We use a 3rd party library ... to implement the toolbar. The source code of the toolbar is in `rabbit_App\3rdparty\TabToolbar`.
-We also package a class `MainTabToolBar` to custom it. The source code of the class is in `rabbit_App\src\MainTabToolBar.cpp`.
-
-### Components Panel
-
-Component panel is the place where the components are shown. The source code of the component panel is in `rabbit_App\src\Components\ComponentsPanel.cpp`. We use a class `ComponentsPanel` to implement the panel.
-
-When the button of a component in the toolbar is clicked, a signal will be emitted from toolbar to main window, and then the main window will emit a signal to the component panel to add the component.
+Refer to the github [repository](https://github.com/0xtaruhi/Rabbit) for more information.
 
 
+## Architecture
 
+The architecture of Rabbit is shown below.
 
-### Prompt Bar
+<p align="center">
+    <img alt="Architecture" height=400 src="./images/Architecture.png">
+</p>
 
-## FPGA Communication
+## Development
 
+Refer to the [Development Handbook](https://github.com/0xtaruhi/Rabbit/blob/main/doc/RabbitDevHandbook.chm) for more information.
 
-## Component

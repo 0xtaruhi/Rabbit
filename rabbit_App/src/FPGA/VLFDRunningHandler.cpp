@@ -42,7 +42,7 @@ VLFDRunningHandler::VLFDRunningHandler(QObject *parent) : QObject(parent) {
 VLFDRunningHandler::~VLFDRunningHandler() { delete async_vlfd_read_write_; }
 
 void VLFDRunningHandler::onStopRunning() {
-  if(!VLFD_IO_Close(kNowUseBoard)) {
+  if (!VLFD_IO_Close(kNowUseBoard)) {
     throw std::runtime_error("FPGA Close failed");
   }
   emit readWriteThreadStop();
@@ -52,7 +52,7 @@ void VLFDRunningHandler::onStopRunning() {
 }
 
 void VLFDRunningHandler::onStartRunning() {
-  if(!VLFD_IO_Open(kNowUseBoard, kSerialNo)) {
+  if (!VLFD_IO_Open(kNowUseBoard, kSerialNo)) {
     throw std::runtime_error("FPGA Open failed");
   }
   emit readWriteThreadStart();

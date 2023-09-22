@@ -17,10 +17,13 @@ namespace rabbit_App::component {
 COMPONENT_CLASS_DECLARATION(SegmentDisplay)
 COMPONENT_CLASS_DECLARATION(FourDigitSegmentDisplay)
 
+/// @brief SingleSegmentDisplay class
+/// This class implements the single segment display to show a digit with dp.
 class SingleSegmentDisplay : public QWidget {
   Q_OBJECT
 
 public:
+  // constance
   static constexpr int A = 0;
   static constexpr int B = 1;
   static constexpr int C = 2;
@@ -49,8 +52,10 @@ protected:
   void paintEvent(QPaintEvent *event) override;
 
 private:
+  /// @brief Paint one segment. Used in paintEvent().
   void paintOneSegment(QPainter &painter, const QList<QPoint> &points,
                        const int segment_section);
+  /// @brief Paint dp segment.
   void paintDP(QPainter &painter);
 
 private:
@@ -59,6 +64,7 @@ private:
                                          false, false, false, false};
   int counter_[kSegmentCount] = {0, 0, 0, 0, 0, 0, 0, 0};
 
+  /// @brief segments state
   QVector<bool> segments_;
   bool en_;
 
@@ -68,6 +74,7 @@ private:
   QColor penColorOff;
   int penWidth;
 
+  // segment position
   static const QList<QPoint> a_points;
   static const QList<QPoint> b_points;
   static const QList<QPoint> c_points;
@@ -79,6 +86,8 @@ private:
 
 }; // class SingleSegmentDisplay
 
+/// @brief SegmentDisplayRawComponent class
+/// This class implements the one Segment Display component.
 class SegmentDisplayRawComponent : public AbstractRawComponent {
   Q_OBJECT
 
@@ -102,6 +111,9 @@ private:
 
 }; // class SegmentDisplayRawComponent
 
+/// @brief FourDigitSegmentDisplayRawComponent class
+/// This class implements the four Segment Display component.
+/// Used sel to select which digit to show.
 class FourDigitSegmentDisplayRawComponent : public AbstractRawComponent {
   Q_OBJECT
 
@@ -131,6 +143,9 @@ private:
 
 }; // class FourDigitSegmentDisplayRawComponent
 
+/// @brief SegmentDisplaySettingsDialog class
+/// This class is used to display the Segment Display settings dialog.
+/// Inherited from ActiveModeSettingsDialog and VisionPersistenceSettingsDialog.
 class SegmentDisplaySettingsDialog : public ActiveModeSettingsDialog,
                                      public VisionPersistenceSettingsDialog {
   Q_OBJECT

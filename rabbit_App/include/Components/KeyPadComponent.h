@@ -15,9 +15,13 @@ namespace rabbit_App::component {
 COMPONENT_CLASS_DECLARATION(KeyPad)
 COMPONENT_CLASS_DECLARATION(SmallKeyPad)
 
+/// @brief Key class
+/// This class implements the key of the keypad.
 class Key : public QWidget {
   Q_OBJECT
 
+public:
+  // constance
   static constexpr int kWidth = 40;
   static constexpr int kHeight = 40;
   static constexpr int kRoundRadius = 5;
@@ -35,9 +39,15 @@ public:
 
   bool isPressed() const { return is_pressed_; }
 
+  /// @brief Set the text of the key.
   void setText(const QString &text);
+
+  /// @brief Set whether the key is pressed.
   void setPressed(bool is_pressed);
+
+  /// @brief Set whether the key is hovered.
   void setHovered(bool is_hovered);
+
   void setDefault();
 
 protected:
@@ -55,9 +65,13 @@ private:
 
 }; // class Key
 
+/// @brief KeyPadRawComponent class
+/// This class implements the 4x4 keypad component.
 class KeyPadRawComponent : public AbstractRawComponent {
   Q_OBJECT
 
+public:
+  // constance
   static constexpr QColor kBackGroundColor = QColor(255, 255, 255);
   static constexpr QColor kBorderColor = QColor(90, 98, 104, 255);
   static constexpr int kBorderWidth = 3;
@@ -85,6 +99,7 @@ protected:
   void setKeyTexts(const QList<QString> &&key_texts) { key_texts_ = key_texts; }
 
 private:
+  /// @brief Map of the keys.
   QMap<QPair<int, int>, Key *> keys_map_;
   QList<QString> key_texts_;
   int column_num_;
@@ -92,6 +107,9 @@ private:
 
 }; // class KeyPadRawComponent
 
+/// @brief SmallKeyPadRawComponent class
+/// This class implements the 3x4 keypad component.
+/// This class is inherited from KeyPadRawComponent class.
 class SmallKeyPadRawComponent : public KeyPadRawComponent {
   Q_OBJECT
 

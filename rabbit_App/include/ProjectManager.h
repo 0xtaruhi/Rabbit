@@ -5,8 +5,8 @@
 #include <QString>
 
 #include "Components/ComponentsPanel.h"
-#include "Ports/PortsFileReader.h"
 #include "Ports/Port.h"
+#include "Ports/PortsFileReader.h"
 #include "ProjectFileHandler.h"
 #include "WaveForm/WaveFormController.h"
 
@@ -64,9 +64,8 @@ public:
 signals:
   void updateProjectName(const QString &project_name);
   void showUnsaveFlag(bool is_unsaved);
-  void portsLoaded(const QVector<ports::Port>& inputs,
-                   const QVector<ports::Port>& outputs);
-  
+  void portsLoaded(const QVector<ports::Port> &inputs,
+                   const QVector<ports::Port> &outputs);
 
 public slots:
   void onOpenProject() { openProject(); }

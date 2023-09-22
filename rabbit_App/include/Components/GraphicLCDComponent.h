@@ -14,10 +14,13 @@ namespace rabbit_App::component {
 
 COMPONENT_CLASS_DECLARATION(GraphicLCD)
 
+/// @brief GraphicLCDRawComponent class
+/// This class implements the Graphic LCD component.
 class GraphicLCDRawComponent : public AbstractRawComponent {
   Q_OBJECT
 
 public:
+  // constance
   static constexpr int kLCDWidth = 128;
   static constexpr int kLCDHeight = 64;
   static constexpr int kLCDSize = kLCDWidth * kLCDHeight;
@@ -54,6 +57,7 @@ protected:
   void processData();
   void processCommand();
 
+  /// @brief show the data on the screen
   void writeToImage();
 
 private:

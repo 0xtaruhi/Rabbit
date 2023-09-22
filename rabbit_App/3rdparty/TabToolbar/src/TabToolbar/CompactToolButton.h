@@ -17,31 +17,29 @@
 */
 #ifndef TT_COMPACT_TOOL_BUTTON_H
 #define TT_COMPACT_TOOL_BUTTON_H
-#include <QFrame>
 #include <QColor>
+#include <QFrame>
 
 class QAction;
 class QMenu;
 class QToolButton;
 
-namespace tt
-{
+namespace tt {
 
-class CompactToolButton: public QFrame
-{
-    Q_OBJECT
+class CompactToolButton : public QFrame {
+  Q_OBJECT
 public:
-    CompactToolButton(QAction* action, QMenu* menu, QWidget* parent = nullptr);
-    virtual ~CompactToolButton() = default;
+  CompactToolButton(QAction *action, QMenu *menu, QWidget *parent = nullptr);
+  virtual ~CompactToolButton() = default;
 
-    void SetHover(bool hover);
+  void SetHover(bool hover);
 
 private:
-    QToolButton* upButton;
-    QToolButton* downButton;
-    QToolButton* overlay;
+  QToolButton *upButton;
+  QToolButton *downButton;
+  QToolButton *overlay;
 };
 
-}
+} // namespace tt
 
 #endif
