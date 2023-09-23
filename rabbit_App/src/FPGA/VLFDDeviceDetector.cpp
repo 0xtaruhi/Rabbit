@@ -200,9 +200,10 @@ WinVLFDDeviceDetector::~WinVLFDDeviceDetector() {
 void WinVLFDDeviceDetector::onTimerTimeOut() {
   // qDebug() << "WinVLFDDeviceDetector thread: " << QThread::currentThreadId();
   MSG msg;
-  GetMessage(&msg, NULL, 0, 0);
-  TranslateMessage(&msg);
-  DispatchMessage(&msg);
+  while (PeekMessage(&msg, hWnd, 0, 0, PM_REMOVE)) {
+    TranslateMessage(&msg);
+    DispatchMessage(&msg);
+  }
 }
 
 LRESULT CALLBACK WinVLFDDeviceDetector::message_handler(HWND__ *hwnd, UINT uint,
@@ -253,6 +254,6 @@ DetectWorker::~DetectWorker() {}
 void DetectWorker::doWork() {
   // qDebug() << "DetectWorker::doWork() thread: " <<
   // QThread::currentThreadId();
-  QMutexLocker locker(&mutex_);
+  // QMutexLocker locker(&mutex_);
   detector_->onTimerTimeOut();
 }

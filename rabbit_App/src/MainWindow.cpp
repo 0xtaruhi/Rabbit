@@ -42,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   // qDebug() << "MainWindow thread: " << QThread::currentThreadId();
 }
 
-MainWindow::~MainWindow() { vlfd_device_detector_->stopDetect(); }
+MainWindow::~MainWindow() {}
 
 void MainWindow::initMembers() {
   is_running_ = false;
@@ -107,8 +107,6 @@ void MainWindow::initConnections() {
   connect(main_tab_tool_bar_, &MainTabToolBar::frequencyChanged,
           vlfd_device_handler_, &fpga::VLFDDeviceHandler::onFrequencyChanged);
   connect(main_tab_tool_bar_, &MainTabToolBar::frequencyChanged,
-          components_panel_, &ComponentsPanel::onFrequencyChanged);
-  connect(main_tab_tool_bar_, &MainTabToolBar::frequencyChanged,
           waveform_controller_, &waveform::WaveFormController::setFrequency);
   connect(main_tab_tool_bar_, &MainTabToolBar::downloadBitstreamClicked, this,
           &MainWindow::onDownloadBitstreamClicked);
@@ -172,9 +170,10 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     event->ignore();
     return;
   }
-  if (project_manager_->closeProject())
+  if (project_manager_->closeProject()) {
+    vlfd_device_detector_->stopDetect();
     event->accept();
-  else
+  } else
     event->ignore();
 }
 
@@ -266,7 +265,12 @@ void MainWindow::onWaveFormClicked() {
                          tr("Please open a project before opening waveform."));
     return;
   }
-  waveform_controller_->gtkWaveExec(project_manager_->getProjectPath());
+  try {
+    waveform_controller_->gtkWaveExec(project_manager_->getProjectPath());
+  } catch (const std::exception &e) {
+    QMessageBox::critical(this, tr("Waveform"), e.what());
+    return;
+  }
 }
 
 void MainWindow::onAboutClicked() {

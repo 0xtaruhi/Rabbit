@@ -71,7 +71,6 @@ public:
 
 public slots:
   void onUpdateGui();
-  void onFrequencyChanged(int freq);
 
 protected:
   void dragEnterEvent(QDragEnterEvent *event) override;
