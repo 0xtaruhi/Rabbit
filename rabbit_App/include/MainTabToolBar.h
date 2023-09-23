@@ -48,6 +48,7 @@ private:
   QAction *run_action_;
   QAction *stop_action_;
   QAction *waveform_action_;
+  QAction *download_bitstrem_action_;
   QMenu *input_components_menu_;
   QMenu *output_components_menu_;
   QList<tt::Group *> all_input_groups_;

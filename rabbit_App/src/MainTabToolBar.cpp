@@ -45,10 +45,12 @@ void MainTabToolBar::setRunningState(bool is_running) {
     run_action_->setDisabled(true);
     stop_action_->setEnabled(true);
     waveform_action_->setDisabled(true);
+    download_bitstrem_action_->setDisabled(true);
   } else {
     run_action_->setEnabled(true);
     stop_action_->setDisabled(true);
     waveform_action_->setEnabled(true);
+    download_bitstrem_action_->setEnabled(true);
   }
 }
 
@@ -89,12 +91,12 @@ void MainTabToolBar::initActions() {
           [this]() { emit settingsClicked(); });
 
   tt::Group *bitstream_group = project_page->AddGroup(tr("Bitstream"));
-  auto download_bitstrem_action = new QAction(tr("Download"), this);
-  download_bitstrem_action->setIcon(
+  download_bitstrem_action_ = new QAction(tr("Download"), this);
+  download_bitstrem_action_->setIcon(
       QIcon(":/icons/icons/icons8-download-94.png"));
   bitstream_group->AddAction(QToolButton::DelayedPopup,
-                             download_bitstrem_action);
-  connect(download_bitstrem_action, &QAction::triggered, this,
+                             download_bitstrem_action_);
+  connect(download_bitstrem_action_, &QAction::triggered, this,
           [this]() { emit downloadBitstreamClicked(); });
 
   tt::Group *running_group = project_page->AddGroup(tr("Running"));
