@@ -17,9 +17,11 @@ QPixmap getTransparentPixmap(const QPixmap &pixmap, ushort alpha);
 /// @param alpha The alpha value to use.
 void setTransparentPixmap(QPixmap &pixmap, ushort alpha);
 
-const QString& getRelativePath(const QString &absulute_path, const QString &base_path);
+const QString &getRelativePath(const QString &absulute_path,
+                               const QString &base_path);
 
-const QString& getAbsolutePath(const QString &relative_path, const QString &base_path);
+const QString &getAbsolutePath(const QString &relative_path,
+                               const QString &base_path);
 
 } // namespace rabbit_App
 

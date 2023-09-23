@@ -40,5 +40,4 @@
     AbstractComponent::contextMenuEvent(event);                                \
   }
 
-
 #endif // COMPONENT_MACRO_H

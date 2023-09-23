@@ -21,16 +21,16 @@
 
 class QStyleOptionToolButton;
 
-namespace tt
-{
+namespace tt {
 
-//this class uses part of Qt's source code to align text and icon on ToolButton
-class TTToolButtonStyle : public QProxyStyle
-{
+// this class uses part of Qt's source code to align text and icon on ToolButton
+class TTToolButtonStyle : public QProxyStyle {
 public:
-    void drawControl(ControlElement element, const QStyleOption* opt, QPainter* p, const QWidget* widget) const override;
-    void drawComplexControl(ComplexControl cc, const QStyleOptionComplex* opt, QPainter* p, const QWidget* widget) const override;
+  void drawControl(ControlElement element, const QStyleOption *opt, QPainter *p,
+                   const QWidget *widget) const override;
+  void drawComplexControl(ComplexControl cc, const QStyleOptionComplex *opt,
+                          QPainter *p, const QWidget *widget) const override;
 };
 
-}
+} // namespace tt
 #endif

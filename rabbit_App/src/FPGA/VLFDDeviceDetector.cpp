@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <QDebug>
+#include <QMutex>
 
 #include "FPGA/VLFDDeviceDetector.h"
 #include "libusb.h"
@@ -18,13 +19,13 @@ VLFDDeviceDetector::VLFDDeviceDetector(QObject *parent) : QObject(parent) {
   // connect(timer_, &QTimer::timeout, this,
   // &VLFDDeviceDetector::onTimerTimeOut,
   //         Qt::DirectConnection);
-  // connect(timer_, &QTimer::timeout, this, &VLFDDeviceDetector::onTimerTimeOut);
-  // connect(thread_, &QThread::started, timer_,
-  // QOverload<>::of(&QTimer::start)); connect(thread_, &QThread::finished,
-  // timer_, &QTimer::stop); connect(thread_, &QThread::finished, this,
-  // &QObject::deleteLater());
-  time_thread_ = new TimeThreadWorker(new DetectWorker(this), this,
-                                      Qt::QueuedConnection);
+  // connect(timer_, &QTimer::timeout, this,
+  // &VLFDDeviceDetector::onTimerTimeOut); connect(thread_, &QThread::started,
+  // timer_, QOverload<>::of(&QTimer::start)); connect(thread_,
+  // &QThread::finished, timer_, &QTimer::stop); connect(thread_,
+  // &QThread::finished, this, &QObject::deleteLater());
+  time_thread_ =
+      new TimeThreadWorker(new DetectWorker(this), this, Qt::QueuedConnection);
   time_thread_->setInterval(kTimerInterval);
 }
 
@@ -199,9 +200,10 @@ WinVLFDDeviceDetector::~WinVLFDDeviceDetector() {
 void WinVLFDDeviceDetector::onTimerTimeOut() {
   // qDebug() << "WinVLFDDeviceDetector thread: " << QThread::currentThreadId();
   MSG msg;
-  GetMessage(&msg, NULL, 0, 0);
-  TranslateMessage(&msg);
-  DispatchMessage(&msg);
+  while (PeekMessage(&msg, hWnd, 0, 0, PM_REMOVE)) {
+    TranslateMessage(&msg);
+    DispatchMessage(&msg);
+  }
 }
 
 LRESULT CALLBACK WinVLFDDeviceDetector::message_handler(HWND__ *hwnd, UINT uint,
@@ -244,12 +246,14 @@ LRESULT CALLBACK WinVLFDDeviceDetector::message_handler(HWND__ *hwnd, UINT uint,
 
 #endif // ifdef _WIN32
 
-DetectWorker::DetectWorker(VLFDDeviceDetector *detector) : detector_(detector) {}
+DetectWorker::DetectWorker(VLFDDeviceDetector *detector)
+    : detector_(detector) {}
 
 DetectWorker::~DetectWorker() {}
 
 void DetectWorker::doWork() {
   // qDebug() << "DetectWorker::doWork() thread: " <<
   // QThread::currentThreadId();
+  // QMutexLocker locker(&mutex_);
   detector_->onTimerTimeOut();
 }

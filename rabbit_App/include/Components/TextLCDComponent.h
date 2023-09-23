@@ -12,6 +12,8 @@ namespace rabbit_App::component {
 
 COMPONENT_CLASS_DECLARATION(TextLCD)
 
+/// @brief CharBlock class
+/// This class implements the character block in TextLCD.
 class CharBlock final : public QWidget {
   Q_OBJECT
 
@@ -74,6 +76,7 @@ protected:
   void initPorts() override;
 
 private:
+  /// @brief vector of character blocks.
   QVector<CharBlock *> char_blocks_;
   int cur_pos_ = 0;
 };

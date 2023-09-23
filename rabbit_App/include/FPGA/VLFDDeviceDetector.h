@@ -5,8 +5,8 @@
 #include <QThread>
 #include <QTimer>
 
-#include "libusb.h"
 #include "ThreadTimer.h"
+#include "libusb.h"
 
 namespace rabbit_App::fpga {
 
@@ -14,6 +14,12 @@ const uint16_t kVendorID = 0x2200;
 const uint16_t kProductID = 0x2008;
 const QString kDeviceName = "VLX2";
 
+/// @brief VLFDDeviceDetector class
+/// This class is used to detect the connection of the VLFD device.
+/// To avoid the gui blocking, we use a worker to process the event.
+/// Because the libusb hotplug is not supported on Windows, so in windows
+/// platform, we use windows message to detect the connection.
+/// In other platform, we use libusb hotplug to detect the connection.
 class VLFDDeviceDetector : public QObject {
   Q_OBJECT
 
@@ -26,6 +32,7 @@ public:
   VLFDDeviceDetector(QObject *parent = nullptr);
   virtual ~VLFDDeviceDetector();
 
+  /// @brief The function called when the timer timeout.
   virtual void onTimerTimeOut() {}
 
   void startDetect();
@@ -46,10 +53,15 @@ signals:
 protected:
   // QThread *thread_;
   // QTimer *timer_;
+
+  /// @brief The worker manager to process the detect event.
   TimeThreadWorker *time_thread_;
   bool is_detecting_ = false;
   bool device_connected_ = false;
 
+  /// @brief static instance of the VLFDDeviceDetector.
+  /// We use a static instance to connect to a virtual window on windows
+  /// platform.
   static VLFDDeviceDetector *instance_;
 
 }; // class VLFDDeviceDetector
@@ -66,10 +78,12 @@ public:
   void onTimerTimeOut() override;
 
 private:
+  /// @brief The callback function called when the device arrived.
   static int LIBUSB_CALL arrivedCallback(libusb_context *ctx,
                                          libusb_device *dev,
                                          libusb_hotplug_event event,
                                          void *user_data);
+  /// @brief The callback function called when the device left.
   static int LIBUSB_CALL leftCallback(libusb_context *ctx, libusb_device *dev,
                                       libusb_hotplug_event event,
                                       void *user_data);
@@ -85,11 +99,9 @@ private:
 #include <windows.h>
 
 class WinVLFDDeviceDetector : public VLFDDeviceDetector {
-  // I don't know why, but Q_OBJECT cannot be used here
-  // otherwise, when #ifdef _WIN32 is defined, the compiler will complain about
-  // undefined reference. Q_OBJECT
 
-  // {88bae032-5a81-49f0-bc3d-a4ff138216d6}
+  /// @brief The GUID of the device interface class for VLFD device.
+  /// {88bae032-5a81-49f0-bc3d-a4ff138216d6}
   constexpr static GUID guid = {
       0x88bae032,
       0x5a81,
@@ -103,6 +115,7 @@ public:
   void onTimerTimeOut() override;
 
 private:
+  /// @brief The message handler of the window.
   static LRESULT CALLBACK message_handler(HWND__ *hwnd, UINT uint,
                                           WPARAM wparam, LPARAM lparam);
 
@@ -114,6 +127,7 @@ private:
 
 #endif // ifdef _WIN32
 
+/// @brief DetectWorker class used to process the detect event.
 class DetectWorker : public Worker {
   Q_OBJECT
 
@@ -126,8 +140,8 @@ protected:
 
 private:
   VLFDDeviceDetector *detector_;
-  
-};  // class DetectWorker
+
+}; // class DetectWorker
 
 } // namespace rabbit_App::fpga
 

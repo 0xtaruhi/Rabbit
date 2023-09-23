@@ -14,7 +14,6 @@
 #include "ProjectManager.h"
 #include "Utils.h"
 
-
 using namespace rabbit_App;
 
 ProjectManager::ProjectManager(QObject *parent) : QObject(parent) {

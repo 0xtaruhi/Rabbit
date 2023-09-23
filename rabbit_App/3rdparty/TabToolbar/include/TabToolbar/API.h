@@ -1,7 +1,7 @@
 /*
     TabToolbar - a small utility library for Qt, providing tabbed toolbars
   Copyright (C) 2018 Oleksii Sierov
-  
+
     TabToolbar is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -19,9 +19,9 @@
 #define TT_API_H
 
 #if defined(_WIN32)
- #ifdef _MSC_VER
-  #pragma warning(disable: 4251)
- #endif
+#ifdef _MSC_VER
+#pragma warning(disable : 4251)
+#endif
 
 //  #if defined(TT_BUILDING_DLL)
 //   #define TT_API __declspec(dllexport)
@@ -31,13 +31,13 @@
 #define TT_API
 
 #elif defined(__GNUC__)
-  
- #if defined(TT_BUILDING_DLL)
-  #define TT_API __attribute__((visibility("default")))
- #else
-  #define TT_API
- #endif
-    
+
+#if defined(TT_BUILDING_DLL)
+#define TT_API __attribute__((visibility("default")))
+#else
+#define TT_API
 #endif
 
-#endif //TT_API_H
+#endif
+
+#endif // TT_API_H

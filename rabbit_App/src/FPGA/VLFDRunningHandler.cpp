@@ -1,6 +1,7 @@
 #include <QDateTime>
 #include <QDebug>
 #include <cstdint>
+#include <stdexcept>
 #include <stdint.h>
 
 #include "SMIMS_VLFD.h"
@@ -41,17 +42,21 @@ VLFDRunningHandler::VLFDRunningHandler(QObject *parent) : QObject(parent) {
 VLFDRunningHandler::~VLFDRunningHandler() { delete async_vlfd_read_write_; }
 
 void VLFDRunningHandler::onStopRunning() {
+  if (!VLFD_IO_Close(kNowUseBoard)) {
+    throw std::runtime_error("FPGA Close failed");
+  }
   emit readWriteThreadStop();
   running_timer_->stop();
-  VLFD_IO_Close(kNowUseBoard);
   // qDebug() << "stop ,current time :"
   //          << QDateTime::currentDateTime().toString("hh:mm:ss.zzz");
 }
 
 void VLFDRunningHandler::onStartRunning() {
+  if (!VLFD_IO_Open(kNowUseBoard, kSerialNo)) {
+    throw std::runtime_error("FPGA Open failed");
+  }
   emit readWriteThreadStart();
   running_timer_->start();
-  VLFD_IO_Open(kNowUseBoard, kSerialNo);
   // qDebug() << "start ,current time :"
   //          << QDateTime::currentDateTime().toString("hh:mm:ss.zzz");
 }

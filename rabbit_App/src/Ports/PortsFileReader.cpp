@@ -25,6 +25,9 @@ const Port &PortsFileReader::findPort(const QString &port_name,
 }
 
 void PortsFileReader::readFromFile(const QString &file_path) {
+  inputs_.clear();
+  outputs_.clear();
+
   QFile file = QFile(file_path);
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
     throw std::runtime_error("Could not open file");

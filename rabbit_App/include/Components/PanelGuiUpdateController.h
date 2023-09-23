@@ -8,6 +8,9 @@
 
 namespace rabbit_App::component {
 
+/// @brief PanelGuiUpdateController class
+/// This class is used to update the GUI of the panel in the main thread.
+/// The frequency of the update is 60Hz.
 class PanelGuiUpdateController : public QObject {
   Q_OBJECT
 

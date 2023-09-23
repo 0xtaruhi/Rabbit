@@ -13,10 +13,9 @@
 #include "Components/ValueUpdateController.h"
 #include "FPGA/VLFDDeviceDetector.h"
 #include "FPGA/VLFDDeviceHandler.h"
-#include "WaveForm/WaveFormController.h"
 #include "MainTabToolBar.h"
 #include "ProjectManager.h"
-
+#include "WaveForm/WaveFormController.h"
 
 namespace rabbit_App {
 class MainWindow : public QMainWindow {
@@ -79,7 +78,8 @@ private slots:
   void onDownloadBitstreamFailure(const QString &error_message);
 
   void onAskForWriteData();
-  void onReadWriteDone(const std::vector<uint16_t> &read_data, const std::vector<uint16_t> &write_data);
+  void onReadWriteDone(const std::vector<uint16_t> &read_data,
+                       const std::vector<uint16_t> &write_data);
   void onReadWriteError(const QString &error_message);
 
   void onProjectNameUpdated(const QString &project_name);

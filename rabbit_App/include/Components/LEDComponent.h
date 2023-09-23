@@ -13,6 +13,8 @@ namespace rabbit_App::component {
 
 COMPONENT_CLASS_DECLARATION(LED)
 
+/// @brief LEDRawComponent class
+/// This class implements the LED component.
 class LEDRawComponent : public AbstractRawComponent {
   Q_OBJECT
 
@@ -31,6 +33,10 @@ protected:
 
 public slots:
   // void onSwitchLED(bool is_on);
+
+  /// @brief Set the level of the LED.
+  /// Note that LED has level but not state,
+  /// so when processing the read data, take average.
   void onSetLevel(float level) { level_ = level; }
 
 private:
@@ -39,6 +45,9 @@ private:
   float level_ = 0.0f;
 };
 
+/// @brief LEDSettingsDialog class
+/// This class is used to display the LED settings dialog.
+/// Inherited from ActiveModeSettingsDialog and ColorSettingsDialog.
 class LEDSettingsDialog : public ActiveModeSettingsDialog,
                           public ColorSettingsDialog {
   Q_OBJECT

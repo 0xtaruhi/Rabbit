@@ -37,11 +37,20 @@ AsyncVLFDReadWrite::~AsyncVLFDReadWrite() {
   delete[] read_buf_;
 }
 
+void AsyncVLFDReadWrite::checkConnection() {
+  for (auto i = 0; i < kBufferLength; ++i) {
+    write_buf_[i] = 0;
+    read_buf_[i] = 0;
+  }
+  VLFD_IO_WriteReadData(kNowUseBoard, write_buf_, read_buf_, 4);
+}
+
 void AsyncVLFDReadWrite::onStartThread() {
-  thread_->start();
   moveToThread(thread_);
+  thread_->start();
   // thread_worker_->start();
   is_running_ = true;
+  checkConnection();
 }
 
 void AsyncVLFDReadWrite::onStopThread() {

@@ -1,7 +1,7 @@
 /*
     TabToolbar - a small utility library for Qt, providing tabbed toolbars
-	Copyright (C) 2018 Oleksii Sierov
-	
+        Copyright (C) 2018 Oleksii Sierov
+
     TabToolbar is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -17,38 +17,40 @@
 */
 #ifndef TT_BUILDER_H
 #define TT_BUILDER_H
-#include <QToolButton>
-#include <QString>
 #include <QAction>
-#include <QMenu>
 #include <QMap>
+#include <QMenu>
+#include <QString>
+#include <QToolButton>
 #include <QWidget>
-#include <functional>
 #include <TabToolbar/API.h>
+#include <functional>
 
 class QJsonObject;
 
-namespace tt
-{
+namespace tt {
 
 class TabToolbar;
 
-class TT_API Builder : public QObject
-{
-    Q_OBJECT
+class TT_API Builder : public QObject {
+  Q_OBJECT
 public:
-    explicit Builder(QWidget* parent);
+  explicit Builder(QWidget *parent);
 
-    TabToolbar* CreateTabToolbar(const QString& configPath);
-    void        SetCustomWidgetCreator(const QString& name, const std::function<QWidget*()>& creator);
-    void        SetCustomWidgetCreator(const QString& name, const std::function<QWidget*(const QJsonObject&)>& creator);
+  TabToolbar *CreateTabToolbar(const QString &configPath);
+  void SetCustomWidgetCreator(const QString &name,
+                              const std::function<QWidget *()> &creator);
+  void SetCustomWidgetCreator(
+      const QString &name,
+      const std::function<QWidget *(const QJsonObject &)> &creator);
 
-    QWidget*    operator[](const QString& widgetName) const;
+  QWidget *operator[](const QString &widgetName) const;
 
 private:
-    QMap<QString, QWidget*> guiWidgets;
-    QMap<QString, std::function<QWidget*(const QJsonObject&)>> customWidgetCreators;
+  QMap<QString, QWidget *> guiWidgets;
+  QMap<QString, std::function<QWidget *(const QJsonObject &)>>
+      customWidgetCreators;
 };
 
-}
+} // namespace tt
 #endif

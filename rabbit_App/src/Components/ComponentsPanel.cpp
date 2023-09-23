@@ -42,11 +42,6 @@ void ComponentsPanel::onUpdateGui() {
     component->update();
   }
 }
-void ComponentsPanel::onFrequencyChanged(int freq) {
-  for (auto component : components_) {
-    component->rawComponent()->setFrequency(freq);
-  }
-}
 
 void ComponentsPanel::dragEnterEvent(QDragEnterEvent *event) {
   if (event->mimeData()->hasFormat("application/x-abstractcomponent")) {

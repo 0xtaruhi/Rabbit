@@ -6,6 +6,8 @@
 
 namespace rabbit_App::fpga {
 
+/// @brief VLFDProgramHandler class
+/// This class is used to handle the program of the VLFD device.
 class VLFDProgramHandler : public QObject {
   Q_OBJECT
 

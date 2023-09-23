@@ -143,13 +143,6 @@ void LED4x4MatrixRawComponent::setVisionPersistence(int vision_persistence) {
   }
 }
 
-void LED4x4MatrixRawComponent::setFrequency(int frequency) noexcept {
-  frequency_ = frequency;
-  for (auto led : leds_vec_) {
-    led->setFrequency(frequency_);
-  }
-}
-
 void LED4x4MatrixRawComponent::paintEvent(QPaintEvent *event) {
   QPainter painter(this);
   painter.setRenderHint(QPainter::Antialiasing, true);

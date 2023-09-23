@@ -11,7 +11,6 @@
 #include "Components/ComponentsPanel.h"
 #include "Ports/PortsFileReader.h"
 
-
 namespace rabbit_App {
 
 class ProjectFileHandler {
