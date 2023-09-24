@@ -89,6 +89,14 @@ Here are some known issues:
 
 1. `libusb` does not support MacOS **M1** chip. 
 
+2. On ubuntu/debian, you need to install `libxcb-cursor` :
+   ```
+   sudo apt-get install libxcb-cursor0 
+   ``` 
+   when you run the binary package and get the error message:
+   > /usr/local/bin/Rabbit/rabbit_App: error while loading shared libraries: libQt6Widgets.so.6: cannot open shared object file: No such file or directory
+
+
 ## Contributors <a name = "contributors"></a>
 
 * [0xtaruhi](https://github.com/0xtaruhi) - Main Developer
