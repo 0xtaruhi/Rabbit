@@ -27,17 +27,19 @@ ProjectManager::~ProjectManager() {}
 void ProjectManager::readProjectFromFile(const QString &project_path) {
 
   project_file_handler_->readProjectFromFile(project_path);
-  constraint_path_ =
-      getAbsolutePath(project_file_handler_->getConstraintPath(), project_path);
   if (!constraint_path_.isEmpty()) {
+    constraint_path_ =
+      getAbsolutePath(project_file_handler_->getConstraintPath(), project_path);
     ports_file_reader_->readFromFile(constraint_path_);
     emit portsLoaded(ports_file_reader_->inputs(),
                      ports_file_reader_->outputs());
   }
   project_path_ = project_path;
   project_name_ = project_file_handler_->getProjectName();
-  bitstream_path_ =
+  if (!bitstream_path_.isEmpty()) {
+    bitstream_path_ =
       getAbsolutePath(project_file_handler_->getBitstreamPath(), project_path);
+  }
   is_unsaved_ = false;
   emit updateProjectName(project_name_);
 }
@@ -114,11 +116,11 @@ void ProjectManager::openProject() {
 }
 
 void ProjectManager::openProject(const QString &project_path) {
-  try {
-    refleshProject(project_path);
-  } catch (std::runtime_error &e) {
-    throw e;
-  }
+  // try {
+  refleshProject(project_path);
+  // } catch (std::runtime_error &e) {
+  //   throw e;
+  // }
   setUnsaved(false);
 }
 
@@ -181,6 +183,11 @@ void ProjectManager::saveAsProject() {
   }
 
   project_path_ = project_path;
+
+  QFileInfo fileInfo(project_path_);
+
+  project_name_ = fileInfo.baseName();
+
   saveProject();
   emit updateProjectName(project_name_);
 }
