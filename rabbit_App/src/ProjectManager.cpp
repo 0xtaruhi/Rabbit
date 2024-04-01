@@ -27,18 +27,20 @@ ProjectManager::~ProjectManager() {}
 void ProjectManager::readProjectFromFile(const QString &project_path) {
 
   project_file_handler_->readProjectFromFile(project_path);
-  if (!constraint_path_.isEmpty()) {
+  auto constraint_path = project_file_handler_->getConstraintPath();
+  auto bitstream_path = project_file_handler_->getBitstreamPath();
+  if (!constraint_path.isEmpty()) {
     constraint_path_ =
-      getAbsolutePath(project_file_handler_->getConstraintPath(), project_path);
+      getAbsolutePath(constraint_path, project_path);
     ports_file_reader_->readFromFile(constraint_path_);
     emit portsLoaded(ports_file_reader_->inputs(),
                      ports_file_reader_->outputs());
   }
   project_path_ = project_path;
   project_name_ = project_file_handler_->getProjectName();
-  if (!bitstream_path_.isEmpty()) {
+  if (!bitstream_path.isEmpty()) {
     bitstream_path_ =
-      getAbsolutePath(project_file_handler_->getBitstreamPath(), project_path);
+      getAbsolutePath(bitstream_path, project_path);
   }
   is_unsaved_ = false;
   emit updateProjectName(project_name_);

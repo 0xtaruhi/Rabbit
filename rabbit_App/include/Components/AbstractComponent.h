@@ -86,7 +86,7 @@ public:
   }
 
   /// @brief Get the component colors.
-  const QMap<QString, QColor> &componentColors() const noexcept {
+  QMap<QString, QColor> &componentColors() noexcept {
     return component_colors_;
   }
   /// @brief Set the component colors.
