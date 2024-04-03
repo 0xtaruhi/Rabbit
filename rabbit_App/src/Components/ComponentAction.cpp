@@ -42,6 +42,8 @@ ComponentAction *ComponentActionFactory::create(const QString &text,
     // add new component icon on toolbar here :
     // } else if (text == "New Component Name") {
     //   action->setIcon(NewComponentClass::componentIcon());
+  } else if(text == "PS2Keyboard"){
+    action->setIcon(PS2KeyboardComponent::componentIcon());
   } else {
     std::runtime_error("Unknown component type");
   }

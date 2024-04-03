@@ -44,5 +44,8 @@
         <file>icons/components/RotaryButton-icon.png</file>
         <!-- Add new icon here -->
         <!-- <file>icons/components/New-icon-here.png</file> -->
+        <file>icons/components/PS2Keyboard-icon.png</file>
+        <file>icons/icons8-keyboard-94.png</file>
+        <file>icons/icons8-keyboard-inuse-94.png</file>
     </qresource>
 </RCC>
