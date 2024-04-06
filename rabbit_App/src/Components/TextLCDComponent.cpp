@@ -1,6 +1,7 @@
 #include <QLayout>
 #include <QPainter>
 #include <QPalette>
+#include <algorithm>
 
 #include "Common.h"
 #include "Components/ComponentSettingsDialog.h"
@@ -72,10 +73,17 @@ void TextLCDRawComponent::processReadData(QQueue<uint64_t> &read_queue) {
   for (auto value : read_queue) {
     auto en_index = output_ports_[0].pin_index - 1;
     auto en = (value >> en_index) & 0x1;
-    if (en == 0) {
+    auto rst_index = output_ports_[1].pin_index - 1;
+    auto rst = (value >> rst_index) & 0x1;
+    if (rst == 1) {
+      cur_pos_ = 0;
+      std::for_each(
+          char_blocks_.begin(), char_blocks_.end(),
+          [](CharBlock *char_block) { char_block->setCharCode(0x00); });
+    } else if (en == 0) {
       uint8_t char_code = 0x00;
       for (int i = 0; i < 8; i++) {
-        auto db_index = output_ports_[i + 1].pin_index - 1;
+        auto db_index = output_ports_[i + 2].pin_index - 1;
         char_code |= ((value >> db_index) & 0x1) << i;
       }
       setChar(static_cast<quint8>(char_code));
@@ -114,6 +122,7 @@ void TextLCDRawComponent::paintEvent(QPaintEvent *event) {
 
 void TextLCDRawComponent::initPorts() {
   appendPort(output_ports_, "EN", ports::PortType::Output);
+  appendPort(output_ports_, "RST", ports::PortType::Output);
   for (int i = 0; i < 8; i++) {
     appendPort(output_ports_, QString("DB%1").arg(i), ports::PortType::Output);
   }
