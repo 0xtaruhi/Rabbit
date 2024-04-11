@@ -248,13 +248,15 @@ A rotary button with 12 positions. If position is `12`, the all the output are `
 
 **Description**  :
 
+Developed by Jianrong Zhang from FD 21ME.
+
 A keyboard using PS/2 protocol. The keyboard is free to send data to the host when both Data and Clock lines are kept high. The keyboard will take the Data line low (Start bit) and then start generating the clock pulses on the Clock line. Each bit is sent in series with the following order:
 
 Start bit => 0...7 data bits => Odd parity bit => Stop bit.
 
 Each bit is read on the falling edge of the clock so keep it synchronized correctly.
 
-The PS/2 protocol need a high working frequency (recommendedly 10000Hz) to get a good effect.And before using, you need to click the item which is already placed to get a input focus. For the driver and decooder of hardware side, you can refer to the [demo](https://github.com/Starryskyz/PS2KeyboardHardwareDemo)
+The PS/2 protocol need a high working frequency (recommendedly 10000Hz) to get a good effect.And before using, you need to click the item which is already placed to get a input focus and it will turn green when focused. For the driver and decooder of hardware side, you can refer to the [demo](https://github.com/Starryskyz/PS2KeyboardHardwareDemo)
 
 
 ### 6.4 Output
