@@ -35,6 +35,8 @@ protected:
 
   void keyPressEvent(QKeyEvent *event) override;
   void keyReleaseEvent(QKeyEvent *event) override;
+  void focusInEvent(QFocusEvent *event) override;
+  void focusOutEvent(QFocusEvent *event) override;
 
   void initConnections();
 
@@ -44,6 +46,12 @@ protected:
   static const QPixmap &keyboardPictureStatic() {
     static const QPixmap kb_picture_ =
         QPixmap(":/icons/icons/icons8-keyboard-94.png");
+    return kb_picture_;
+  };
+
+  static const QPixmap &keyboardPictureOnFocus() {
+    static const QPixmap kb_picture_ =
+        QPixmap(":/icons/icons/icons8-keyboard-onfocus-94.png");
     return kb_picture_;
   };
 
@@ -70,6 +78,7 @@ protected slots:
 
 private:
   int key_pressed_num_ = 0;
+  bool item_foucused_ = false;
   mutable std::queue<bool> pclk_to_write_;
   mutable std::queue<bool> pdata_to_write_;
 };

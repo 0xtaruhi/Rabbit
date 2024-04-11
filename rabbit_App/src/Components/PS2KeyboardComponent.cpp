@@ -234,6 +234,18 @@ void PS2KeyboardRawComponent::keyReleaseEvent(QKeyEvent *event) {
   emit keyReleased(event->key(), 2);
 }
 
+void PS2KeyboardRawComponent::focusInEvent(QFocusEvent *event) {
+  item_foucused_ = true;
+  keyboard_picture_ = &PS2KeyboardRawComponent::keyboardPictureOnFocus();
+  keyboard_picture_label_->setPixmap(*keyboard_picture_);
+}
+
+void PS2KeyboardRawComponent::focusOutEvent(QFocusEvent *event) {
+  item_foucused_ = false;
+  keyboard_picture_ = &PS2KeyboardRawComponent::keyboardPictureStatic();
+  keyboard_picture_label_->setPixmap(*keyboard_picture_);
+}
+
 void PS2KeyboardRawComponent::keyProcess(int keyType, int state) {
   int info = keyMapIndex(keyType);
   bool specialKeyType2 = checkSpecialKey2(info);
@@ -268,9 +280,14 @@ void PS2KeyboardRawComponent::keyProcess(int keyType, int state) {
     }
   }
 
-  keyboard_picture_ = (key_pressed_num_ == 0)
-                          ? &PS2KeyboardRawComponent::keyboardPictureStatic()
-                          : &PS2KeyboardRawComponent::keyboardPictureInUse();
+  if (key_pressed_num_ != 0) {
+    keyboard_picture_ = &PS2KeyboardRawComponent::keyboardPictureInUse();
+  } else if (item_foucused_) {
+    keyboard_picture_ = &PS2KeyboardRawComponent::keyboardPictureOnFocus();
+  } else {
+    keyboard_picture_ = &PS2KeyboardRawComponent::keyboardPictureStatic();
+  }
+
   keyboard_picture_label_->setPixmap(*keyboard_picture_);
 }
 
