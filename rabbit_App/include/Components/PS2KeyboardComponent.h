@@ -14,7 +14,6 @@ namespace rabbit_App::component {
 
 COMPONENT_CLASS_DECLARATION(PS2Keyboard)
 
-
 /// @brief PS2KeyboardRawComponent class
 /// This class implements the PS2Keyboard component.
 class PS2KeyboardRawComponent : public AbstractRawComponent {
@@ -32,11 +31,11 @@ public:
 protected:
   void paintEvent(QPaintEvent *event) override;
   void initPorts() override;
-  //special functions 
-  
+  // special functions
+
   void keyPressEvent(QKeyEvent *event) override;
   void keyReleaseEvent(QKeyEvent *event) override;
-  
+
   void initConnections();
 
   const QPixmap *keyboard_picture_;
@@ -54,32 +53,27 @@ protected:
     return kb_inuse_picture_;
   };
 
-
   auto keyMapIndex(const int &keyType) -> int;
 
   bool checkSpecialKey2(int keyValue);
-  void insertBlank(int num);
+  void pclkEnqueue(int cycle, bool data);
+  void pdataEnqueue(int cycle, bool data);
   void pclkWriteDataGenerate(int keyValue);
   void pdataWriteDataGenerate(int keyValue);
-
 
 signals:
   void keyPressed(int keyType, int state);
   void keyReleased(int keyType, int state);
 
-
 protected slots:
   void keyProcess(int keyType, int state);
-
 
 private:
   int key_pressed_num_ = 0;
   mutable std::queue<bool> pclk_to_write_;
   mutable std::queue<bool> pdata_to_write_;
-
 };
 
-
-} 
+} // namespace rabbit_App::component
 
 #endif // PS2KEYBOARD_COMPONENT_H
