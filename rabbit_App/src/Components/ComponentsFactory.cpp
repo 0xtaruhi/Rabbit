@@ -35,6 +35,8 @@ AbstractComponent *ComponentsFactory::create(const QString &component_name,
     // Add new component here :
     // } else if (component_name == "New Component Name") {
     //   new_component = new NewComponentClass(parent);
+  } else if (component_name == "PS2Keyboard") {
+    new_component = new PS2KeyboardComponent(parent);
   } else {
     std::runtime_error("Unknown component type");
   }

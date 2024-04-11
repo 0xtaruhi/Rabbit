@@ -94,6 +94,10 @@ void AbstractComponent::mousePressEvent(QMouseEvent *event) {
   }
 }
 
+void AbstractComponent::keyPressEvent(QKeyEvent *event) {}
+
+void AbstractComponent::keyReleaseEvent(QKeyEvent *event) {}
+
 void AbstractComponent::paintEvent(QPaintEvent *event) {
   QPainter painter(this);
   painter.setRenderHint(QPainter::Antialiasing);

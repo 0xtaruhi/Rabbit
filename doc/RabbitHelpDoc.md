@@ -18,6 +18,7 @@
       - [6.3.3 KeyPad](#633-keypad)
       - [6.3.4 Small Keypad](#634-small-keypad)
       - [6.3.5 Rotary Button](#635-rotary-button)
+      - [6.3.6 PS2Keyboard](#636-ps2keyboard)
     - [6.4 Output](#64-output)
       - [6.4.1 LED](#641-led)
       - [6.4.2 TextLCD](#642-textlcd)
@@ -230,6 +231,32 @@ A rotary button with 12 positions. If position is `12`, the all the output are `
 |    11    | 11111111110 |
 |    12    | 11111111111 |
 
+#### 6.3.6 PS2Keyboard
+
+<p align="center">
+    <img alt="PS2Keyboard" height=200 src="./images/Component-PS2Keyboard.png" />
+</p>
+
+**Bit Width** : 2
+
+**Port List** :
+
+| Port Name  |       Description       |
+| :--------: | :---------------------: |
+|   `PCLK`   |  keyboard clock output  |
+|   `PDATA`  |  keyboard data output   |
+
+**Description**  :
+
+Developed by Jianrong Zhang from FD 21ME.
+
+A keyboard using PS/2 protocol. The keyboard is free to send data to the host when both Data and Clock lines are kept high. The keyboard will take the Data line low (Start bit) and then start generating the clock pulses on the Clock line. Each bit is sent in series with the following order:
+
+Start bit => 0...7 data bits => Odd parity bit => Stop bit.
+
+Each bit is read on the falling edge of the clock so keep it synchronized correctly.
+
+The PS/2 protocol need a high working frequency (recommendedly 10000Hz) to get a good effect.And before using, you need to click the item which is already placed to get a input focus and it will turn green when focused. For the driver and decooder of hardware side, you can refer to the [demo](https://github.com/Starryskyz/PS2KeyboardHardwareDemo)
 
 
 ### 6.4 Output

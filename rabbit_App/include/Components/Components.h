@@ -20,11 +20,12 @@
 #include "SegmentDisplayComponent.h" // IWYU pragma: export
 #include "SwitchComponent.h"         // IWYU pragma: export
 #include "TextLCDComponent.h"        // IWYU pragma: export
+#include "PS2KeyboardComponent.h"
 
 // add new input component here
 inline QList<QString> inputComponents() {
   return QList<QString>{"Switch", "Button", "KeyPad", "SmallKeyPad",
-                        "RotaryButton"};
+                        "RotaryButton", "PS2Keyboard"};
 }
 
 // add new output conponent here

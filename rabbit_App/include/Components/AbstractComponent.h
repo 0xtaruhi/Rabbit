@@ -238,6 +238,10 @@ protected:
   void mousePressEvent(QMouseEvent *event) override;
   /// @brief Mouse move event.
   void mouseMoveEvent(QMouseEvent *event) override;
+  /// @brief Key press event
+  void keyPressEvent(QKeyEvent *event) override;
+  /// @brief Key release event
+  void keyReleaseEvent(QKeyEvent *event) override;
 
 signals:
   /// @brief Emit this signal to remove the component.
