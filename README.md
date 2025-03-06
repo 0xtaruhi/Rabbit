@@ -31,12 +31,16 @@ Before building Rabbit, you need to install [Qt6](https://www.qt.io/product/qt6)
 
 ```bash
 git clone https://github.com/0xtaruhi/Rabbit.git
-git submodule update --init --recursive
+# git submodule update --init --recursive
 ```
 
 #### Build libusb
 
 After cloning the repository, you need to build libusb first.
+
+```bash
+git submodule update --init --recursive libusb
+```
 
 * Linux & MacOS
 
@@ -56,6 +60,10 @@ After cloning the repository, you need to build libusb first.
 ##### Aside: If on MacOS, build & link the newly compiled QT6.5.5
 
 Follow the steps in the submodule [qt-everywhere-src-6.5.5](./qt-everywhere-src-6.5.5/README.md) to download and build QT 6.5.5.
+
+```bash
+git submodule update --init --recursive qt-everywhere-src-6.5.5
+```
 
 After building QT, follow the next steps (make sure to `cd` back to this root directory)
 
