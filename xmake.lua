@@ -40,7 +40,11 @@ target("rabbit_App")
     add_includedirs("VLFDLibUSBDriver")
     add_links("usb-1.0")
     if is_plat("macosx") then
-        add_links("VLFDLibUSB-osx-x64")
+        if is_arch("arm64") then
+            add_links("VLFDLibUSB-macos-arm64")
+        else
+            add_links("VLFDLibUSB-macos-x64")
+        end
     elseif is_plat("windows") then
         add_links("VLFDLibUSB-win-x64")
     elseif is_plat("linux") then
@@ -55,12 +59,23 @@ target("rabbit_App")
     after_build(function (target)
         if is_plat("macosx") then
             -- print("macosx")
-            if not os.isdir("$(buildir)/$(plat)/$(arch)/$(mode)/gtkwave.app") then
-                -- print("macosx gtkwave")
-                os.cp("gtkwave/osx-x64/gtkwave.zip", "$(buildir)/$(plat)/$(arch)/$(mode)/")
-                os.cd("$(buildir)/$(plat)/$(arch)/$(mode)/")
-                os.exec("tar -xf gtkwave.zip")
-                os.rm("gtkwave.zip")
+            if is_arch("arm64") then
+                -- print("macosx-arm64")
+                if not os.isdir("$(buildir)/$(plat)/$(arch)/$(mode)/gtkwave.app") then
+                    -- print("macosx gtkwave")
+                    os.cp("gtkwave/osx-arm64/gtkwave.zip", "$(buildir)/$(plat)/$(arch)/$(mode)/")
+                    os.cd("$(buildir)/$(plat)/$(arch)/$(mode)/")
+                    os.exec("tar -xf gtkwave.zip")
+                    os.rm("gtkwave.zip")
+                end
+            else
+                if not os.isdir("$(buildir)/$(plat)/$(arch)/$(mode)/gtkwave.app") then
+                    -- print("macosx gtkwave")
+                    os.cp("gtkwave/osx-x64/gtkwave.zip", "$(buildir)/$(plat)/$(arch)/$(mode)/")
+                    os.cd("$(buildir)/$(plat)/$(arch)/$(mode)/")
+                    os.exec("tar -xf gtkwave.zip")
+                    os.rm("gtkwave.zip")
+                end
             end
         elseif is_plat("windows") then
             if not os.isdir("$(buildir)/$(plat)/$(arch)/$(mode)/gtkwave") then
