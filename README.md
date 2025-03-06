@@ -68,7 +68,7 @@ you need to choose the `binaries` folder instead of using the provided one (that
 xmake f --qt=[path to binaries folder] -v
 ```
 
-###### Build QT6.5.5 for MacOS (arm64):
+##### Build QT6.5.5 for MacOS (arm64):
 
 Follow the steps in the submodule [qt-everywhere-src-6.5.5](./qt-everywhere-src-6.5.5/README.md) to download and build QT 6.5.5.
 
