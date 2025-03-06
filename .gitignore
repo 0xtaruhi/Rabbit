@@ -356,3 +356,5 @@ Native/
 build
 compile_commands.json
 *.bit
+
+.DS_Store

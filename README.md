@@ -33,6 +33,7 @@ Before building Rabbit, you need to install [Qt6](https://www.qt.io/product/qt6)
 git clone https://github.com/0xtaruhi/Rabbit.git
 git submodule update --init --recursive
 ```
+
 #### Build libusb
 
 After cloning the repository, you need to build libusb first.
@@ -51,6 +52,16 @@ After cloning the repository, you need to build libusb first.
     Open the `libusb\msvc\libusb.sln` with **Visual Studio** and build the **static library**. Then copy the `libusb\msvc\libusb\Release\libusb-1.0.lib` to `libusb\libusb\.libs\usb-1.0.lib`.
 
 #### Build & Run Rabbit
+
+##### Aside: If on MacOS, build & link the newly compiled QT6.5.5
+
+Follow the steps in the submodule [qt-everywhere-src-6.5.5](./qt-everywhere-src-6.5.5/README.md) to download and build QT 6.5.5.
+
+After building QT, follow the next steps (make sure to `cd` back to this root directory)
+
+```bash
+xmake f --qt=qt-everywhere-src-6.5.5/qt5/qtbase -v
+```
 
 Then you can build Rabbit.
 
