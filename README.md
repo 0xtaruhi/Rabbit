@@ -55,9 +55,20 @@ git submodule update --init --recursive libusb
 
     Open the `libusb\msvc\libusb.sln` with **Visual Studio** and build the **static library**. Then copy the `libusb\msvc\libusb\Release\libusb-1.0.lib` to `libusb\libusb\.libs\usb-1.0.lib`.
 
-#### Build & Run Rabbit
+#### Aside: If on MacOS, build & link the newly compiled QT6.5.5 (or you can download the pre-compiled binaries)
 
-##### Aside: If on MacOS, build & link the newly compiled QT6.5.5
+##### Download pre-compiled QT6.5.5 for MacOS (arm64):
+
+[Download here](https://github.com/jwwang2003/qt-everywhere-src-6.5.5/releases/tag/1.0.0)
+
+Extract the files into the root of your project directory. Pay attention that when setting the QT path with `xmake f`,
+you need to choose the `binaries` folder instead of using the provided one (that is for if you cloned the source code & compiled from scratch).
+
+```bash
+xmake f --qt=[path to binaries folder] -v
+```
+
+###### Build QT6.5.5 for MacOS (arm64):
 
 Follow the steps in the submodule [qt-everywhere-src-6.5.5](./qt-everywhere-src-6.5.5/README.md) to download and build QT 6.5.5.
 
@@ -65,11 +76,13 @@ Follow the steps in the submodule [qt-everywhere-src-6.5.5](./qt-everywhere-src-
 git submodule update --init --recursive qt-everywhere-src-6.5.5
 ```
 
-After building QT, follow the next steps (make sure to `cd` back to this root directory)
+After building QT/downloading QT binaries, follow the next steps (make sure to `cd` back to this root directory)
 
 ```bash
 xmake f --qt=qt-everywhere-src-6.5.5/qt5/qtbase -v
 ```
+
+#### Build & Run Rabbit
 
 Then you can build Rabbit.
 
