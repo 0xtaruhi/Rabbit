@@ -1,4 +1,5 @@
 #pragma once
+#include "Components/ComponentSettingsDialog.h"
 #ifndef SEGMENT_DISPLAY_COMPONENT_H
 #define SEGMENT_DISPLAY_COMPONENT_H
 
@@ -145,20 +146,9 @@ private:
 
 /// @brief SegmentDisplaySettingsDialog class
 /// This class is used to display the Segment Display settings dialog.
-/// Inherited from ActiveModeSettingsDialog and VisionPersistenceSettingsDialog.
-class SegmentDisplaySettingsDialog : public ActiveModeSettingsDialog,
-                                     public VisionPersistenceSettingsDialog {
-  Q_OBJECT
-
-public:
-  SegmentDisplaySettingsDialog(AbstractComponent *component,
-                               QWidget *parent = nullptr);
-  virtual ~SegmentDisplaySettingsDialog();
-
-protected:
-  void acceptDerivedClassSettings() override;
-
-}; // class SegmentDisplaySettingsDialog
+using SegmentDisplaySettingsDialog =
+    ComponentSettingsDialogWithFeatures<SettingsFeature::ActiveMode,
+                                        SettingsFeature::VisionPersistence>;
 
 } // namespace rabbit_App::component
 

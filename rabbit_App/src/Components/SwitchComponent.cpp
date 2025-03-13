@@ -78,7 +78,9 @@ COMPONENT_CLASS_DEFINITION(Switch, 2, 2)
 // ACTIVE_ONLY_SETTINGS_BTN_CLICKED(Switch)
 
 void SwitchComponent::onSettingsBtnClicked() {
-  auto settings_dialog = new ActiveModeSettingsDialog(this, this);
+  auto settings_dialog =
+      new ComponentSettingsDialogWithFeatures<SettingsFeature::ActiveMode>(
+          this, this);
   settings_dialog->exec();
   delete settings_dialog;
 }

@@ -12,7 +12,6 @@
 #include "Components/AbstractComponent.h"
 #include "Components/ComponentMacro.h"
 #include "Components/ComponentSettingsDialog.h"
-#include "ThreadTimer.h"
 
 namespace rabbit_App::component {
 
@@ -135,20 +134,9 @@ public:
 
 /// @brief LEDMatrixSettingsDialog class
 /// This class is used to display the LED Matrix settings dialog.
-/// Inherited from ActiveModeSettingsDialog and VisionPersistenceSettingsDialog.
-class LEDMatrixSettingsDialog : public ActiveModeSettingsDialog,
-                                public VisionPersistenceSettingsDialog {
-  Q_OBJECT
-
-public:
-  LEDMatrixSettingsDialog(AbstractComponent *component,
-                          QWidget *parent = nullptr);
-  virtual ~LEDMatrixSettingsDialog();
-
-protected:
-  void acceptDerivedClassSettings() override;
-
-}; // class LEDMatrixSettingsDialog
+using LEDMatrixSettingsDialog =
+    ComponentSettingsDialogWithFeatures<SettingsFeature::ActiveMode,
+                                        SettingsFeature::VisionPersistence>;
 
 } // namespace rabbit_App::component
 

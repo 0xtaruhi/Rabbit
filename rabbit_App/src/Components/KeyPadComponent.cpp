@@ -2,7 +2,6 @@
 #include <QPainter>
 #include <QPalette>
 
-#include "Common.h"
 #include "Components/ComponentSettingsDialog.h"
 #include "Components/KeyPadComponent.h"
 #include "qevent.h"
@@ -223,13 +222,17 @@ void SmallKeyPadComponent::contextMenuEvent(QContextMenuEvent *event) {
 // }
 
 void KeyPadComponent::onSettingsBtnClicked() {
-  ComponentSettingsDialog *dialog = new ActiveModeSettingsDialog(this, this);
+  auto dialog =
+      new ComponentSettingsDialogWithFeatures<SettingsFeature::ActiveMode>(
+          this, this);
   dialog->exec();
   delete dialog;
 }
 
 void SmallKeyPadComponent::onSettingsBtnClicked() {
-  ComponentSettingsDialog *dialog = new ActiveModeSettingsDialog(this, this);
+  auto dialog =
+      new ComponentSettingsDialogWithFeatures<SettingsFeature::ActiveMode>(
+          this, this);
   dialog->exec();
   delete dialog;
 }

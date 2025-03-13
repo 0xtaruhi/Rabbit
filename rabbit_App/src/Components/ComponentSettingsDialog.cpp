@@ -2,18 +2,15 @@
 #include <QHeaderView>
 #include <QPushButton>
 
-#include "Components/ComponentMacro.h"
+#include "Components/AbstractComponent.h"
 #include "Components/ComponentSettingsDialog.h"
 #include "Ports/PinInfo.h"
 #include "Ports/Port.h"
 #include "Ports/PortsFileReader.h"
 #include "qboxlayout.h"
 #include "qcombobox.h"
-#include "qdebug.h"
-#include "qdialog.h"
-#include "qhash.h"
+#include "qgroupbox.h"
 #include "qlabel.h"
-#include "qlineedit.h"
 #include "qmessagebox.h"
 #include "qstandarditemmodel.h"
 
@@ -240,9 +237,9 @@ void ComponentSettingsDialog::accept() {
   QDialog::accept();
 }
 
-ActiveModeSettingsDialog::ActiveModeSettingsDialog(AbstractComponent *component,
-                                                   QWidget *parent)
-    : ComponentSettingsDialog(component, parent) {
+ActiveModeSettingsFeatureWidget::ActiveModeSettingsFeatureWidget(
+    AbstractComponent *component, QWidget *parent)
+    : SettingsFeatureWidget<ActiveModeSettingsFeatureWidget>(parent) {
   QGroupBox *active_mode_group_box = new QGroupBox(tr("Active Mode"), this);
   QHBoxLayout *active_mode_layout = new QHBoxLayout(active_mode_group_box);
   active_high_radio_button_ = new QRadioButton(tr("High Active"), this);
@@ -254,55 +251,50 @@ ActiveModeSettingsDialog::ActiveModeSettingsDialog(AbstractComponent *component,
       component->rawComponent()->isLowActive());
   active_mode_layout->addWidget(active_high_radio_button_);
   active_mode_layout->addWidget(active_low_radio_button_);
-  appendSettingWidget(active_mode_group_box);
+  setLayout(active_mode_layout);
 }
 
-ActiveModeSettingsDialog::~ActiveModeSettingsDialog() {}
-
-void ActiveModeSettingsDialog::acceptDerivedClassSettings() {
+void ActiveModeSettingsFeatureWidget::accept(AbstractComponent *component) {
   if (active_high_radio_button_->isChecked() ==
-      component_->rawComponent()->isLowActive()) {
-    is_modifieds_ = true;
-    component_->rawComponent()->setLowActive(
+      component->rawComponent()->isLowActive()) {
+    component->rawComponent()->setLowActive(
         !active_high_radio_button_->isChecked());
   }
 }
 
-VisionPersistenceSettingsDialog::VisionPersistenceSettingsDialog(
+VisionPersistenceSettingsFeatureWidget::VisionPersistenceSettingsFeatureWidget(
     AbstractComponent *component, QWidget *parent)
-    : ComponentSettingsDialog(component, parent) {
+    : SettingsFeatureWidget<VisionPersistenceSettingsFeatureWidget>(parent) {
   vision_persistence_edit_ = new QLineEdit(this);
   vision_persistence_edit_->setValidator(
       new QRegularExpressionValidator(QRegularExpression("[0-9]{1,4}")));
   vision_persistence_edit_->setText(
-      QString::number(component_->rawComponent()->visionPersistence()));
+      QString::number(component->rawComponent()->visionPersistence()));
   QHBoxLayout *vision_persistence_layout = new QHBoxLayout();
   vision_persistence_layout->addWidget(
       new QLabel(tr("Vision Persistence: "), this));
   vision_persistence_layout->addWidget(vision_persistence_edit_);
   vision_persistence_layout->addWidget(new QLabel("ms", this));
-  appendSettingLayout(vision_persistence_layout);
+  setLayout(vision_persistence_layout);
 }
 
-VisionPersistenceSettingsDialog::~VisionPersistenceSettingsDialog() {}
-
-void VisionPersistenceSettingsDialog::acceptDerivedClassSettings() {
+void VisionPersistenceSettingsFeatureWidget::accept(
+    AbstractComponent *component) {
   auto text = vision_persistence_edit_->text();
   auto vision_persistence = vision_persistence_edit_->text().toUInt();
   if (static_cast<int>(vision_persistence) !=
-      component_->rawComponent()->visionPersistence()) {
-    is_modifieds_ = true;
-    component_->rawComponent()->setVisionPersistence(vision_persistence);
+      component->rawComponent()->visionPersistence()) {
+    component->rawComponent()->setVisionPersistence(vision_persistence);
   }
 }
 
-ColorSettingsDialog::ColorSettingsDialog(AbstractComponent *component,
-                                         QWidget *parent)
-    : ComponentSettingsDialog(component, parent) {
+ColorSettingsFeatureWidget::ColorSettingsFeatureWidget(
+    AbstractComponent *component, QWidget *parent)
+    : SettingsFeatureWidget<ColorSettingsFeatureWidget>(parent) {
   QGroupBox *colors_group_box = new QGroupBox(tr("Colors"), this);
   QGridLayout *colors_layout = new QGridLayout(colors_group_box);
-  auto &supported_colors = component_->rawComponent()->supportedColors();
-  auto &colors_map = component_->rawComponent()->componentColors();
+  auto &supported_colors = component->rawComponent()->supportedColors();
+  auto &colors_map = component->rawComponent()->componentColors();
   for (auto itor = colors_map.begin(); itor != colors_map.end(); ++itor) {
     auto color_usage = itor.key();
     auto color = itor.value();
@@ -310,28 +302,25 @@ ColorSettingsDialog::ColorSettingsDialog(AbstractComponent *component,
     QComboBox *color_combo_box = new QComboBox(this);
     for (auto supported_color : supported_colors) {
       color_combo_box->addItem(
-          component_->rawComponent()->supportedColors().key(supported_color));
+          component->rawComponent()->supportedColors().key(supported_color));
     }
     color_combo_box->setCurrentText(
-        component_->rawComponent()->supportedColors().key(color));
+        component->rawComponent()->supportedColors().key(color));
     color_map_[color_usage] = color_combo_box;
     colors_layout->addWidget(color_label, colors_layout->rowCount(), 0);
     colors_layout->addWidget(color_combo_box, colors_layout->rowCount() - 1, 1);
   }
-  appendSettingWidget(colors_group_box);
+  setLayout(colors_layout);
 }
 
-ColorSettingsDialog::~ColorSettingsDialog() { color_map_.clear(); }
-
-void ColorSettingsDialog::acceptDerivedClassSettings() {
-  auto &colors_map = component_->rawComponent()->componentColors();
+void ColorSettingsFeatureWidget::accept(AbstractComponent *component) {
+  auto &colors_map = component->rawComponent()->componentColors();
   for (auto itor = colors_map.begin(); itor != colors_map.end(); ++itor) {
     auto color_usage = itor.key();
     auto color_combo_box = color_map_.value(color_usage);
     if (colors_map[color_usage] !=
         ComponentSettingsDialog::all_supported_color.value(
             color_combo_box->currentText())) {
-      is_modifieds_ = true;
       colors_map[color_usage] =
           ComponentSettingsDialog::all_supported_color.value(
               color_combo_box->currentText());

@@ -96,7 +96,9 @@ COMPONENT_CLASS_DEFINITION(Button, 2, 2)
 // ACTIVE_ONLY_SETTINGS_BTN_CLICKED(Button)
 
 void ButtonComponent::onSettingsBtnClicked() {
-  auto dialog = new ActiveModeSettingsDialog(this, this);
+  auto dialog =
+      new ComponentSettingsDialogWithFeatures<SettingsFeature::ActiveMode>(
+          this, this);
   dialog->exec();
   delete dialog;
 }

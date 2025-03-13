@@ -243,16 +243,3 @@ void FourDigitSegmentDisplayComponent::onSettingsBtnClicked() {
   dialog->exec();
   delete dialog;
 }
-
-SegmentDisplaySettingsDialog::SegmentDisplaySettingsDialog(
-    AbstractComponent *component, QWidget *parent)
-    : ComponentSettingsDialog(component, parent),
-      ActiveModeSettingsDialog(component, parent),
-      VisionPersistenceSettingsDialog(component, parent) {}
-
-SegmentDisplaySettingsDialog::~SegmentDisplaySettingsDialog() {}
-
-void SegmentDisplaySettingsDialog::acceptDerivedClassSettings() {
-  ActiveModeSettingsDialog::acceptDerivedClassSettings();
-  VisionPersistenceSettingsDialog::acceptDerivedClassSettings();
-}

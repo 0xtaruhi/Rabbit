@@ -1,5 +1,10 @@
 
 #pragma once
+#include "Components/ComponentSettingsDialog.h"
+#include "qlineedit.h"
+#include "qradiobutton.h"
+#include "qtmetamacros.h"
+#include "qwidget.h"
 #ifndef COMPONENT_SETTINGS_DIALOG_H
 #define COMPONENT_SETTINGS_DIALOG_H
 
@@ -30,7 +35,7 @@ class AbstractComponent;
 /// It can be used to display the basic settings and ports settings.
 /// If you want to add more settings, you can inherit from this class
 class ComponentSettingsDialog : public QDialog {
-  Q_OBJECT
+  // Q_OBJECT
 
   constexpr static int kWindowMinWidth = 480;
 
@@ -56,6 +61,9 @@ protected:
   /// in the accept() function.
   virtual void acceptDerivedClassSettings() {}
 
+  /// @brief Accept the dialog when the user click the OK button.
+  void accept() override;
+
 private:
   const QList<QString> &getComponentPortsNames();
 
@@ -75,9 +83,6 @@ private:
   /// @brief Find the HDL port name of the given pin name.
   const QString findHdlPortName(const QVector<ports::Port> &vec,
                                 const QString &pin_name);
-
-  /// @brief Accept the dialog when the user click the OK button.
-  void accept() override;
 
 private:
   /// @brief Basic settings group which contain the basic settings like
@@ -106,52 +111,104 @@ private:
 
 }; // class ComponentSettingsDialog
 
-class ActiveModeSettingsDialog : virtual public ComponentSettingsDialog {
-  Q_OBJECT
+enum class SettingsFeature {
+  ActiveMode,
+  VisionPersistence,
+  Color,
+};
 
+template <typename Derived> class SettingsFeatureWidget : public QWidget {
 public:
-  ActiveModeSettingsDialog(AbstractComponent *component,
-                           QWidget *parent = nullptr);
-  virtual ~ActiveModeSettingsDialog();
+  using QWidget::QWidget;
 
-protected:
-  void acceptDerivedClassSettings() override;
+  void accept(AbstractComponent *component) {
+    static_cast<Derived *>(this)->accept(component);
+  }
+}; // class SettingsFeatureWidget
+
+template <SettingsFeature F> struct WidgetOfFeatureHelper {
+  using type = void;
+};
+
+template <SettingsFeature F>
+using WidgetOfFeature = typename WidgetOfFeatureHelper<F>::type;
+
+class ActiveModeSettingsFeatureWidget
+    : public SettingsFeatureWidget<ActiveModeSettingsFeatureWidget> {
+public:
+  ActiveModeSettingsFeatureWidget(AbstractComponent *component,
+                                  QWidget *parent = nullptr);
+  void accept(AbstractComponent *component);
 
 private:
   QRadioButton *active_high_radio_button_;
+};
+template <> struct WidgetOfFeatureHelper<SettingsFeature::ActiveMode> {
+  using type = ActiveModeSettingsFeatureWidget;
+};
 
-}; // class ActiveModeSettingsDialog
-
-class VisionPersistenceSettingsDialog : virtual public ComponentSettingsDialog {
-  Q_OBJECT
-
+class VisionPersistenceSettingsFeatureWidget
+    : public SettingsFeatureWidget<VisionPersistenceSettingsFeatureWidget> {
 public:
-  VisionPersistenceSettingsDialog(AbstractComponent *component,
-                                  QWidget *parent = nullptr);
-  virtual ~VisionPersistenceSettingsDialog();
-
-protected:
-  void acceptDerivedClassSettings() override;
+  VisionPersistenceSettingsFeatureWidget(AbstractComponent *component,
+                                         QWidget *parent = nullptr);
+  void accept(AbstractComponent *component);
 
 private:
   QLineEdit *vision_persistence_edit_;
+};
+template <> struct WidgetOfFeatureHelper<SettingsFeature::VisionPersistence> {
+  using type = VisionPersistenceSettingsFeatureWidget;
+};
 
-}; // class VisionPersistenceSettingsDialog
-
-class ColorSettingsDialog : virtual public ComponentSettingsDialog {
-  Q_OBJECT
-
+class ColorSettingsFeatureWidget
+    : public SettingsFeatureWidget<ColorSettingsFeatureWidget> {
 public:
-  ColorSettingsDialog(AbstractComponent *component, QWidget *parent = nullptr);
-  virtual ~ColorSettingsDialog();
-
-protected:
-  void acceptDerivedClassSettings() override;
+  ColorSettingsFeatureWidget(AbstractComponent *component,
+                             QWidget *parent = nullptr);
+  void accept(AbstractComponent *component);
 
 private:
   QMap<QString, QComboBox *> color_map_;
+};
+template <> struct WidgetOfFeatureHelper<SettingsFeature::Color> {
+  using type = ColorSettingsFeatureWidget;
+};
 
-}; // class ColorSettingsDialog
+template <SettingsFeature... Features>
+class ComponentSettingsDialogWithFeatures : public ComponentSettingsDialog {
+  static constexpr auto kFeaturesNum = sizeof...(Features);
+
+public:
+  ComponentSettingsDialogWithFeatures(AbstractComponent *component,
+                                      QWidget *parent = nullptr)
+      : ComponentSettingsDialog(component, parent) {
+    initFeatureWidgets();
+  }
+
+  void accept() override {
+    ComponentSettingsDialog::accept();
+    (void)std::initializer_list<int>{(static_cast<WidgetOfFeature<Features> *>(
+                                          features_[static_cast<int>(Features)])
+                                          ->accept(component_),
+                                      0)...};
+  }
+
+  void initFeatureWidgets() {
+    (void)std::initializer_list<int>{
+        (features_[static_cast<int>(Features)] =
+             new WidgetOfFeature<Features>(component_, this),
+         0)...};
+    for (auto feature : features_) {
+      appendSettingWidget(feature);
+    }
+  }
+
+  virtual ~ComponentSettingsDialogWithFeatures() {}
+
+private:
+  std::array<QWidget *, kFeaturesNum> features_ = {nullptr};
+};
 
 } // namespace rabbit_App::component
 

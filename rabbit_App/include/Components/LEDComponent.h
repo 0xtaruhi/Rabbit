@@ -47,23 +47,9 @@ private:
 
 /// @brief LEDSettingsDialog class
 /// This class is used to display the LED settings dialog.
-/// Inherited from ActiveModeSettingsDialog and ColorSettingsDialog.
-class LEDSettingsDialog : public ActiveModeSettingsDialog,
-                          public ColorSettingsDialog {
-  Q_OBJECT
-
-public:
-  LEDSettingsDialog(AbstractComponent *component, QWidget *parent = nullptr);
-  virtual ~LEDSettingsDialog();
-
-protected:
-  void acceptDerivedClassSettings() override;
-
-private:
-  // ACTIVE_SETTING_DECLARATION_PRIVATE_MEMBER
-  // COLOR_SETTING_DECLARATION_PRIVATE_MEMBER
-
-}; // class LEDSettingsDialog
+using LEDSettingsDialog =
+    ComponentSettingsDialogWithFeatures<SettingsFeature::ActiveMode,
+                                        SettingsFeature::Color>;
 
 } // namespace rabbit_App::component
 

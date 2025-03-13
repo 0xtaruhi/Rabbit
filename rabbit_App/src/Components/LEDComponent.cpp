@@ -9,7 +9,6 @@
 #include "Components/ComponentMacro.h"
 #include "Components/ComponentSettingsDialog.h"
 #include "Components/LEDComponent.h"
-#include "qgridlayout.h"
 #include "qpainter.h"
 
 using namespace rabbit_App::component;
@@ -110,24 +109,3 @@ void LEDComponent::onSettingsBtnClicked() {
 // void LEDComponent::setSettingsDialog() {
 //   settings_dialog_ = new LEDSettingsDialog(this, this);
 // }
-
-LEDSettingsDialog::LEDSettingsDialog(AbstractComponent *component,
-                                     QWidget *parent)
-    : ComponentSettingsDialog(component, parent),
-      ActiveModeSettingsDialog(component, parent),
-      ColorSettingsDialog(component, parent) {
-
-  // ACTIVE_SETTING_DEFINITION_CONSTRUCTOR
-  // COLOR_SETTING_DEFINITION_CONSTRUCTOR
-}
-
-LEDSettingsDialog::~LEDSettingsDialog() {
-  // color_map_.clear();
-}
-
-void LEDSettingsDialog::acceptDerivedClassSettings() {
-  // ACTIVE_SETTING_DEFINITION_ACCEPT
-  // COLOR_SETTING_DEFINITION_ACCEPT
-  ActiveModeSettingsDialog::acceptDerivedClassSettings();
-  ColorSettingsDialog::acceptDerivedClassSettings();
-}

@@ -270,15 +270,6 @@ void LED16x16MatrixComponent::onSettingsBtnClicked() {
   delete dialog;
 }
 
-LEDMatrixSettingsDialog::LEDMatrixSettingsDialog(AbstractComponent *component,
-                                                 QWidget *parent)
-    : ComponentSettingsDialog(component, parent),
-      ActiveModeSettingsDialog(component, parent),
-      VisionPersistenceSettingsDialog(component, parent) {}
-
-LEDMatrixSettingsDialog::~LEDMatrixSettingsDialog() {}
-
-void LEDMatrixSettingsDialog::acceptDerivedClassSettings() {
-  ActiveModeSettingsDialog::acceptDerivedClassSettings();
-  VisionPersistenceSettingsDialog::acceptDerivedClassSettings();
-}
+using LEDMatrixSettingsDialog =
+    ComponentSettingsDialogWithFeatures<SettingsFeature::ActiveMode,
+                                        SettingsFeature::VisionPersistence>;
