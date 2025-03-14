@@ -115,7 +115,7 @@ void NewProjectDialog::initConnections() {
           &NewProjectDialog::onLineEditChanged);
   connect(bitstream_file_edit_, &QLineEdit::textChanged, this,
           &NewProjectDialog::onLineEditChanged);
-  connect(create_project_folder_checkbox_, &QCheckBox::stateChanged, this,
+  connect(create_project_folder_checkbox_, &QCheckBox::checkStateChanged, this,
           [this](int useless) { onLineEditChanged(""); });
 }
 
