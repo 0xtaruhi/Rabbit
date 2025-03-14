@@ -230,7 +230,6 @@ void ComponentSettingsDialog::accept() {
     component_->setComponentName(component_name_edit_->text());
     is_modifieds_ = true;
   }
-  acceptDerivedClassSettings();
   if (is_modifieds_) {
     component_->settingsChanged();
   }
@@ -240,18 +239,21 @@ void ComponentSettingsDialog::accept() {
 ActiveModeSettingsFeatureWidget::ActiveModeSettingsFeatureWidget(
     AbstractComponent *component, QWidget *parent)
     : SettingsFeatureWidget<ActiveModeSettingsFeatureWidget>(parent) {
+  QHBoxLayout *main_layout = new QHBoxLayout(this);
   QGroupBox *active_mode_group_box = new QGroupBox(tr("Active Mode"), this);
   QHBoxLayout *active_mode_layout = new QHBoxLayout(active_mode_group_box);
-  active_high_radio_button_ = new QRadioButton(tr("High Active"), this);
+  active_high_radio_button_ =
+      new QRadioButton(tr("High Active"), active_mode_group_box);
   active_high_radio_button_->setChecked(
       !component->rawComponent()->isLowActive());
   QRadioButton *active_low_radio_button_ =
-      new QRadioButton(tr("Low Active"), this);
+      new QRadioButton(tr("Low Active"), active_mode_group_box);
   active_low_radio_button_->setChecked(
       component->rawComponent()->isLowActive());
   active_mode_layout->addWidget(active_high_radio_button_);
   active_mode_layout->addWidget(active_low_radio_button_);
-  setLayout(active_mode_layout);
+  main_layout->addWidget(active_mode_group_box);
+  setLayout(main_layout);
 }
 
 void ActiveModeSettingsFeatureWidget::accept(AbstractComponent *component) {
@@ -291,6 +293,7 @@ void VisionPersistenceSettingsFeatureWidget::accept(
 ColorSettingsFeatureWidget::ColorSettingsFeatureWidget(
     AbstractComponent *component, QWidget *parent)
     : SettingsFeatureWidget<ColorSettingsFeatureWidget>(parent) {
+  auto main_layout = new QHBoxLayout(this);
   QGroupBox *colors_group_box = new QGroupBox(tr("Colors"), this);
   QGridLayout *colors_layout = new QGridLayout(colors_group_box);
   auto &supported_colors = component->rawComponent()->supportedColors();
@@ -310,7 +313,8 @@ ColorSettingsFeatureWidget::ColorSettingsFeatureWidget(
     colors_layout->addWidget(color_label, colors_layout->rowCount(), 0);
     colors_layout->addWidget(color_combo_box, colors_layout->rowCount() - 1, 1);
   }
-  setLayout(colors_layout);
+  main_layout->addWidget(colors_group_box);
+  setLayout(main_layout);
 }
 
 void ColorSettingsFeatureWidget::accept(AbstractComponent *component) {
