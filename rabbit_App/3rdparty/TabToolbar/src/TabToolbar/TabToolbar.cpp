@@ -15,6 +15,7 @@
     You should have received a copy of the GNU Lesser General Public License
     along with TabToolbar.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "qnamespace.h"
 #include <QApplication>
 #include <QFrame>
 #include <QHBoxLayout>
@@ -54,6 +55,7 @@ TabToolbar::TabToolbar(QWidget *parent, unsigned _groupMaxHeight,
   tabBar->tabBar()->setProperty("TTTab", QVariant(true));
   tabBarHandle = addWidget(tabBar);
   tabBar->setUsesScrollButtons(true);
+  tabBar->setContextMenuPolicy(Qt::PreventContextMenu);
 
   cornerActions = new QFrame(this);
   cornerActions->setFrameShape(QFrame::NoFrame);
