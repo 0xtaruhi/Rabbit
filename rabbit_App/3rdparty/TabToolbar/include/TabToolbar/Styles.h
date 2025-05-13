@@ -45,6 +45,7 @@ public:
 
   operator QColor() const { return m_colors.at(0).value; }
   bool operator!=(const Colors &c) const { return m_colors != c.m_colors; }
+  bool operator==(const Colors &c) const { return m_colors == c.m_colors; }
   Color &operator[](std::size_t i) { return m_colors[i]; }
   const Color &operator[](std::size_t i) const { return m_colors[i]; }
   TVectorType::size_type size() const { return m_colors.size(); }
