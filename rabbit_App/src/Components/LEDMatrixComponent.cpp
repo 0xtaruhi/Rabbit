@@ -7,6 +7,9 @@
 #include <QRegularExpressionValidator>
 #include <QValidator>
 
+#include <algorithm>
+#include <cmath>
+
 #include "Common.h"
 #include "Components/ComponentSettingsDialog.h"
 #include "Components/LEDMatrixComponent.h"
@@ -35,56 +38,89 @@ SingleLED::SingleLED(float radius, QWidget *parent) : QWidget(parent) {
 SingleLED::~SingleLED() {}
 
 void SingleLED::setLEDState(bool state) {
-  if (state_ && !state && vision_persistence_ != 0) {
-    on_persistence_ = true;
+  if (state_ && !state) {
+    if (vision_persistence_ != 0 && persisted_level_ > 0.0f) {
+      on_persistence_ = true;
+      counter_ = 0;
+    } else {
+      on_persistence_ = false;
+      counter_ = 0;
+    }
+  } else if (!state_ && state) {
+    on_persistence_ = false;
     counter_ = 0;
   }
   state_ = state;
 }
 
 void SingleLED::setLEDLevel(float level) {
-  level_ = level;
-  if (level_ > 0.0) {
-    state_ = true;
-  } else {
-    state_ = false;
+  level_ = std::clamp(level, 0.0f, 1.0f);
+  if (level_ > 0.0f) {
+    persisted_level_ = level_;
   }
-  // update();
 }
 
 void SingleLED::setVisionPersistence(uint vision_persistence) {
   vision_persistence_ = vision_persistence;
-  // timer_->setInterval(vision_persistence_);
+  if (vision_persistence_ == 0) {
+    persistence_frames_ = 0;
+    on_persistence_ = false;
+    counter_ = 0;
+    return;
+  }
+  constexpr float kAssumedRefreshHz = 60.0f;
+  auto frames = static_cast<uint>(
+      std::lround(vision_persistence_ * (kAssumedRefreshHz / 1000.0f)));
+  persistence_frames_ = std::max(1u, frames);
 }
 
 void SingleLED::paintEvent(QPaintEvent *event) {
-  if (on_persistence_) {
-    counter_++;
-    auto max = vision_persistence_ * 60 / 3000;
-    if (counter_ > max) {
+  Q_UNUSED(event);
+
+  float intensity = 0.0f;
+
+  if (state_) {
+    intensity = level_;
+    on_persistence_ = false;
+    counter_ = 0;
+  } else if (on_persistence_ && persistence_frames_ > 0) {
+    const float progress = std::clamp(
+        static_cast<float>(counter_) / static_cast<float>(persistence_frames_),
+        0.0f, 1.0f);
+    intensity = persisted_level_ * (1.0f - progress);
+    ++counter_;
+    if (counter_ >= persistence_frames_) {
       on_persistence_ = false;
       counter_ = 0;
     }
-  }
-  bool actual_state = state_ || on_persistence_;
-  QPainter painter(this);
-  if (!actual_state) {
-    painter.setBrush(kOffColor);
-    painter.setPen(kOffColor);
   } else {
-    painter.setBrush(kOnColor);
-    painter.setPen(kOnColor);
-    // qDebug() << "paintEvent called with SingleLED on.";
+    on_persistence_ = false;
+    counter_ = 0;
   }
+
+  intensity = std::clamp(intensity, 0.0f, 1.0f);
+
+  QPainter painter(this);
+  painter.setRenderHint(QPainter::Antialiasing, true);
+  painter.setPen(Qt::NoPen);
+  painter.setBrush(kOffColor);
   painter.drawEllipse(1, 1, radius_ * 2, radius_ * 2);
+
+  if (intensity > 0.0f) {
+    QColor on_color = kOnColor;
+    on_color.setAlphaF(intensity);
+    painter.setBrush(on_color);
+    painter.drawEllipse(1, 1, radius_ * 2, radius_ * 2);
+  }
 }
 
 void SingleLED::reset() {
   state_ = false;
   counter_ = 0;
   on_persistence_ = false;
-  level_ = 0.0;
-  // update();
+  level_ = 0.0f;
+  persisted_level_ = 0.0f;
+  setVisionPersistence(vision_persistence_);
 }
 
 LED4x4MatrixRawComponent::LED4x4MatrixRawComponent(QWidget *parent, bool is_4x4)
@@ -111,20 +147,51 @@ void LED4x4MatrixRawComponent::reset() {
 }
 
 void LED4x4MatrixRawComponent::processReadData(QQueue<uint64_t> &read_queue) {
+  if (read_queue.isEmpty() || leds_vec_.isEmpty()) {
+    return;
+  }
+
+  const int led_count = leds_vec_.size();
+  QVector<int> on_counts(led_count, 0);
+  QVector<int> row_active_counts(row_num_, 0);
+
   for (auto data : read_queue) {
-    // qDebug() << "Matrix read data: " << data;
     for (int row = 0; row != row_num_; ++row) {
-      auto row_pin_index = output_ports_[row].pin_index - 1;
-      bool row_data = (data >> row_pin_index) & 0x1;
+      const auto row_pin_index = output_ports_[row].pin_index - 1;
+      const bool row_data = (data >> row_pin_index) & 0x1;
+      const bool row_active = is_low_active_ ? !row_data : row_data;
+      if (!row_active) {
+        continue;
+      }
+
+      ++row_active_counts[row];
+
       for (int column = 0; column != column_num_; ++column) {
-        auto led = leds_vec_[row * column_num_ + column];
-        auto column_pin_index = output_ports_[column + row_num_].pin_index - 1;
-        bool column_data = (data >> column_pin_index) & 0x1;
-        auto state = is_low_active_ ? (!row_data && !column_data)
-                                    : (row_data && column_data);
-        led->setLEDState(state);
+        const auto column_pin_index =
+            output_ports_[column + row_num_].pin_index - 1;
+        const bool column_data = (data >> column_pin_index) & 0x1;
+        const bool column_active = is_low_active_ ? !column_data : column_data;
+        if (column_active) {
+          const int led_index = row * column_num_ + column;
+          ++on_counts[led_index];
+        }
       }
     }
+  }
+
+  for (int index = 0; index < led_count; ++index) {
+    const int count = on_counts[index];
+    const int row_index = index / column_num_;
+    const int active_samples = row_active_counts[row_index];
+    const float level = active_samples > 0
+                            ? std::min(static_cast<float>(count) /
+                                           static_cast<float>(active_samples),
+                                       1.0f)
+                            : 0.0f;
+    auto led = leds_vec_[index];
+    led->setLEDState(level > 0.0f);
+    led->setLEDLevel(level);
+    led->update();
   }
 }
 

@@ -51,6 +51,9 @@ private:
   /// @brief The counter of vision persistence time.
   uint counter_ = 0;
 
+  /// @brief Cached frame count used to approximate the persistence duration.
+  uint persistence_frames_ = 0;
+
   /// @brief Whether the LED is on vision persistence.
   bool on_persistence_ = false;
 
@@ -58,6 +61,9 @@ private:
 
   /// @brief The level of the LED, unused in version 1.0.1
   float level_;
+
+  /// @brief Remember the last lit intensity for fade-out calculations.
+  float persisted_level_ = 0.0f;
 
   float radius_;
   float size_;
