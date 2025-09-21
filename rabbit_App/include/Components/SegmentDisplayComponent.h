@@ -140,7 +140,6 @@ protected:
 
 private:
   QVector<SingleSegmentDisplay *> multi_segments_;
-  QVector<bool> segment_select_;
 
 }; // class FourDigitSegmentDisplayRawComponent
 

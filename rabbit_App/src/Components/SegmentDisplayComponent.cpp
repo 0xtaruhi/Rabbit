@@ -53,12 +53,7 @@ void SingleSegmentDisplay::setSegment(const int segment_section,
   segments_[segment_section] = value;
 }
 
-void SingleSegmentDisplay::setEn(const bool en) {
-  en_ = en;
-  for (auto i = 0; i < kSegmentCount; i++) {
-    setSegment(i, false);
-  }
-}
+void SingleSegmentDisplay::setEn(const bool en) { en_ = en; }
 
 void SingleSegmentDisplay::reset() {
   for (auto i = 0; i < kSegmentCount; i++) {
@@ -126,13 +121,21 @@ SegmentDisplayRawComponent::~SegmentDisplayRawComponent() {}
 void SegmentDisplayRawComponent::reset() { single_segment_display_->reset(); }
 
 void SegmentDisplayRawComponent::processReadData(QQueue<uint64_t> &read_queue) {
+  bool dirty = false;
   for (auto data : read_queue) {
     single_segment_display_->setEn(true);
-    auto &segments = single_segment_display_->segments();
     for (auto i = SingleSegmentDisplay::A; i <= SingleSegmentDisplay::DP; ++i) {
-      segments[i] =
+      const bool value =
           ((data >> (output_ports_[i].pin_index - 1)) & 0x1) ^ is_low_active_;
+      const bool previous = single_segment_display_->segments()[i];
+      if (previous != value) {
+        single_segment_display_->setSegment(i, value);
+        dirty = true;
+      }
     }
+  }
+  if (dirty) {
+    single_segment_display_->update();
   }
 }
 
@@ -156,53 +159,71 @@ FourDigitSegmentDisplayRawComponent::FourDigitSegmentDisplayRawComponent(
   auto layout = new QHBoxLayout(this);
   for (auto i = 0; i < kDigitCount; i++) {
     multi_segments_.append(new SingleSegmentDisplay(this));
-    segment_select_.append(false);
     layout->addWidget(multi_segments_.back());
   }
   initPorts();
 }
 
-FourDigitSegmentDisplayRawComponent::~FourDigitSegmentDisplayRawComponent() {
-  segment_select_.clear();
-}
+FourDigitSegmentDisplayRawComponent::~FourDigitSegmentDisplayRawComponent() {}
 
 void FourDigitSegmentDisplayRawComponent::reset() {
   for (auto &single_segment : multi_segments_) {
     single_segment->reset();
   }
-  segment_select_.fill(false);
   update();
 }
 
 void FourDigitSegmentDisplayRawComponent::processReadData(
     QQueue<uint64_t> &read_queue) {
+  if (read_queue.isEmpty() || multi_segments_.isEmpty()) {
+    return;
+  }
+
+  constexpr int kSegmentCount = SingleSegmentDisplay::kSegmentCount;
+  QVector<int> digit_active_counts(kDigitCount, 0);
+  QVector<int> segment_on_counts(kDigitCount * kSegmentCount, 0);
+
   for (auto data : read_queue) {
-    auto index = -1;
-    for (auto i = 0; i < kDigitCount; i++) {
-      // qDebug() << "In seg : data : " << data << " pin_index: " <<
-      // output_ports_[i].pin_index <<
-      //           " data_section: " << ((data >> (output_ports_[i].pin_index -
-      //           1)) & 0x1);
-      segment_select_[i] =
-          ((data >> (output_ports_[i].pin_index - 1)) & 0x1) ^ is_low_active_;
-      if (segment_select_[i] && index == -1) {
-        index = i;
+    bool segment_states[kSegmentCount];
+    for (int seg = 0; seg < kSegmentCount; ++seg) {
+      const int port_index = seg + kDigitCount;
+      segment_states[seg] =
+          ((data >> (output_ports_[port_index].pin_index - 1)) & 0x1) ^
+          is_low_active_;
+    }
+
+    for (int digit = 0; digit < kDigitCount; ++digit) {
+      const bool digit_enabled =
+          ((data >> (output_ports_[digit].pin_index - 1)) & 0x1) ^
+          is_low_active_;
+      if (!digit_enabled) {
+        continue;
+      }
+
+      ++digit_active_counts[digit];
+      for (int seg = 0; seg < kSegmentCount; ++seg) {
+        if (segment_states[seg]) {
+          ++segment_on_counts[digit * kSegmentCount + seg];
+        }
       }
     }
-    if (index == -1) {
-      reset();
-    } else {
-      for (auto i = 0; i < kDigitCount; i++) {
-        multi_segments_[i]->setEn(false);
-      }
-      for (auto i = 0; i < SingleSegmentDisplay::kSegmentCount; i++) {
-        multi_segments_[index]->setEn(true);
-        multi_segments_[index]->setSegment(
-            i,
-            ((data >> (output_ports_[i + kDigitCount].pin_index - 1)) & 0x1) ^
-                is_low_active_);
-      }
+  }
+
+  for (int digit = 0; digit < kDigitCount; ++digit) {
+    auto *display = multi_segments_[digit];
+    const int active_samples = digit_active_counts[digit];
+    if (active_samples == 0) {
+      display->setEn(false);
+      display->update();
+      continue;
     }
+
+    display->setEn(true);
+    for (int seg = 0; seg < kSegmentCount; ++seg) {
+      const bool is_on = segment_on_counts[digit * kSegmentCount + seg] > 0;
+      display->setSegment(seg, is_on);
+    }
+    display->update();
   }
 }
 
