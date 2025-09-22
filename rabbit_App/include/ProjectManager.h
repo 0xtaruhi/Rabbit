@@ -29,6 +29,7 @@ public:
   auto getConstraintPath() const noexcept { return constraint_path_; }
   auto getBitstreamPath() noexcept { return bitstream_path_; }
   auto isUnsaved() const noexcept { return is_unsaved_; }
+  auto isWaveformEnabled() const noexcept { return is_waveform_enabled_; }
 
   void setProjectName(const QString &project_name) {
     project_name_ = project_name;
@@ -45,6 +46,12 @@ public:
   void setUnsaved(bool is_unsaved) {
     is_unsaved_ = is_unsaved;
     emit showUnsaveFlag(is_unsaved_);
+  }
+  void setWaveformEnabled(bool enabled) {
+    if (is_waveform_enabled_ == enabled)
+      return;
+    is_waveform_enabled_ = enabled;
+    emit waveformSettingChanged(is_waveform_enabled_);
   }
 
   void readProjectFromFile(const QString &project_path);
@@ -66,6 +73,7 @@ signals:
   void showUnsaveFlag(bool is_unsaved);
   void portsLoaded(const QVector<ports::Port> &inputs,
                    const QVector<ports::Port> &outputs);
+  void waveformSettingChanged(bool enabled);
 
 public slots:
   void onOpenProject() { openProject(); }
@@ -79,6 +87,7 @@ private:
   QString bitstream_path_;
 
   bool is_unsaved_;
+  bool is_waveform_enabled_;
 
   component::ComponentsPanel *components_panel_;
   ProjectFileHandler *project_file_handler_;

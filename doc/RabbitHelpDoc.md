@@ -79,11 +79,13 @@ To change the frequency of the clock, enter the frequency in the spin box on the
 
 Rabbit can show the waveform of the signals. To show the waveform, click the **WaveForm** button on the toolbar. Then the waveform window will be shown in **gtkwave**.
 
+If you prefer not to generate waveform files during a run, open **Settings** from the toolbar and uncheck **Generate Waveform**. The setting can be changed at any time.
+
 <p align="center">
     <img alt="WaveForm"width="450" src="./images/WaveForm.png">
 </p>
 
-When running is stopped, three files will be generated in the project path: **RabbitWaveForm.vcd**, **RabbitReadData.txt**, and **RabbitWriteData.txt**. The first file is the waveform file, and the other two files are the data files of the read and write signals. You can open the waveform file in gtkwave to show the waveform, and open the data files in a text editor to show the data.
+When running is stopped with waveform generation enabled, three files will be generated in the project path: **RabbitWaveForm.vcd**, **RabbitReadData.txt**, and **RabbitWriteData.txt**. The first file is the waveform file, and the other two files are the data files of the read and write signals. You can open the waveform file in gtkwave to show the waveform, and open the data files in a text editor to show the data.
 
 **Note**: The waveform file will be overwritten every time you run the program. If you want to save the waveform, you should save it manually.
 
@@ -473,6 +475,5 @@ Use the **Vision Persistance** setting to set the vision persistance of the Segm
 LEDMatrix can display 4x4/8x8/16x16 LEDs. Use ROW[0:x] and COL[0:x] to set the LED matrix. If the corresponding input is 1, the LED will be on, otherwise it will be off.
 
 **Vision Persistance** setting is also available for LEDMatrix.
-
 
 

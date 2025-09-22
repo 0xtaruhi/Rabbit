@@ -52,6 +52,9 @@ public:
   /// @brief stop data file writing
   void stopWriting();
 
+  void setWaveformEnabled(bool enabled);
+  bool isWaveformEnabled() const noexcept { return waveform_enabled_; }
+
 private:
   void startWriting();
 
@@ -81,6 +84,8 @@ private:
 
   /// @brief worker manager for write to vcd file
   ThreadWorker *vcd_worker_;
+
+  bool waveform_enabled_;
 
 }; // class WaveFormController
 

@@ -13,7 +13,7 @@
 using namespace rabbit_App;
 using namespace rabbit_App::component;
 
-ProjectFileHandler::ProjectFileHandler() {}
+ProjectFileHandler::ProjectFileHandler() { waveform_enabled_ = true; }
 
 ProjectFileHandler::~ProjectFileHandler() {}
 
@@ -36,6 +36,11 @@ void ProjectFileHandler::readProjectFromFile(const QString &project_path) {
             xml_reader.attributes().value("constraint").toString();
         components_panel_->setConstraintFilePath(constraint_path_);
         bitstream_path_ = xml_reader.attributes().value("bitstream").toString();
+        auto waveform_enabled_attr =
+            xml_reader.attributes().value("waveform_enabled");
+        waveform_enabled_ = waveform_enabled_attr.isEmpty()
+                                 ? true
+                                 : waveform_enabled_attr.toString() == "true";
       } else if (name == "panel") {
         auto grid_width = xml_reader.attributes().value("grid_width").toInt();
         auto grid_height = xml_reader.attributes().value("grid_height").toInt();
@@ -110,6 +115,8 @@ void ProjectFileHandler::writeProjectToFile(const QString &project_path) {
   xml_writer.writeAttribute("name", project_name_);
   xml_writer.writeAttribute("constraint", constraint_path_);
   xml_writer.writeAttribute("bitstream", bitstream_path_);
+  xml_writer.writeAttribute("waveform_enabled",
+                            waveform_enabled_ ? "true" : "false");
   // xml_writer.writeEndElement();
 
   // Components Information

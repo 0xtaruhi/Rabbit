@@ -1,3 +1,4 @@
+#include <QCheckBox>
 #include <QFileDialog>
 #include <QLayout>
 #include <QLineEdit>
@@ -42,6 +43,11 @@ void SettingsDialog::initUi() {
   bitstream_path_edit_->setText(project_manager_->getBitstreamPath());
   bitstream_path_browse_btn_ = new QPushButton(tr("Browse"), this);
 
+  QLabel *waveform_label = new QLabel(tr("Generate Waveform"), this);
+  generate_waveform_checkbox_ = new QCheckBox(this);
+  generate_waveform_checkbox_->setChecked(
+      project_manager_->isWaveformEnabled());
+
   ok_btn_ = new QPushButton(tr("OK"), this);
   cancel_btn_ = new QPushButton(tr("Cancel"), this);
 
@@ -58,10 +64,12 @@ void SettingsDialog::initUi() {
   layout->addWidget(bitstream_path_label, 3, 0);
   layout->addWidget(bitstream_path_edit_, 3, 1);
   layout->addWidget(bitstream_path_browse_btn_, 3, 2);
-  layout->addWidget(hint_label_, 4, 0);
-  layout->setRowStretch(4, 1);
-  layout->addWidget(ok_btn_, 5, 1);
-  layout->addWidget(cancel_btn_, 5, 2);
+  layout->addWidget(waveform_label, 4, 0);
+  layout->addWidget(generate_waveform_checkbox_, 4, 1);
+  layout->addWidget(hint_label_, 5, 0);
+  layout->setRowStretch(5, 1);
+  layout->addWidget(ok_btn_, 6, 1);
+  layout->addWidget(cancel_btn_, 6, 2);
   setLayout(layout);
 }
 
@@ -86,6 +94,8 @@ void SettingsDialog::initConnections() {
     // project_manager_->setProjectPath(project_path_label_->text());
     project_manager_->setConstraintPath(constraint_path_edit_->text());
     project_manager_->setBitstreamPath(bitstream_path_edit_->text());
+    project_manager_->setWaveformEnabled(
+        generate_waveform_checkbox_->isChecked());
     // project_manager_->refleshProject(project_manager_->getProjectPath());
     project_manager_->setUnsaved(true);
     accept();

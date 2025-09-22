@@ -13,7 +13,8 @@ const QString WaveFormController::kReadDataFileName = "RabbitReadData.txt";
 const QString WaveFormController::kWriteDataFileName = "RabbitWriteData.txt";
 const QString WaveFormController::kVCDFileName = "RabbitWaveForm.vcd";
 
-WaveFormController::WaveFormController(QObject *parent) : QObject(parent) {
+WaveFormController::WaveFormController(QObject *parent)
+    : QObject(parent), waveform_enabled_(true) {
   read_data_file_ = new QFile(this);
   write_data_file_ = new QFile(this);
   vcd_file_ = new QFile(this);
@@ -48,6 +49,8 @@ void WaveFormController::gtkWaveExec(const QString &project_path) {
 }
 
 void WaveFormController::startWriting() {
+  if (!waveform_enabled_)
+    return;
   if (!read_data_file_->open(QIODevice::WriteOnly | QIODevice::Text) ||
       !write_data_file_->open(QIODevice::WriteOnly | QIODevice::Text)) {
     throw std::runtime_error("Cannot open files to write waveform data.");
@@ -63,6 +66,13 @@ void WaveFormController::startWriting(const QString &project_path) {
 }
 
 void WaveFormController::stopWriting() {
+  if (!waveform_enabled_) {
+    if (read_data_file_->isOpen())
+      read_data_file_->close();
+    if (write_data_file_->isOpen())
+      write_data_file_->close();
+    return;
+  }
   read_data_file_->close();
   write_data_file_->close();
   // writeToVcdFile();
@@ -71,7 +81,11 @@ void WaveFormController::stopWriting() {
 
 void WaveFormController::appendData(const std::vector<uint16_t> &data,
                                     DataType data_type) {
+  if (!waveform_enabled_)
+    return;
   auto &file = data_type == DataType::Read ? read_data_file_ : write_data_file_;
+  if (!file->isOpen())
+    return;
   for (auto i = 0; i < static_cast<int>(data.size()); i += 4) {
     // fill to 16 bits
     for (auto j = 3; j >= 0; j--) {
@@ -98,6 +112,8 @@ void WaveFormController::setPortsMap(const QVector<ports::Port> &input_ports,
 }
 
 void WaveFormController::writeToVcdFile() {
+  if (!waveform_enabled_)
+    return;
   // qDebug() << "WaveFormController::writeToVcdFile() thread: "
   //          << QThread::currentThreadId();
   vcd_file_->setFileName(project_path_ + "/" + kVCDFileName);
@@ -192,4 +208,14 @@ VcdWorker::~VcdWorker() {}
 void VcdWorker::doWork() {
   QMutexLocker locker(&mutex_);
   controller_->writeToVcdFile();
+}
+
+void WaveFormController::setWaveformEnabled(bool enabled) {
+  waveform_enabled_ = enabled;
+  if (!waveform_enabled_) {
+    if (read_data_file_->isOpen())
+      read_data_file_->close();
+    if (write_data_file_->isOpen())
+      write_data_file_->close();
+  }
 }

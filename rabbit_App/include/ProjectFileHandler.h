@@ -26,6 +26,7 @@ public:
   const QString &getProjectPath() const noexcept { return project_path_; }
   const QString &getConstraintPath() const noexcept { return constraint_path_; }
   const QString &getBitstreamPath() const noexcept { return bitstream_path_; }
+  bool isWaveformEnabled() const noexcept { return waveform_enabled_; }
 
   void setProjectName(const QString &project_name) {
     project_name_ = project_name;
@@ -38,6 +39,9 @@ public:
   }
   void setBitstreamPath(const QString &bitstream_path) {
     bitstream_path_ = bitstream_path;
+  }
+  void setWaveformEnabled(bool waveform_enabled) {
+    waveform_enabled_ = waveform_enabled;
   }
   void
   setComponentsPanel(rabbit_App::component::ComponentsPanel *components_panel) {
@@ -58,6 +62,7 @@ private:
   QString project_path_;
   QString constraint_path_;
   QString bitstream_path_;
+  bool waveform_enabled_;
 
 }; // class ProjectFileHandler
 

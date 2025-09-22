@@ -1,6 +1,8 @@
 #pragma once
 #include "qlineedit.h"
 #include "qpushbutton.h"
+#include <QCheckBox>
+#include <QLabel>
 #ifndef SETTINGS_DIALOG_H
 #define SETTINGS_DIALOG_H
 
@@ -36,6 +38,7 @@ private:
   QLabel *project_path_label_;
   QLineEdit *constraint_path_edit_;
   QLineEdit *bitstream_path_edit_;
+  QCheckBox *generate_waveform_checkbox_;
 
   QPushButton *constraint_path_browse_btn_;
   QPushButton *bitstream_path_browse_btn_;

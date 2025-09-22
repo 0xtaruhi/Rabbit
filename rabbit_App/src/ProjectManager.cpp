@@ -20,6 +20,7 @@ ProjectManager::ProjectManager(QObject *parent) : QObject(parent) {
   ports_file_reader_ = new ports::PortsFileReader(this);
   project_file_handler_ = new ProjectFileHandler();
   is_unsaved_ = false;
+  is_waveform_enabled_ = true;
 }
 
 ProjectManager::~ProjectManager() {}
@@ -29,6 +30,7 @@ void ProjectManager::readProjectFromFile(const QString &project_path) {
   project_file_handler_->readProjectFromFile(project_path);
   auto constraint_path = project_file_handler_->getConstraintPath();
   auto bitstream_path = project_file_handler_->getBitstreamPath();
+  setWaveformEnabled(project_file_handler_->isWaveformEnabled());
   if (!constraint_path.isEmpty()) {
     constraint_path_ =
       getAbsolutePath(constraint_path, project_path);
@@ -53,6 +55,7 @@ void ProjectManager::writeProjectToFile(const QString &project_path) {
       getRelativePath(constraint_path_, project_path));
   project_file_handler_->setBitstreamPath(
       getRelativePath(bitstream_path_, project_path));
+  project_file_handler_->setWaveformEnabled(is_waveform_enabled_);
   project_file_handler_->writeProjectToFile(project_path);
 }
 

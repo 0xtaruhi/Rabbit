@@ -84,6 +84,7 @@ private slots:
 
   void onProjectNameUpdated(const QString &project_name);
   void onProjectUnsaved(bool is_unsaved);
+  void onWaveformSettingChanged(bool enabled);
 };
 } // namespace rabbit_App
 
