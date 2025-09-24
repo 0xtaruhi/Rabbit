@@ -1,130 +1,72 @@
+-- Rabbit FPGA Development Tool - Xmake Build Configuration
+
+set_project("Rabbit")
+set_version("1.2.0")
+set_description("FPGA Development Tool with Component Library")
+
 add_rules("mode.debug", "mode.release")
 set_languages("c++17")
+set_warnings("all")
 
 includes("rabbit_App/3rdparty/TabToolbar")
+
+-- Platform-specific compiler flags
 if is_plat("windows") then
     add_cxxflags("/W3", "/utf-8", "/Zc:__cplusplus", "/EHsc")
     add_cxxflags("/D_CRT_SECURE_NO_WARNINGS")
+    add_defines("WIN32_LEAN_AND_MEAN", "NOMINMAX")
 else
-    add_cxxflags("-Wall", "-Werror")
+    add_cxxflags("-Wall", "-Werror", "-Wextra")
+    add_cxxflags("-fPIC")
 end
 
 add_requires("libusb")
 
-local function is_debug_mode()
-    return is_mode("debug")
-end
-
-local function rust_mode_dir()
-    return is_debug_mode() and "debug" or "release"
-end
-
-local function rust_staticlib_path()
-    return string.format("vlfd-ffi/target/%s/libvlfd_ffi.a", rust_mode_dir())
-end
-
-local function ensure_rust_ffi_built()
-    -- Only check if the Rust static library exists; actual build happens in vlfd_ffi target
-    return os.isfile(rust_staticlib_path())
-end
-
-target("vlfd_ffi")
-    set_kind("phony")
-    on_load(function (target)
-        target:add("includedirs", "vlfd-ffi")
-        local libdir = string.format("vlfd-ffi/target/%s", rust_mode_dir())
-        local libpath = rust_staticlib_path()
-        if os.isfile(libpath) then
-            target:add("linkdirs", libdir)
-            target:add("links", "vlfd_ffi")
-        end
-    end)
-    on_build(function (target)
-        if os.isfile("vlfd-ffi/Cargo.toml") then
-            local args = "--manifest-path vlfd-ffi/Cargo.toml"
-            if not is_debug_mode() then
-                args = args .. " --release"
-            end
-            os.run("cargo build %s", args)
-        else
-            print("[vlfd_ffi] skip: vlfd-ffi/Cargo.toml not found")
-        end
-        local libdir = string.format("vlfd-ffi/target/%s", rust_mode_dir())
-        if os.isdir(libdir) then
-            target:add("linkdirs", libdir)
-            target:add("links", "vlfd_ffi")
-        end
-    end)
-
+-- Main application target
 target("rabbit_App")
     add_rules("qt.application")
     set_kind("binary")
+    set_default(true)
+    
     add_defines("RABBIT_APP")
+    
     add_files("rabbit_App/src/**.cpp")
     add_files("rabbit_App/include/**.h")
     add_files("rabbit_App/res/*.qrc")
     add_files("rabbit_App/3rdparty/TabToolbar/src/TabToolbar/*.qrc")
+    
     add_frameworks("QtWidgets", "QtGui", "QtCore")
+    
     add_includedirs("rabbit_App/include")
     add_includedirs("vlfd-ffi")
     
     add_deps("TabToolbar")
-    add_deps("vlfd_ffi", {inherit = true})
     add_packages("libusb")
+    
+    add_links("vlfd_ffi")
+    add_linkdirs("vlfd-ffi/target/release")
+    
+    if is_plat("windows") then
+        add_syslinks("userenv", "ntdll", "kernel32", "advapi32")
+    end
 
-    on_load(function (target)
-        -- Ensure Rust static lib is built and linked explicitly
-        if ensure_rust_ffi_built() then
-            local libdir = string.format("vlfd-ffi/target/%s", rust_mode_dir())
-            if os.isdir(libdir) then
-                target:add("linkdirs", libdir)
-                target:add("links", "vlfd_ffi")
-                target:add("includedirs", "vlfd-ffi")
-            end
-        end
+    before_build(function (target)
+        print("[rabbit] before_build: build vlfd_ffi")
+        os.exec("cargo build --manifest-path vlfd-ffi/Cargo.toml --release")
     end)
-
+    
     after_build(function (target)
-        print("[rabbit] after_build: unpack gtkwave if needed")
-        if is_plat("macosx") then
-            local app_dir = "$(builddir)/$(plat)/$(arch)/$(mode)/gtkwave.app"
-            if not os.isdir(app_dir) then
-                if is_arch("arm64") then
-                    os.cp("gtkwave/osx-arm64/gtkwave.zip", "$(builddir)/$(plat)/$(arch)/$(mode)/")
-                else
-                    os.cp("gtkwave/osx-x64/gtkwave.zip", "$(builddir)/$(plat)/$(arch)/$(mode)/")
-                end
-                os.cd("$(builddir)/$(plat)/$(arch)/$(mode)/")
-                if os.exec then
-                    os.exec("tar -xf gtkwave.zip")
-                else
-                    os.run("tar -xf gtkwave.zip")
-                end
-                os.rm("gtkwave.zip")
-            end
-        elseif is_plat("windows") then
-            local dir = "$(builddir)/$(plat)/$(arch)/$(mode)/gtkwave"
-            if not os.isdir(dir) then
-                os.cp("gtkwave/win-x64/gtkwave.zip", "$(builddir)/$(plat)/$(arch)/$(mode)/")
-                os.cd("$(builddir)/$(plat)/$(arch)/$(mode)/")
-                if os.exec then
-                    os.exec("tar -xf gtkwave.zip")
-                else
-                    os.run("tar -xf gtkwave.zip")
-                end
-                os.rm("gtkwave.zip")
-            end
-        elseif is_plat("linux") then
-            local dir = "$(builddir)/$(plat)/$(arch)/$(mode)/gtkwave"
-            if not os.isdir(dir) then
-                os.cp("gtkwave/linux-x64/gtkwave.tar.gz", "$(builddir)/$(plat)/$(arch)/$(mode)/")
-                os.cd("$(builddir)/$(plat)/$(arch)/$(mode)/")
-                if os.exec then
-                    os.exec("tar -xf gtkwave.tar.gz")
-                else
-                    os.run("tar -xf gtkwave.tar.gz")
-                end
-                os.rm("gtkwave.tar.gz")
-            end
+        local build_dir = "$(builddir)/$(plat)/$(arch)/$(mode)"
+        local gtkwave_dir = is_plat("macosx") and build_dir .. "/gtkwave.app" or build_dir .. "/gtkwave"
+        
+        if not os.isdir(gtkwave_dir) then
+            local archive = is_plat("macosx") and (is_arch("arm64") and "gtkwave/osx-arm64/gtkwave.zip" or "gtkwave/osx-x64/gtkwave.zip")
+                    or is_plat("windows") and "gtkwave/win-x64/gtkwave.zip"
+                    or "gtkwave/linux-x64/gtkwave.tar.gz"
+            
+            os.cp(archive, build_dir .. "/")
+            os.cd(build_dir)
+            os.exec("tar -xf " .. path.filename(archive))
+            os.rm(path.filename(archive))
         end
     end)
