@@ -6,7 +6,6 @@ set_description("FPGA Development Tool with Component Library")
 
 add_rules("mode.debug", "mode.release")
 set_languages("c++17")
-set_warnings("all")
 
 includes("rabbit_App/3rdparty/TabToolbar")
 
@@ -16,7 +15,7 @@ if is_plat("windows") then
     add_cxxflags("/D_CRT_SECURE_NO_WARNINGS")
     add_defines("WIN32_LEAN_AND_MEAN", "NOMINMAX")
 else
-    add_cxxflags("-Wall", "-Werror", "-Wextra")
+    add_cxxflags("-Wall", "-Werror")
     add_cxxflags("-fPIC")
 end
 
