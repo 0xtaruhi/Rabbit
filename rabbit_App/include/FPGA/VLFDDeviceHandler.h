@@ -65,6 +65,7 @@ private:
   VLFDProgramHandler *program_handler_;
   /// @brief The running handler.
   VLFDRunningHandler *running_handler_;
+  VlfdDevice *device_ = nullptr;
 };
 
 } // namespace rabbit_App::fpga

@@ -6,7 +6,7 @@ using namespace rabbit_App::fpga;
 
 VLFDDeviceHandler::VLFDDeviceHandler(QObject *parent)
     : QObject(parent), program_handler_(new VLFDProgramHandler(this)),
-      running_handler_(new VLFDRunningHandler()) {
+      running_handler_(new VLFDRunningHandler(device_)) {
   connect(program_handler_, &VLFDProgramHandler::downloadBitstreamSuccess, this,
           &VLFDDeviceHandler::forwardDownloadBitstreamSuccess);
   connect(program_handler_, &VLFDProgramHandler::downloadBitstreamFailure, this,

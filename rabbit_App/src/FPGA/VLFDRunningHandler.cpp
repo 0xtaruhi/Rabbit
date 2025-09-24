@@ -4,25 +4,22 @@
 #include <stdexcept>
 #include <stdint.h>
 
-#include "SMIMS_VLFD.h"
+#include "FPGA/VLFDFFI.h"
 
 #include "FPGA/VLFDRunningHandler.h"
-#include "qdebug.h"
 #include "qnamespace.h"
 
 using namespace rabbit_App::fpga;
 
-constexpr auto kNowUseBoard = 0;
-constexpr auto kSerialNo = "F4UP-G2NH-Y0M0-AC05-F805-A478";
-
-VLFDRunningHandler::VLFDRunningHandler(QObject *parent) : QObject(parent) {
+VLFDRunningHandler::VLFDRunningHandler(VlfdDevice *&device, QObject *parent)
+    : QObject(parent), device_(device) {
   running_timer_ = new QTimer(this);
   running_timer_->setTimerType(Qt::PreciseTimer);
   running_timer_->setInterval(1000 / time_split_per_sec);
   connect(running_timer_, &QTimer::timeout, this,
           &VLFDRunningHandler::onRunningTimerTimeout);
 
-  async_vlfd_read_write_ = new AsyncVLFDReadWrite();
+  async_vlfd_read_write_ = new AsyncVLFDReadWrite(device_);
   connect(this, &VLFDRunningHandler::doReadWrite, async_vlfd_read_write_,
           &AsyncVLFDReadWrite::onDoVLFDReadWrite, Qt::QueuedConnection);
 
@@ -32,33 +29,27 @@ VLFDRunningHandler::VLFDRunningHandler(QObject *parent) : QObject(parent) {
   connect(this, &VLFDRunningHandler::readWriteThreadStop,
           async_vlfd_read_write_, &AsyncVLFDReadWrite::onStopThread,
           Qt::QueuedConnection);
-
-  // connect(async_vlfd_read_write_, &AsyncVLFDReadWrite::readWriteDone, this,
-  //         &VLFDRunningHandler::onReadWriteDone);
-  // connect(async_vlfd_read_write_, &AsyncVLFDReadWrite::readWriteError, this,
-  //         &VLFDRunningHandler::onReadWriteError);
 }
 
 VLFDRunningHandler::~VLFDRunningHandler() { delete async_vlfd_read_write_; }
 
 void VLFDRunningHandler::onStopRunning() {
-  if (!VLFD_IO_Close(kNowUseBoard)) {
-    throw std::runtime_error("FPGA Close failed");
+  if (vlfd_io_close(device_) != 0) {
+    throw std::runtime_error("FPGA Close failed" +
+                             std::string(vlfd_get_last_error_message()));
   }
   emit readWriteThreadStop();
   running_timer_->stop();
-  // qDebug() << "stop ,current time :"
-  //          << QDateTime::currentDateTime().toString("hh:mm:ss.zzz");
 }
 
 void VLFDRunningHandler::onStartRunning() {
-  if (!VLFD_IO_Open(kNowUseBoard, kSerialNo)) {
-    throw std::runtime_error("FPGA Open failed");
+  device_ = vlfd_io_open();
+  if (device_ == nullptr) {
+    throw std::runtime_error("FPGA Open failed" +
+                             std::string(vlfd_get_last_error_message()));
   }
   emit readWriteThreadStart();
   running_timer_->start();
-  // qDebug() << "start ,current time :"
-  //          << QDateTime::currentDateTime().toString("hh:mm:ss.zzz");
 }
 
 void VLFDRunningHandler::onFrequencyChanged(int frequency) {

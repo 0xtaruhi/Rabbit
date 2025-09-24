@@ -9,6 +9,7 @@
 #include <stdint.h>
 
 #include "FPGA/AsyncVLFDReadWrite.h"
+#include "FPGA/VLFDFFI.h"
 
 namespace rabbit_App::fpga {
 
@@ -18,7 +19,7 @@ class VLFDRunningHandler : public QObject {
   Q_OBJECT
 
 public:
-  VLFDRunningHandler(QObject *parent = nullptr);
+  VLFDRunningHandler(VlfdDevice *&device, QObject *parent = nullptr);
   virtual ~VLFDRunningHandler();
 
   /// @brief This function is used to get the async vlfd read write handler.
@@ -73,6 +74,8 @@ private:
   /// the frequency of ayncVLFDReadWriteHandler is 200Hz, but the frequency
   /// of the device maybe larger.
   void reAllocateAccessUsbTimes(int frequency);
+
+  VlfdDevice *&device_;
 };
 
 } // namespace rabbit_App::fpga

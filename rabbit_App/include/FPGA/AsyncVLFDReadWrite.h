@@ -9,6 +9,8 @@
 #include <QObject>
 #include <QThread>
 
+#include "FPGA/VLFDFFI.h"
+
 namespace rabbit_App::fpga {
 
 /// @brief AsyncVLFDReadWrite class
@@ -17,7 +19,7 @@ class AsyncVLFDReadWrite : public QObject {
   Q_OBJECT
 
 public:
-  AsyncVLFDReadWrite(QObject *parent = nullptr);
+  AsyncVLFDReadWrite(VlfdDevice *&device, QObject *parent = nullptr);
   ~AsyncVLFDReadWrite();
 
 signals:
@@ -58,6 +60,8 @@ private:
   uint16_t *write_buf_;
   /// @brief The read buffer.
   uint16_t *read_buf_;
+
+  VlfdDevice *&device_;
 
   /// @brief Update the write buffer.
   /// @param write_data The write data.

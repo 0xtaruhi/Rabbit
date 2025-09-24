@@ -7,11 +7,9 @@
 #include <vector>
 
 #include "FPGA/AsyncVLFDReadWrite.h"
-#include "SMIMS_VLFD.h"
-
+#include "FPGA/VLFDFFI.h"
 using namespace rabbit_App::fpga;
 
-constexpr auto kNowUseBoard = 0;
 constexpr auto kBufferLength = 1024;
 
 static std::vector<uint16_t> convertToVector(const uint16_t *data,
@@ -24,7 +22,8 @@ static std::vector<uint16_t> convertToVector(const uint16_t *data,
   return result;
 }
 
-AsyncVLFDReadWrite::AsyncVLFDReadWrite(QObject *parent) : QObject(parent) {
+AsyncVLFDReadWrite::AsyncVLFDReadWrite(VlfdDevice *&device, QObject *parent)
+    : QObject(parent), device_(device) {
   thread_ = new QThread(this);
   thread_->setObjectName("RabbitUSBRW");
   is_running_ = false;
@@ -42,7 +41,7 @@ void AsyncVLFDReadWrite::checkConnection() {
     write_buf_[i] = 0;
     read_buf_[i] = 0;
   }
-  VLFD_IO_WriteReadData(kNowUseBoard, write_buf_, read_buf_, 4);
+  vlfd_io_write_read(device_, write_buf_, read_buf_, 4);
 }
 
 void AsyncVLFDReadWrite::onStartThread() {
@@ -69,15 +68,14 @@ void AsyncVLFDReadWrite::onDoVLFDReadWrite(
   if (is_running_) {
     updateWriteBuffer(write_data);
 
-    auto result =
-        VLFD_IO_WriteReadData(kNowUseBoard, write_buf_, read_buf_, data_size);
+    auto result = vlfd_io_write_read(device_, write_buf_, read_buf_, data_size);
 
-    if (result) {
+    if (result == 0) {
       auto read_data = convertToVector(read_buf_, data_size);
       emit readWriteDone(std::move(read_data), std::move(write_data));
       // emit readWriteDone(std::move(read_data));
     } else {
-      emit readWriteError(VLFD_GetLastErrorMsg(kNowUseBoard));
+      emit readWriteError(vlfd_get_last_error_message());
     }
   } else {
     // qDebug() << "VLFD read write thread is not running";
